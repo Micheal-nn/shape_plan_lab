@@ -80,6 +80,7 @@ function buildTargets(input) {
   const tdee = estimateTdee(input);
   const bodyFatHigh = (input.bodyFatPct ?? 0) >= (input.sex === "male" ? 20 : 30);
   const requestedWeeklyRate = Math.abs(goalRatePerWeek(input));
+  const waistReductionTarget = measurementFocus(input).some((focus) => focus.field === "waistCm");
   let calories = tdee;
   if (input.goal.type === "fat_loss") {
     const requestedDeficit = requestedWeeklyRate > 0 ? (requestedWeeklyRate * KCAL_PER_KG) / 7 : bodyFatHigh ? 600 : 450;
@@ -90,6 +91,7 @@ function buildTargets(input) {
     calories += Math.min(300, Math.max(100, requestedSurplus));
   }
   if (input.goal.type === "recomposition") calories -= bodyFatHigh ? 250 : 100;
+  if (waistReductionTarget && input.goal.type === "maintain") calories -= 150;
   calories += input.calorieAdjustment ?? 0;
 
   const proteinG = round(input.weightKg * (input.goal.type === "fat_loss" ? 2.0 : input.goal.type === "muscle_gain" ? 1.8 : 1.6));
@@ -104,6 +106,19 @@ function makeWorkout(label, focus, groups, mode) {
   return { label, labelZh: label.replace("Day", "第") + " 天", focus, focusZh: translateFocus(focus), exercises: pickExercises(groups, mode) };
 }
 
+function measurementFocus(input) {
+  const current = input.currentCircumference ?? {};
+  const target = input.goalCircumference ?? {};
+  const rules = [
+    { field: "waistCm", group: "core", type: "reduce", titleZh: "腰围目标", title: "Waist target", noteZh: "腰围变化主要依赖总体能量缺口和训练执行，不承诺局部减脂。", note: "Waist change relies on overall energy balance and adherence; spot reduction is not promised." },
+    { field: "chestCm", group: "chest", type: "increase", titleZh: "胸围目标", title: "Chest target", noteZh: "增加胸部训练量，并保留背部训练以维持肩带平衡。", note: "Adds chest volume while retaining back work for balanced shoulders." },
+    { field: "armCm", group: "biceps", secondary: "triceps", type: "increase", titleZh: "臂围目标", title: "Arm target", noteZh: "增加肱二头和肱三头的直接训练量，围度增长仍依赖渐进超负荷与热量恢复。", note: "Adds direct biceps and triceps work; growth still depends on progressive overload and recovery." },
+    { field: "thighCm", group: "quads", secondary: "hamstrings", type: "increase", titleZh: "大腿围目标", title: "Thigh target", noteZh: "增加股四头和腘绳肌训练量，优先复合下肢动作与足够恢复。", note: "Adds quad and hamstring volume with compound lower-body work and recovery." },
+    { field: "hipCm", group: "glutes", type: "increase", titleZh: "臀围目标", title: "Hip target", noteZh: "增加臀部训练量，以髋伸动作和下肢复合动作作为主线。", note: "Adds glute volume around hip-extension and compound lower-body movements." }
+  ];
+  return rules.filter((rule) => current[rule.field] !== undefined && target[rule.field] !== undefined && (rule.type === "reduce" ? target[rule.field] < current[rule.field] : target[rule.field] > current[rule.field]));
+}
+
 function translateFocus(focus) {
   const labels = {
     "Full Body A": "全身训练 A", "Full Body B": "全身训练 B", "Full Body C": "全身训练 C",
@@ -114,12 +129,15 @@ function translateFocus(focus) {
 
 function buildWorkoutSplit(input) {
   const days = input.frequencyPerWeek ?? 3;
+  const focuses = measurementFocus(input);
+  const extraGroups = focuses.flatMap((focus) => [focus.group, focus.secondary].filter(Boolean));
+  const addFocus = (groups) => [...groups, ...extraGroups].slice(0, 6);
   if (days <= 2) {
     return {
       split: "full_body_2d",
       workouts: [
-        makeWorkout("Day 1", "Full Body A", ["quads", "chest", "back", "core"], input.trainingMode),
-        makeWorkout("Day 2", "Full Body B", ["hamstrings", "glutes", "shoulder", "core"], input.trainingMode)
+        makeWorkout("Day 1", "Full Body A", addFocus(["quads", "chest", "back", "core"]), input.trainingMode),
+        makeWorkout("Day 2", "Full Body B", addFocus(["hamstrings", "glutes", "shoulder", "core"]), input.trainingMode)
       ]
     };
   }
@@ -127,25 +145,26 @@ function buildWorkoutSplit(input) {
     return {
       split: "full_body_3d",
       workouts: [
-        makeWorkout("Day 1", "Full Body A", ["quads", "chest", "back", "core"], input.trainingMode),
-        makeWorkout("Day 2", "Full Body B", ["hamstrings", "shoulder", "biceps", "core"], input.trainingMode),
-        makeWorkout("Day 3", "Full Body C", ["glutes", "chest", "triceps", "calves"], input.trainingMode)
+        makeWorkout("Day 1", "Full Body A", addFocus(["quads", "chest", "back", "core"]), input.trainingMode),
+        makeWorkout("Day 2", "Full Body B", addFocus(["hamstrings", "shoulder", "biceps", "core"]), input.trainingMode),
+        makeWorkout("Day 3", "Full Body C", addFocus(["glutes", "chest", "triceps", "calves"]), input.trainingMode)
       ]
     };
   }
   return {
     split: "upper_lower_4d",
     workouts: [
-      makeWorkout("Day 1", "Upper A", ["chest", "back", "shoulder", "triceps"], input.trainingMode),
-      makeWorkout("Day 2", "Lower A", ["quads", "hamstrings", "glutes", "core"], input.trainingMode),
-      makeWorkout("Day 3", "Upper B", ["chest", "back", "biceps", "shoulder"], input.trainingMode),
-      makeWorkout("Day 4", "Lower B", ["quads", "glutes", "calves", "core"], input.trainingMode)
+      makeWorkout("Day 1", "Upper A", addFocus(["chest", "back", "shoulder", "triceps"]), input.trainingMode),
+      makeWorkout("Day 2", "Lower A", addFocus(["quads", "hamstrings", "glutes", "core"]), input.trainingMode),
+      makeWorkout("Day 3", "Upper B", addFocus(["chest", "back", "biceps", "shoulder"]), input.trainingMode),
+      makeWorkout("Day 4", "Lower B", addFocus(["quads", "glutes", "calves", "core"]), input.trainingMode)
     ]
   };
 }
 
 function buildCardioPlan(input) {
-  if (input.goal.type === "fat_loss") {
+  const waistReductionTarget = measurementFocus(input).some((focus) => focus.field === "waistCm");
+  if (input.goal.type === "fat_loss" || waistReductionTarget) {
     return {
       titleZh: "有氧训练安排", title: "Cardio plan", reasonZh: "减脂期加入低冲击有氧，帮助提高每周能量消耗，同时保留力量训练以尽量维持瘦体重。", reason: "Low-impact cardio raises weekly energy expenditure while preserving strength work to help retain lean mass.",
       sessionsPerWeek: 2, exercises: [pickCardio("lowImpact", input.trainingMode), pickCardio("intervals", input.trainingMode)]
@@ -174,12 +193,39 @@ function buildRationale(input, targets, cardioPlan) {
   const activityLabel = { sedentary: "久坐", light: "轻活动", moderate: "中等活动", high: "高活动" }[input.activityLevel ?? "light"];
   const calorieDirection = input.goal.type === "fat_loss" ? "热量缺口" : input.goal.type === "muscle_gain" ? "小幅热量盈余" : input.goal.type === "recomposition" ? "温和热量缺口" : "接近维持热量";
   const proteinReason = input.goal.type === "fat_loss" ? "减脂期提高蛋白质比例，以配合力量训练尽量保留瘦体重。" : input.goal.type === "muscle_gain" ? "蛋白质为肌肉修复和训练后的适应提供原料。" : "蛋白质以稳定肌肉量和提高饱腹感为重点。";
+  const focus = measurementFocus(input);
   return [
     { titleZh: "热量为什么这样设定", title: "Why these calories", textZh: `以估算日常消耗为基线，考虑你当前的${activityLabel}活动水平，设置 ${targets.dailyCalories} kcal 的${calorieDirection}，服务于${goalLabels[input.goal.type]}而非追求短期极端变化。`, text: `${targets.dailyCalories} kcal is based on estimated daily expenditure and your activity level, with a calorie direction matched to your selected goal and target date.` },
     { titleZh: "宏量营养为什么这样分配", title: "Why these macros", textZh: `每日蛋白质设为 ${targets.proteinG}g。${proteinReason}脂肪保留 ${targets.fatG}g 作为基础摄入，其余热量分给 ${targets.carbG}g 碳水，支持日常活动和训练表现。`, text: `${targets.proteinG}g protein supports recovery; ${targets.fatG}g fat maintains a baseline intake; remaining calories provide ${targets.carbG}g carbs for activity and training.` },
     { titleZh: "力量训练为什么这样安排", title: "Why this strength split", textZh: `你设定每周 ${input.frequencyPerWeek ?? 3} 次、每次约 ${input.sessionMinutes ?? 45} 分钟，计划采用覆盖胸、背、肩、手臂、下肢、臀部和核心的常用动作，优先保证动作标准和逐步进阶。`, text: `${input.frequencyPerWeek ?? 3} weekly sessions of about ${input.sessionMinutes ?? 45} minutes use standard movements covering all major muscle groups, prioritizing technique and progressive overload.` },
-    { titleZh: "有氧为什么这样安排", title: "Why this cardio", textZh: cardioPlan.reasonZh, text: cardioPlan.reason }
+    { titleZh: "有氧为什么这样安排", title: "Why this cardio", textZh: cardioPlan.reasonZh, text: cardioPlan.reason },
+    ...focus.map((item) => ({ titleZh: `${item.titleZh}如何影响计划`, title: `How the ${item.title} affects the plan`, textZh: item.noteZh, text: item.note }))
   ];
+}
+
+function buildPlanningLogic(input, targets, split, focusedMeasurements) {
+  const bmr = round(estimateBmr(input));
+  const tdee = round(estimateTdee(input));
+  const activityFactor = ACTIVITY_FACTORS[input.activityLevel ?? "light"];
+  const targetRate = round(Math.abs(goalRatePerWeek(input)) * 100) / 100;
+  const focusSummary = focusedMeasurements.length
+    ? focusedMeasurements.map((focus) => `${focus.titleZh}：${input.currentCircumference[focus.field]} → ${input.goalCircumference[focus.field]} cm`).join("；")
+    : "未填写成对的围度目标，因此使用全身均衡训练。";
+  return {
+    inputAssessment: { titleZh: "输入评估", textZh: `围度优先级：${focusSummary}` },
+    calculations: [
+      { labelZh: "基础代谢（BMR）", value: `${bmr} kcal/天`, explanationZh: input.bodyFatPct === undefined ? "使用 Mifflin–St Jeor 公式估算。" : "优先使用 Katch–McArdle 瘦体重公式估算。" },
+      { labelZh: "维持消耗（TDEE）", value: `${tdee} kcal/天`, explanationZh: `BMR × ${activityFactor} 活动系数。` },
+      { labelZh: "计划热量", value: `${targets.dailyCalories} kcal/天`, explanationZh: `相对维持消耗 ${targets.dailyCalories - tdee >= 0 ? "+" : ""}${targets.dailyCalories - tdee} kcal/天；目标体重对应约 ${targetRate} kg/周的变化速度。` },
+      { labelZh: "宏量营养", value: `蛋白 ${targets.proteinG}g｜脂肪 ${targets.fatG}g｜碳水 ${targets.carbG}g`, explanationZh: "先满足蛋白质与脂肪的基础摄入，再将剩余热量分配给碳水以支持训练表现。" }
+    ],
+    trainingDecision: { titleZh: "训练决策", textZh: focusedMeasurements.length ? `在 ${split.splitZh} 的基础上，将目标部位对应肌群重复编入训练；以动作质量、渐进超负荷和恢复作为围度变化的必要条件。` : `采用 ${split.splitZh}，在每周 ${input.frequencyPerWeek ?? 3} 次训练中覆盖主要肌群，并以渐进超负荷推动长期适应。` },
+    evidenceBasis: [
+      { titleZh: "能量平衡", textZh: "体重和腰围变化主要受长期能量摄入、消耗及执行一致性影响；不能承诺局部减脂。" },
+      { titleZh: "蛋白质与力量训练", textZh: "蛋白质按体重设置；力量训练是增肌、保留瘦体重和改善围度的主要刺激。" },
+      { titleZh: "训练剂量", textZh: "围度增大目标会增加对应肌群的直接动作，但结果仍受睡眠、恢复和训练进阶影响。" }
+    ]
+  };
 }
 
 function projectedWeeklyDeltaKg(input, targets) {
@@ -217,6 +263,7 @@ export function generatePlan(input) {
   const targets = buildTargets(input);
   const split = buildWorkoutSplit(input);
   const cardioPlan = buildCardioPlan(input);
+  const focusedMeasurements = measurementFocus(input);
   const warnings = [...feasibility.warnings];
   if ((input.sessionMinutes ?? 45) < 35) warnings.push("Short sessions reduce weekly training volume.");
   if (input.trainingMode === "bodyweight" && input.goal.type === "muscle_gain") warnings.push("Bodyweight-only muscle gain usually progresses more slowly.");
@@ -235,6 +282,7 @@ export function generatePlan(input) {
         : `当前时间、频率和目标相互匹配，计划按可持续${{ fat_loss: "减脂", muscle_gain: "增肌", recomposition: "体态重组", maintain: "保持" }[input.goal.type]}路径生成。`
       : "当前目标与截止日期或训练频率不匹配，建议先调整约束条件。",
     targets,
+    planningLogic: buildPlanningLogic(input, targets, { ...split, splitZh: { full_body_2d: "每周 2 次全身训练", full_body_3d: "每周 3 次全身训练", upper_lower_4d: "每周 4 次上下肢分化" }[split.split] }, focusedMeasurements),
     trainingPlan: {
       split: split.split,
       splitZh: { full_body_2d: "每周 2 次全身训练", full_body_3d: "每周 3 次全身训练", upper_lower_4d: "每周 4 次上下肢分化" }[split.split],
@@ -242,6 +290,7 @@ export function generatePlan(input) {
       workouts: split.workouts
     },
     cardioPlan,
+    measurementFocus: focusedMeasurements,
     rationale: buildRationale(input, targets, cardioPlan),
     growthProjection: {
       weekly: projectGrowth(input, targets)

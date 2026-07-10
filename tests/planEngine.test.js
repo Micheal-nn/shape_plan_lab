@@ -134,3 +134,41 @@ test("reviewAndAdjustPlan revises a plan when progress is too slow", () => {
   assert.notEqual(review.updatedPlan.targets.dailyCalories, plan.targets.dailyCalories);
   assert.match(review.llmReview.notes.join(" "), /frequency|slower than target/);
 });
+
+test("generatePlan prioritizes a supplied single circumference goal", () => {
+  const input = {
+    sex: "male",
+    age: 30,
+    heightCm: 178,
+    weightKg: 82,
+    bodyFatPct: 20,
+    goal: { type: "muscle_gain", targetDate: "2026-12-31", targetWeightKg: 85 },
+    currentCircumference: { armCm: 34 },
+    goalCircumference: { armCm: 36 },
+    trainingMode: "gym",
+    frequencyPerWeek: 4,
+    sessionMinutes: 60
+  };
+  const plan = generatePlan(input);
+
+  assert.equal(plan.measurementFocus[0].field, "armCm");
+  assert.match(plan.planningLogic.inputAssessment.textZh, /臂围目标：34 → 36 cm/);
+  assert.match(plan.planningLogic.trainingDecision.textZh, /目标部位/);
+  assert.ok(plan.trainingPlan.workouts.some((workout) => workout.exercises.some((exercise) => exercise.muscleGroup === "biceps")));
+  assert.ok(plan.trainingPlan.workouts.some((workout) => workout.exercises.some((exercise) => exercise.muscleGroup === "triceps")));
+});
+
+test("validateGeneratePlanInput accepts circumference-only fat-loss target", () => {
+  const errors = validateGeneratePlanInput({
+    sex: "female",
+    heightCm: 165,
+    weightKg: 70,
+    goal: { type: "fat_loss", targetDate: "2026-12-31" },
+    currentCircumference: { waistCm: 82 },
+    goalCircumference: { waistCm: 77 },
+    trainingMode: "bodyweight",
+    frequencyPerWeek: 3
+  });
+
+  assert.equal(errors, null);
+});

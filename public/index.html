@@ -88,6 +88,19 @@
             </div>
           </fieldset>
 
+          <fieldset>
+            <legend>可选围度目标（cm）</legend>
+            <p class="fieldset-hint">仅填写需要改善的部位：当前值与目标值需成对填写。腰围仅支持缩小；胸、臀、臂、大腿围仅支持增大。</p>
+            <div class="measurement-grid">
+              <span>部位</span><span>当前数据</span><span>目标数据</span>
+              <label for="current-waist">腰围</label><input id="current-waist" name="currentWaistCm" aria-label="当前腰围" type="number" min="15" max="200" step="0.1" placeholder="例如 91" /><input name="goalWaistCm" aria-label="目标腰围" type="number" min="15" max="200" step="0.1" placeholder="例如 86" />
+              <label for="current-chest">胸围</label><input id="current-chest" name="currentChestCm" aria-label="当前胸围" type="number" min="15" max="200" step="0.1" placeholder="例如 100" /><input name="goalChestCm" aria-label="目标胸围" type="number" min="15" max="200" step="0.1" placeholder="例如 103" />
+              <label for="current-hip">臀围</label><input id="current-hip" name="currentHipCm" aria-label="当前臀围" type="number" min="15" max="200" step="0.1" placeholder="例如 98" /><input name="goalHipCm" aria-label="目标臀围" type="number" min="15" max="200" step="0.1" placeholder="例如 101" />
+              <label for="current-arm">臂围</label><input id="current-arm" name="currentArmCm" aria-label="当前臂围" type="number" min="15" max="200" step="0.1" placeholder="例如 34" /><input name="goalArmCm" aria-label="目标臂围" type="number" min="15" max="200" step="0.1" placeholder="例如 36" />
+              <label for="current-thigh">大腿围</label><input id="current-thigh" name="currentThighCm" aria-label="当前大腿围" type="number" min="15" max="200" step="0.1" placeholder="例如 57" /><input name="goalThighCm" aria-label="目标大腿围" type="number" min="15" max="200" step="0.1" placeholder="例如 60" />
+            </div>
+          </fieldset>
+
           <button class="primary-button" type="submit"><span>生成科学计划</span><b>→</b></button>
           <div id="form-error" class="form-error" role="alert"></div>
         </form>

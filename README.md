@@ -1,77 +1,80 @@
-# Shape Plan Lab
+# Shape Plan Lab / 塑形计划实验室
 
-Android-first fitness planning MVP with a responsive browser client for fast PC validation. The same zero-dependency Node.js API serves both clients, keeping rule validation and plan generation consistent.
+面向 Android 优先产品验证的健身计划 MVP。浏览器端与零依赖 Node.js API 使用同一套校验和规则引擎，确保输入约束、计划生成、历史复评一致。
 
-## MVP 1.0
+## 中文说明
 
-- Generates plans for fat loss, muscle gain, recomposition, and maintenance.
-- Validates baseline metrics, target direction, target dates, training frequency, and session duration.
-- Rejects conflicting goals, for example muscle gain with a lower target weight or a simultaneous lower body-fat target.
-- Calculates daily calories, protein, fat, carbohydrates, weekly strength training, cardio, and a projected body-weight trajectory.
-- Includes major muscle groups plus cardio options for gym and bodyweight/home settings.
-- Returns Chinese exercise names, target-muscle labels, exercise cues, and rule-based plan rationale.
-- Records weekly body metrics, weekly completed training frequency, and daily nutrition inputs for manual plan review.
-- Recalculates and returns an `updatedPlan` plus `updatedInput` after review so clients can immediately apply the new version.
-- Provides a Chinese/English browser UI and SVG long-image export for sharing a plan.
+### 已实现能力
 
-## Planning Rules
+- 支持减脂、增肌、体态重组、保持四类目标。
+- 校验基础数据、目标方向、期限、训练频率、单次训练时长与围度目标的合理性。
+- 可选输入 **当前值 + 目标值**：腰围、胸围、臀围、臂围、大腿围（单位：cm）。
+- 只有成对输入的围度数据才会参与计划：
+  - 腰围目标必须小于当前值，系统通过总体能量缺口、力量训练与有氧协同支持腰围改善，**不会承诺局部减脂**。
+  - 胸、臀、臂、大腿围目标必须大于当前值；引擎会将对应肌群加入更多训练日，强化直接刺激。
+- 当只填写一个围度目标时，计划仍以该“单点目标”为优先：例如臂围会加入肱二头与肱三头动作；臀围加入臀部动作；大腿围加入股四头与腘绳肌动作。
+- 页面展示“计划生成逻辑”：输入评估、BMR/TDEE/热量计算、宏量分配、训练决策及科学依据。
+- 生成每日热量、蛋白质/脂肪/碳水、力量训练、有氧安排、体重趋势与风险提示。
+- 使用真实身体指标、训练和饮食历史进行复评，并返回可立即应用的 `updatedPlan` 与 `updatedInput`。
 
-- Target dates affect calorie targets. For the same fat-loss target, a shorter valid timeline produces a larger bounded calorie deficit; a longer timeline produces a milder deficit.
-- Fat-loss plans require lower target weight/body fat than current values when those fields are set.
-- Muscle-gain plans require a higher target weight and do not allow an accompanying lower body-fat target; use recomposition for that intent.
-- Recomposition limits target weight movement to 5% of current body weight and requires a lower body-fat target when body fat is supplied.
-- Reviews compare historical body metrics, completed frequency, and nutrition records. They can adjust calories, training frequency, timeline, or goal type.
+### 计划逻辑与科学依据
 
-## Run Locally
+1. **能量消耗**：有体脂率时优先使用 Katch–McArdle（基于瘦体重）估算 BMR；没有体脂率时使用 Mifflin–St Jeor。TDEE = BMR × 活动系数。
+2. **热量目标**：根据目标类型、目标日期和目标体重变化速度形成有边界的热量缺口或盈余；减脂缺口被限制在每日 250–800 kcal，避免通过极端低热量追求短期结果。
+3. **宏量营养**：蛋白质按体重和目标类型设置，脂肪保留基础摄入，剩余热量给碳水以支持活动和训练表现。
+4. **训练剂量**：所有计划保留主要肌群的全身覆盖；有围度增大目标时，目标肌群会重复出现在每周训练中。结果仍取决于动作质量、渐进超负荷、恢复、睡眠与执行一致性。
+5. **围度边界**：腰围不是“练腹”即可定向缩小；胸、臀、臂、大腿围增加也无法保证在某个固定日期准确达到。系统给出可执行方向和可复评路径，而非医学或效果承诺。
 
-Requirements: Node.js 22 or later.
+### 本地运行
+
+要求：Node.js 22 或更高版本。
 
 ```bash
 npm test
 npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to use the PC validation interface.
+打开 [http://localhost:3000](http://localhost:3000) 使用浏览器验证界面。
 
-## API
+### API
 
-| Endpoint | Description |
+| Endpoint | 说明 |
 | --- | --- |
-| `GET /` | Responsive browser validation interface. |
-| `GET /health` | Health check. |
-| `POST /api/plan/generate` | Validates inputs and generates a rule-based plan. |
-| `POST /api/plan/review` | Reviews historical data and returns `updatedInput` and `updatedPlan`. |
+| `GET /` | 响应式浏览器验证界面。 |
+| `GET /health` | 健康检查。 |
+| `POST /api/plan/generate` | 校验输入并生成可解释的规则计划。 |
+| `POST /api/plan/review` | 复评历史数据并返回 `updatedInput` 与 `updatedPlan`。 |
 
-### Generate a Plan
+### 生成计划示例：单点臂围目标
 
 ```bash
 curl -X POST http://localhost:3000/api/plan/generate \
   -H 'Content-Type: application/json' \
   -d '{
     "sex": "male",
+    "age": 30,
     "heightCm": 175,
     "weightKg": 82,
-    "bodyFatPct": 24,
-    "goal": {
-      "type": "fat_loss",
-      "targetDate": "2026-11-30",
-      "targetWeightKg": 74,
-      "targetBodyFatPct": 16
-    },
+    "bodyFatPct": 20,
+    "goal": { "type": "muscle_gain", "targetDate": "2026-12-31", "targetWeightKg": 85 },
+    "currentCircumference": { "armCm": 34 },
+    "goalCircumference": { "armCm": 36 },
     "trainingMode": "gym",
     "frequencyPerWeek": 4,
     "sessionMinutes": 60
   }'
 ```
 
-## Test
+返回的 `planningLogic` 提供展示用的输入评估、计算过程、训练决策和依据；`measurementFocus` 列出实际用于调整训练的围度目标。
 
-```bash
-npm test
-```
+### 安全边界
 
-The test suite covers target-direction validation, feasible and infeasible plans, target-date-sensitive calorie calculations, cardio/Chinese plan output, and history-based re-planning.
+这是计划与教育工具，不构成医疗诊断或治疗建议。存在疾病、妊娠、未成年、饮食失调风险或术后恢复需求时，请先咨询合格的医疗或运动专业人士。
 
-## Safety Boundary
+---
 
-This is a planning and educational product, not a medical diagnosis tool. Users with medical conditions, pregnancy, eating-disorder risk, postoperative recovery needs, or who are minors should consult qualified professionals before following a plan.
+## English Summary
+
+A zero-dependency Node.js fitness-planning MVP with a responsive browser client. It supports fat loss, muscle gain, recomposition, maintenance, paired current/target circumference inputs, rule-based training prioritization, transparent planning logic, and history-based plan reviews.
+
+Run `npm test` and `npm start`, then open [http://localhost:3000](http://localhost:3000).
