@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14261f" />
+    <title>Shape Plan Lab | 健身计划验证台</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="hero">
+      <a class="brand" href="#top" aria-label="Shape Plan Lab 首页">
+        <span class="brand-mark">SP</span>
+        <span>Shape Plan Lab</span>
+      </a>
+      <div class="header-actions">
+        <button id="language-toggle" class="language-toggle" type="button">EN</button>
+      </div>
+      <p id="hero-eyebrow" class="eyebrow">MVP 1.0 · WEB VALIDATION</p>
+      <h1 id="hero-title">把目标变成<br /><em>可执行的路径。</em></h1>
+      <p id="hero-copy" class="hero-copy">输入身体指标、目标和可投入的训练时间。规则引擎先校验安全与可达成性，再输出训练、营养和成长预测。</p>
+      <div class="hero-pills">
+        <span id="pill-one">规则引擎</span><span id="pill-two">二次校验</span><span id="pill-three">历史复评</span>
+      </div>
+    </header>
+
+    <main id="top" class="layout">
+      <section class="panel input-panel">
+        <div class="section-heading">
+          <p id="profile-kicker" class="kicker">01 / PROFILE</p>
+          <h2 id="profile-title">创建你的计划</h2>
+          <p id="profile-copy">带 <strong>*</strong> 的字段用于计算。可选数据会提高预测可靠度。</p>
+        </div>
+
+        <form id="plan-form" class="plan-form">
+          <fieldset>
+            <legend>基础指标</legend>
+            <div class="field-grid two">
+              <label>性别 *
+                <select name="sex"><option value="male">男性</option><option value="female">女性</option></select>
+              </label>
+              <label>年龄
+                <input name="age" type="number" min="16" max="90" value="30" />
+              </label>
+              <label>身高 (cm) *
+                <input name="heightCm" type="number" min="120" max="230" value="175" required />
+              </label>
+              <label>体重 (kg) *
+                <input name="weightKg" type="number" min="30" max="300" step="0.1" value="82" required />
+              </label>
+              <label>体脂率 (%)
+                <input name="bodyFatPct" type="number" min="1" max="60" step="0.1" value="24" />
+              </label>
+              <label>日常活动
+                <select name="activityLevel"><option value="sedentary">久坐</option><option value="light" selected>轻活动</option><option value="moderate">中等活动</option><option value="high">高活动</option></select>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>目标与约束</legend>
+            <div class="field-grid two">
+              <label>目标类型 *
+                <select name="goalType"><option value="fat_loss" selected>减脂 / 减重</option><option value="muscle_gain">增肌</option><option value="recomposition">体态重组</option><option value="maintain">保持</option></select>
+              </label>
+              <label>达成日期 *
+                <input name="targetDate" type="date" value="2026-11-30" required />
+              </label>
+              <label>目标体重 (kg)
+                <input name="targetWeightKg" type="number" min="30" max="300" step="0.1" value="74" />
+              </label>
+              <label>目标体脂率 (%)
+                <input name="targetBodyFatPct" type="number" min="1" max="60" step="0.1" value="16" />
+              </label>
+              <label>训练场景 *
+                <select name="trainingMode"><option value="gym" selected>健身房</option><option value="bodyweight">自重 / 居家</option></select>
+              </label>
+              <label>每周训练次数 *
+                <input name="frequencyPerWeek" type="number" min="1" max="6" value="4" required />
+              </label>
+              <label>每次训练时长 (分钟)
+                <input name="sessionMinutes" type="number" min="20" max="180" value="60" />
+              </label>
+              <label>训练经验
+                <select name="trainingExperience"><option value="novice" selected>新手</option><option value="intermediate">中级</option><option value="advanced">高级</option></select>
+              </label>
+            </div>
+          </fieldset>
+
+          <button class="primary-button" type="submit"><span>生成科学计划</span><b>→</b></button>
+          <div id="form-error" class="form-error" role="alert"></div>
+        </form>
+      </section>
+
+      <section id="result" class="results" aria-live="polite">
+        <div class="empty-state">
+          <span class="empty-index">READY</span>
+          <h2 id="empty-title">等待输入</h2>
+          <p id="empty-copy">填写左侧数据后，系统会生成热量、宏量、训练结构和目标轨迹。</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="export-controls" class="export-controls" hidden>
+      <button id="export-button" class="export-button" type="button">导出计划长图 <b>↓</b></button>
+    </div>
+
+    <section id="review-section" class="review-shell" hidden>
+      <div class="review-header">
+        <div>
+          <p id="review-kicker" class="kicker">02 / PLAN REVIEW</p>
+          <h2>根据真实数据复评</h2>
+          <p>这部分模拟 1.0 的每周指标、训练频率和每日饮食记录。点击后，系统会重新判断计划是否还能达成。</p>
+        </div>
+        <button id="review-button" class="secondary-button" type="button">基于历史记录调整计划 <b>→</b></button>
+      </div>
+      <div class="review-grid">
+        <label id="label-weight-start">第 1 周体重 (kg)<input id="weight-start" type="number" step="0.1" value="82" /></label>
+        <label id="label-weight-current">当前体重 (kg)<input id="weight-current" type="number" step="0.1" value="81.7" /></label>
+        <label id="label-body-fat-current">当前体脂率 (%)<input id="body-fat-current" type="number" step="0.1" value="23.8" /></label>
+        <label id="label-completed-frequency">实际每周训练次数<input id="completed-frequency" type="number" min="0" max="7" value="2" /></label>
+        <label id="label-average-calories">近期平均热量 (kcal)<input id="average-calories" type="number" value="1880" /></label>
+        <label id="label-average-protein">近期蛋白质 (g)<input id="average-protein" type="number" value="150" /></label>
+      </div>
+      <div id="review-result" class="review-result" hidden></div>
+    </section>
+
+    <footer id="footer-copy">用于产品验证的规则引擎 Demo，不构成医疗建议。存在疾病、妊娠、未成年或饮食失调风险时，应先咨询医疗专业人士。</footer>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
