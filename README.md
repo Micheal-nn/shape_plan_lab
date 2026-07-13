@@ -36,6 +36,14 @@ npm start
 
 打开 [http://localhost:3000](http://localhost:3000) 使用浏览器验证界面。
 
+### Android 下载安装
+
+离线 Android MVP 位于 [`android/shape-plan-android`](android/shape-plan-android)。计划生成、目标自动修正、围度聚焦和训练强度规则都内置在应用中，安装后不依赖开发服务器。
+
+1. 推送 `android-v*` 格式的标签后，GitHub Actions 会构建 APK 并发布到 Releases。
+2. 手动运行 GitHub 的 **Build Android APK** 工作流，也会在工作流产物中提供可下载 APK。
+3. 这是用于产品验证的 debug APK，未使用 Play 商店签名；Android 可能要求在浏览器或文件管理器中允许安装未知来源应用。
+
 ### API
 
 | Endpoint | 说明 |
@@ -78,3 +86,11 @@ curl -X POST http://localhost:3000/api/plan/generate \
 A zero-dependency Node.js fitness-planning MVP with a responsive browser client. It supports fat loss, muscle gain, recomposition, maintenance, paired current/target circumference inputs, rule-based training prioritization, transparent planning logic, and history-based plan reviews.
 
 Run `npm test` and `npm start`, then open [http://localhost:3000](http://localhost:3000).
+
+### Android installation
+
+The offline Android MVP is in [`android/shape-plan-android`](android/shape-plan-android). Its plan generation, goal normalization, circumference emphasis, and intensity rules run inside the app, without a development server.
+
+1. Push an `android-v*` tag to build and publish an APK in GitHub Releases.
+2. You can also run the **Build Android APK** GitHub workflow manually and download its APK artifact.
+3. This is a product-validation debug APK, not Play Store signed. Android may ask the user to allow installation from the browser or file manager.
