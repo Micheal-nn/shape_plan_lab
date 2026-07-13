@@ -65,34 +65,11 @@ export function validateGeneratePlanInput(input) {
     addError(errors, "goal", "请至少填写目标体重、目标体脂率或目标围度中的一项。");
   }
 
-  if (goal.type === "fat_loss") {
-    if (hasWeightTarget && goal.targetWeightKg >= input.weightKg) addError(errors, "targetWeightKg", "减脂目标的目标体重必须低于当前体重。");
-    if (hasBodyFatTarget && hasValue(input.bodyFatPct) && goal.targetBodyFatPct >= input.bodyFatPct) addError(errors, "targetBodyFatPct", "减脂目标的目标体脂率必须低于当前体脂率。");
-  }
-
-  if (goal.type === "muscle_gain") {
-    if (hasWeightTarget && goal.targetWeightKg <= input.weightKg) addError(errors, "targetWeightKg", "增肌目标的目标体重必须高于当前体重。");
-    if (hasBodyFatTarget && hasValue(input.bodyFatPct) && goal.targetBodyFatPct < input.bodyFatPct) addError(errors, "targetBodyFatPct", "纯增肌目标不能同时要求体脂率下降；请改选体态重组或调整体脂目标。");
-  }
-
-  if (goal.type === "recomposition") {
-    if (hasWeightTarget && Math.abs(goal.targetWeightKg - input.weightKg) > input.weightKg * 0.05) addError(errors, "targetWeightKg", "体态重组的目标体重建议控制在当前体重上下 5% 内；更大变化请选减脂或增肌。");
-    if (hasBodyFatTarget && hasValue(input.bodyFatPct) && goal.targetBodyFatPct >= input.bodyFatPct) addError(errors, "targetBodyFatPct", "体态重组应以降低体脂率为目标，目标体脂率需低于当前值。");
-  }
-
-  if (goal.type === "maintain") {
-    if (hasWeightTarget && Math.abs(goal.targetWeightKg - input.weightKg) > input.weightKg * 0.02) addError(errors, "targetWeightKg", "保持目标的体重变化不能超过当前体重的 2%；更大变化请切换目标类型。");
-    if (hasBodyFatTarget && hasValue(input.bodyFatPct) && Math.abs(goal.targetBodyFatPct - input.bodyFatPct) > 2) addError(errors, "targetBodyFatPct", "保持目标的体脂变化不能超过 2 个百分点；更大变化请切换目标类型。");
-  }
-
   for (const field of circumferenceFields) {
     const current = input.currentCircumference?.[field];
     const target = input.goalCircumference?.[field];
     if (hasValue(target) && !hasValue(current)) addError(errors, `currentCircumference.${field}`, "填写目标围度时，也需要填写当前围度以便评估变化幅度。");
     if (!hasValue(current) || !hasValue(target)) continue;
-    if (field === "waistCm" && target >= current) addError(errors, `goalCircumference.${field}`, "腰围目标应低于当前腰围；系统不会承诺局部减脂。");
-    if (["chestCm", "armCm", "thighCm", "hipCm"].includes(field) && target <= current) addError(errors, `goalCircumference.${field}`, "胸、臂、臀和大腿围度目标应高于当前值；缩小围度无法通过局部训练可靠实现。");
-    if (Math.abs(target - current) > current * 0.2) addError(errors, `goalCircumference.${field}`, "单个围度目标一次变化不能超过当前值的 20%；请延长周期或拆分目标。");
   }
 
   return errors.length > 0 ? errors : null;

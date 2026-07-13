@@ -10,14 +10,14 @@
   <body>
     <div class="grain" aria-hidden="true"></div>
     <header class="hero">
-      <a class="brand" href="#top" aria-label="Shape Plan Lab 首页">
-        <span class="brand-mark">SP</span>
-        <span>Shape Plan Lab</span>
+      <a id="brand-link" class="brand" href="#top" aria-label="塑形计划实验室首页">
+        <span id="brand-mark" class="brand-mark">塑</span>
+        <span id="brand-name">塑形计划实验室</span>
       </a>
       <div class="header-actions">
-        <button id="language-toggle" class="language-toggle" type="button">EN</button>
+        <button id="language-toggle" class="language-toggle" type="button">切换语言</button>
       </div>
-      <p id="hero-eyebrow" class="eyebrow">MVP 1.0 · WEB VALIDATION</p>
+      <p id="hero-eyebrow" class="eyebrow">1.0 版 · 网页验证</p>
       <h1 id="hero-title">把目标变成<br /><em>可执行的路径。</em></h1>
       <p id="hero-copy" class="hero-copy">输入身体指标、目标和可投入的训练时间。规则引擎先校验安全与可达成性，再输出训练、营养和成长预测。</p>
       <div class="hero-pills">
@@ -28,7 +28,7 @@
     <main id="top" class="layout">
       <section class="panel input-panel">
         <div class="section-heading">
-          <p id="profile-kicker" class="kicker">01 / PROFILE</p>
+          <p id="profile-kicker" class="kicker">01 / 个人资料</p>
           <h2 id="profile-title">创建你的计划</h2>
           <p id="profile-copy">带 <strong>*</strong> 的字段用于计算。可选数据会提高预测可靠度。</p>
         </div>
@@ -88,16 +88,16 @@
             </div>
           </fieldset>
 
-          <fieldset>
-            <legend>可选围度目标（cm）</legend>
-            <p class="fieldset-hint">仅填写需要改善的部位：当前值与目标值需成对填写。腰围仅支持缩小；胸、臀、臂、大腿围仅支持增大。</p>
+          <fieldset id="circumference-fieldset">
+            <legend id="circumference-legend">可选围度目标（厘米）</legend>
+            <p id="circumference-hint" class="fieldset-hint">仅填写需要改善的部位：当前值与目标值需成对填写。腰围仅支持缩小；胸、臀、臂、大腿围仅支持增大。</p>
             <div class="measurement-grid">
-              <span>部位</span><span>当前数据</span><span>目标数据</span>
-              <label for="current-waist">腰围</label><input id="current-waist" name="currentWaistCm" aria-label="当前腰围" type="number" min="15" max="200" step="0.1" placeholder="例如 91" /><input name="goalWaistCm" aria-label="目标腰围" type="number" min="15" max="200" step="0.1" placeholder="例如 86" />
-              <label for="current-chest">胸围</label><input id="current-chest" name="currentChestCm" aria-label="当前胸围" type="number" min="15" max="200" step="0.1" placeholder="例如 100" /><input name="goalChestCm" aria-label="目标胸围" type="number" min="15" max="200" step="0.1" placeholder="例如 103" />
-              <label for="current-hip">臀围</label><input id="current-hip" name="currentHipCm" aria-label="当前臀围" type="number" min="15" max="200" step="0.1" placeholder="例如 98" /><input name="goalHipCm" aria-label="目标臀围" type="number" min="15" max="200" step="0.1" placeholder="例如 101" />
-              <label for="current-arm">臂围</label><input id="current-arm" name="currentArmCm" aria-label="当前臂围" type="number" min="15" max="200" step="0.1" placeholder="例如 34" /><input name="goalArmCm" aria-label="目标臂围" type="number" min="15" max="200" step="0.1" placeholder="例如 36" />
-              <label for="current-thigh">大腿围</label><input id="current-thigh" name="currentThighCm" aria-label="当前大腿围" type="number" min="15" max="200" step="0.1" placeholder="例如 57" /><input name="goalThighCm" aria-label="目标大腿围" type="number" min="15" max="200" step="0.1" placeholder="例如 60" />
+              <span id="measurement-part">部位</span><span id="measurement-current">当前值</span><span id="measurement-target">目标值</span>
+              <label id="measurement-label-waist" for="current-waist">腰围</label><input id="current-waist" name="currentWaistCm" aria-label="当前腰围" type="number" min="15" max="200" step="0.1" placeholder="例如 91" /><input name="goalWaistCm" aria-label="目标腰围" type="number" min="15" max="200" step="0.1" placeholder="例如 86" />
+              <label id="measurement-label-chest" for="current-chest">胸围</label><input id="current-chest" name="currentChestCm" aria-label="当前胸围" type="number" min="15" max="200" step="0.1" placeholder="例如 100" /><input name="goalChestCm" aria-label="目标胸围" type="number" min="15" max="200" step="0.1" placeholder="例如 103" />
+              <label id="measurement-label-hip" for="current-hip">臀围</label><input id="current-hip" name="currentHipCm" aria-label="当前臀围" type="number" min="15" max="200" step="0.1" placeholder="例如 98" /><input name="goalHipCm" aria-label="目标臀围" type="number" min="15" max="200" step="0.1" placeholder="例如 101" />
+              <label id="measurement-label-arm" for="current-arm">臂围</label><input id="current-arm" name="currentArmCm" aria-label="当前臂围" type="number" min="15" max="200" step="0.1" placeholder="例如 34" /><input name="goalArmCm" aria-label="目标臂围" type="number" min="15" max="200" step="0.1" placeholder="例如 36" />
+              <label id="measurement-label-thigh" for="current-thigh">大腿围</label><input id="current-thigh" name="currentThighCm" aria-label="当前大腿围" type="number" min="15" max="200" step="0.1" placeholder="例如 57" /><input name="goalThighCm" aria-label="目标大腿围" type="number" min="15" max="200" step="0.1" placeholder="例如 60" />
             </div>
           </fieldset>
 
@@ -108,7 +108,7 @@
 
       <section id="result" class="results" aria-live="polite">
         <div class="empty-state">
-          <span class="empty-index">READY</span>
+          <span id="empty-index" class="empty-index">准备就绪</span>
           <h2 id="empty-title">等待输入</h2>
           <p id="empty-copy">填写左侧数据后，系统会生成热量、宏量、训练结构和目标轨迹。</p>
         </div>
@@ -122,7 +122,7 @@
     <section id="review-section" class="review-shell" hidden>
       <div class="review-header">
         <div>
-          <p id="review-kicker" class="kicker">02 / PLAN REVIEW</p>
+          <p id="review-kicker" class="kicker">02 / 计划复评</p>
           <h2>根据真实数据复评</h2>
           <p>这部分模拟 1.0 的每周指标、训练频率和每日饮食记录。点击后，系统会重新判断计划是否还能达成。</p>
         </div>

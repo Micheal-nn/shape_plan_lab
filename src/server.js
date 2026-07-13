@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { generatePlan, reviewAndAdjustPlan } from "./planEngine.js";
+import { normalizeGoalInput } from "./goalNormalizer.js";
 import { validateGeneratePlanInput, validateReviewPlanInput } from "./validators.js";
 
 const publicDirectory = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "public");
@@ -59,8 +60,10 @@ const server = http.createServer(async (request, response) => {
     try {
       const body = await readJson(request);
       const errors = validateGeneratePlanInput(body);
-      if (errors) return sendJson(response, 400, { error: "请修正表单中的冲突或无效数据。", errors });
-      return sendJson(response, 200, generatePlan(body));
+      if (errors) return sendJson(response, 400, { error: "请修正表单中的缺失或无效数据。", errors });
+      const normalized = normalizeGoalInput(body);
+      const plan = generatePlan(normalized.input);
+      return sendJson(response, 200, { ...plan, effectiveInput: normalized.input, goalAdjustments: normalized.adjustments });
     } catch {
       return sendJson(response, 400, { error: "Invalid JSON body." });
     }

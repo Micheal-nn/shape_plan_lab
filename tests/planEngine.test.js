@@ -2,9 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { generatePlan, reviewAndAdjustPlan } from "../src/planEngine.js";
 import { validateGeneratePlanInput } from "../src/validators.js";
+import { normalizeGoalInput } from "../src/goalNormalizer.js";
 
-test("validateGeneratePlanInput rejects target direction conflicts", () => {
-  const errors = validateGeneratePlanInput({
+test("normalizeGoalInput corrects target direction conflicts instead of rejecting valid data", () => {
+  const input = {
     sex: "male",
     age: 30,
     heightCm: 175,
@@ -14,10 +15,26 @@ test("validateGeneratePlanInput rejects target direction conflicts", () => {
     trainingMode: "gym",
     frequencyPerWeek: 4,
     sessionMinutes: 60
+  };
+  const errors = validateGeneratePlanInput(input);
+  const normalized = normalizeGoalInput(input);
+
+  assert.equal(errors, null);
+  assert.equal(normalized.input.goal.type, "fat_loss");
+  assert.equal(normalized.input.goal.targetWeightKg, 70);
+  assert.equal(normalized.input.goal.targetBodyFatPct, 18);
+  assert.ok(normalized.adjustments.some((adjustment) => adjustment.field === "goal.type"));
+});
+
+test("normalizeGoalInput narrows an unsafe deadline-driven fat-loss target", () => {
+  const normalized = normalizeGoalInput({
+    sex: "female", heightCm: 165, weightKg: 72,
+    goal: { type: "fat_loss", targetDate: "2026-07-29", targetWeightKg: 60 },
+    trainingMode: "bodyweight", frequencyPerWeek: 3
   });
 
-  assert.ok(errors);
-  assert.deepEqual(errors.map((error) => error.field), ["targetWeightKg", "targetBodyFatPct"]);
+  assert.ok(normalized.input.goal.targetWeightKg > 60);
+  assert.ok(normalized.adjustments.some((adjustment) => adjustment.field === "goal.targetWeightKg"));
 });
 
 test("validateGeneratePlanInput accepts coherent fat-loss inputs", () => {
@@ -61,7 +78,11 @@ test("generatePlan creates a feasible fat-loss plan", () => {
   assert.equal(plan.trainingPlan.workouts[0].exercises[0].nameZh, "杠铃卧推");
   assert.equal(plan.cardioPlan.sessionsPerWeek, 2);
   assert.equal(plan.cardioPlan.exercises[0].nameZh, "跑步机坡走");
-  assert.equal(plan.rationale.length, 4);
+  assert.equal(plan.rationale.length, 5);
+  assert.match(plan.planningLogic.feasibilityPath.textZh, /概率判断/);
+  assert.equal(plan.planningLogic.evidenceBasis.length, 4);
+  assert.equal(plan.intensityPlan.rpe, "7–8");
+  assert.ok(plan.trainingPlan.workouts.every((workout) => workout.exercises.every((exercise) => exercise.intensity.rir === "2–3")));
   assert.ok(plan.growthProjection.weekly.length > 8);
 });
 
@@ -156,6 +177,9 @@ test("generatePlan prioritizes a supplied single circumference goal", () => {
   assert.match(plan.planningLogic.trainingDecision.textZh, /目标部位/);
   assert.ok(plan.trainingPlan.workouts.some((workout) => workout.exercises.some((exercise) => exercise.muscleGroup === "biceps")));
   assert.ok(plan.trainingPlan.workouts.some((workout) => workout.exercises.some((exercise) => exercise.muscleGroup === "triceps")));
+  assert.ok(plan.intensityPlan.targetVolumes.some((volume) => volume.group === "biceps" && volume.sets === 8));
+  assert.ok(plan.intensityPlan.targetVolumes.some((volume) => volume.group === "triceps" && volume.sets === 8));
+  assert.ok(plan.trainingPlan.workouts.some((workout) => workout.exercises.some((exercise) => exercise.muscleGroup === "biceps" && exercise.emphasis)));
 });
 
 test("validateGeneratePlanInput accepts circumference-only fat-loss target", () => {
