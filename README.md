@@ -40,6 +40,8 @@ npm start
 
 离线 Android MVP 位于 [`android/shape-plan-android`](android/shape-plan-android)。计划生成、目标自动修正、围度聚焦和训练强度规则都内置在应用中，安装后不依赖开发服务器。
 
+当前发布版本：`android-v1.0.1`。该版本修复 Android 页面围度输入显示不全问题，补齐胸围、腰围、臀围、臂围、大腿围的当前值和目标值输入；动作计划默认使用中文；训练强度支持按“重量 + 次数”估算个人最大力量并给出推荐负荷；支持导出长图到下载目录。
+
 1. 推送 `android-v*` 格式的标签后，GitHub Actions 会构建 APK 并发布到 Releases。
 2. 手动运行 GitHub 的 **Build Android APK** 工作流，也会在工作流产物中提供可下载 APK。
 3. 这是用于产品验证的 debug APK，未使用 Play 商店签名；Android 可能要求在浏览器或文件管理器中允许安装未知来源应用。
@@ -90,6 +92,8 @@ Run `npm test` and `npm start`, then open [http://localhost:3000](http://localho
 ### Android installation
 
 The offline Android MVP is in [`android/shape-plan-android`](android/shape-plan-android). Its plan generation, goal normalization, circumference emphasis, and intensity rules run inside the app, without a development server.
+
+Current release: `android-v1.0.1`. This version fixes Android circumference input layout, adds current/target inputs for chest, waist, hip, arm, and thigh, shows Chinese exercise names by default, calculates recommended training loads from entered weight plus repetitions, and exports a long image to the downloads folder.
 
 1. Push an `android-v*` tag to build and publish an APK in GitHub Releases.
 2. You can also run the **Build Android APK** GitHub workflow manually and download its APK artifact.
