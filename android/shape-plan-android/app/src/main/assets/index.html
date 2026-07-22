@@ -76,9 +76,9 @@
 const $ = (id) => document.getElementById(id);
 const t = {
   zh: {
-    title: '塑形计划实验室', subtitle: '离线 Android 版 · 支持下载长图', profile: '基础指标与目标', sex: '性别', age: '年龄', height: '身高（厘米）', weight: '体重（千克）', fat: '体脂率（百分比）', goal: '目标类型', targetWeight: '目标体重（千克）', targetDate: '目标日期', frequency: '每周训练次数', mode: '训练场景', experience: '训练经验', circ: '可选围度目标（厘米）', hint: '当前值和目标值需成对填写。腰围用于整体减脂评估，胸/臂/臀/大腿围可用于局部训练侧重。', area: '部位', current: '当前值', target: '目标值', waist: '腰围', chest: '胸围', hip: '臀围', arm: '臂围', thigh: '大腿围', pr: '个人纪录与训练强度', prHint: '填写“重量 + 次数”后，应用会估算个人最大力量，再据此给出训练重量；未填写时使用主观用力等级。', bench: '卧推纪录（千克 × 次）', squat: '深蹲纪录（千克 × 次）', row: '划船/下拉纪录（千克 × 次）', hinge: '硬拉/臀推纪录（千克 × 次）', generate: '生成科学计划', plan: '你的计划', cal: '每日热量', protein: '蛋白质', fatText: '脂肪', carb: '碳水化合物', logic: '计划生成逻辑', science: '科学依据', strength: '训练强度处方', why: '为什么这样安排', workouts: '每周训练安排', download: '导出长图', feedback: '执行反馈与计划调整', feedbackHint: '填写完成次数、近期平均热量和当前体重后，应用会调整后续计划。', doneSessions: '本周完成训练次数', averageCalories: '近期平均热量', currentWeight: '当前体重', applyFeedback: '根据反馈调整后续计划', adjustmentResult: '调整结果', useRpe: '工作组采用主观用力等级', reps: '次余力', noPr: '未填写个人纪录，使用主观用力等级与次数区间。', oneRm: '估算个人最大力量', load: '推荐负荷', sets: '组', kilos: '千克', minutes: '分钟', length: '长图', fat_loss: '减脂 / 减重', muscle_gain: '增肌', recomposition: '体态重组', male: '男性', female: '女性', novice: '新手', intermediate: '中级', advanced: '高级', gym: '健身房', bodyweight: '自重 / 居家' },
+    title: '塑形计划实验室', subtitle: '离线 Android 版 · 支持下载长图', profile: '基础指标与目标', sex: '性别', age: '年龄', height: '身高（厘米）', weight: '体重（千克）', fat: '体脂率（百分比）', goal: '目标类型', targetWeight: '目标体重（千克）', targetDate: '目标日期', frequency: '每周训练次数', mode: '训练场景', experience: '训练经验', circ: '可选围度目标（厘米）', hint: '当前值和目标值需成对填写。腰围用于整体减脂评估，胸/臂/臀/大腿围可用于局部训练侧重。', area: '部位', current: '当前值', target: '目标值', waist: '腰围', chest: '胸围', hip: '臀围', arm: '臂围', thigh: '大腿围', pr: '个人纪录与训练强度', prHint: '根据性别展示常用能力锚点。填写“重量 + 次数”后，应用会估算个人最大力量，再按动作类型推断训练重量；未填写时使用常用器械/居家重量和用力等级。', bench: '卧推纪录（千克 × 次）', squat: '深蹲纪录（千克 × 次）', row: '划船/下拉纪录（千克 × 次）', hinge: '硬拉/臀推纪录（千克 × 次）', generate: '生成科学计划', plan: '你的计划', cal: '每日热量', protein: '蛋白质', fatText: '脂肪', carb: '碳水化合物', logic: '计划生成逻辑', science: '科学依据', strength: '训练强度处方', why: '为什么这样安排', workouts: '每周训练安排', download: '导出长图', feedback: '执行反馈与计划调整', feedbackHint: '填写完成次数、近期平均热量和当前体重后，应用会调整后续计划。', doneSessions: '本周完成训练次数', averageCalories: '近期平均热量', currentWeight: '当前体重', applyFeedback: '根据反馈调整后续计划', adjustmentResult: '调整结果', useRpe: '工作组采用主观用力等级', reps: '次余力', noPr: '未填写个人纪录，使用常用重量建议、主观用力等级与次数区间。', oneRm: '估算个人最大力量', load: '推荐负荷', sets: '组', kilos: '千克', minutes: '分钟', length: '长图', fat_loss: '减脂 / 减重', muscle_gain: '增肌', recomposition: '体态重组', male: '男性', female: '女性', novice: '新手', intermediate: '中级', advanced: '高级', gym: '健身房', bodyweight: '自重 / 居家' },
   en: {
-    title: 'Shape Plan Lab', subtitle: 'Offline Android edition · long-image download supported', profile: 'Baseline metrics and goal', sex: 'Sex', age: 'Age', height: 'Height (cm)', weight: 'Weight (kg)', fat: 'Body fat (%)', goal: 'Goal type', targetWeight: 'Target weight (kg)', targetDate: 'Target date', frequency: 'Weekly sessions', mode: 'Training setting', experience: 'Training experience', circ: 'Optional circumference targets (cm)', hint: 'Enter current and target values as a pair. Waist guides overall fat-loss evaluation, while chest/arm/hip/thigh values can shift training emphasis.', area: 'Area', current: 'Current', target: 'Target', waist: 'Waist', chest: 'Chest', hip: 'Hip', arm: 'Arm', thigh: 'Thigh', pr: 'Personal records and intensity', prHint: 'Enter weight + reps to estimate 1RM, then use that to set training loads. Otherwise the app uses effort-based guidance.', bench: 'Bench record (kg × reps)', squat: 'Squat record (kg × reps)', row: 'Row / pulldown record (kg × reps)', hinge: 'Deadlift / hip-thrust record (kg × reps)', generate: 'Generate plan', plan: 'Your plan', cal: 'Daily calories', protein: 'Protein', fatText: 'Fat', carb: 'Carbohydrate', logic: 'Plan generation logic', science: 'Scientific basis', strength: 'Intensity prescription', why: 'Why this plan', workouts: 'Weekly training schedule', download: 'Export long image', feedback: 'Execution feedback and plan adjustment', feedbackHint: 'Enter session completion, recent average calories, and current weight so the app can adjust the next plan.', doneSessions: 'Completed sessions this week', averageCalories: 'Recent average calories', currentWeight: 'Current weight', applyFeedback: 'Adjust future plan from feedback', adjustmentResult: 'Adjustment result', useRpe: 'Working sets use effort rating', reps: 'reps in reserve', noPr: 'No personal records entered; the app will use effort rating and rep ranges.', oneRm: 'Estimated 1RM', load: 'Recommended load', sets: 'sets', kilos: 'kg', minutes: 'min', length: 'Long image', fat_loss: 'Fat loss', muscle_gain: 'Muscle gain', recomposition: 'Recomposition', male: 'Male', female: 'Female', novice: 'Novice', intermediate: 'Intermediate', advanced: 'Advanced', gym: 'Gym', bodyweight: 'Bodyweight / home' }
+    title: 'Shape Plan Lab', subtitle: 'Offline Android edition · long-image download supported', profile: 'Baseline metrics and goal', sex: 'Sex', age: 'Age', height: 'Height (cm)', weight: 'Weight (kg)', fat: 'Body fat (%)', goal: 'Goal type', targetWeight: 'Target weight (kg)', targetDate: 'Target date', frequency: 'Weekly sessions', mode: 'Training setting', experience: 'Training experience', circ: 'Optional circumference targets (cm)', hint: 'Enter current and target values as a pair. Waist guides overall fat-loss evaluation, while chest/arm/hip/thigh values can shift training emphasis.', area: 'Area', current: 'Current', target: 'Target', waist: 'Waist', chest: 'Chest', hip: 'Hip', arm: 'Arm', thigh: 'Thigh', pr: 'Personal records and intensity', prHint: 'The app shows sex-specific common strength anchors. Enter weight + reps to estimate 1RM and infer exercise loads; otherwise it uses common gym/home loads plus RPE.', bench: 'Bench record (kg × reps)', squat: 'Squat record (kg × reps)', row: 'Row / pulldown record (kg × reps)', hinge: 'Deadlift / hip-thrust record (kg × reps)', generate: 'Generate plan', plan: 'Your plan', cal: 'Daily calories', protein: 'Protein', fatText: 'Fat', carb: 'Carbohydrate', logic: 'Plan generation logic', science: 'Scientific basis', strength: 'Intensity prescription', why: 'Why this plan', workouts: 'Weekly training schedule', download: 'Export long image', feedback: 'Execution feedback and plan adjustment', feedbackHint: 'Enter session completion, recent average calories, and current weight so the app can adjust the next plan.', doneSessions: 'Completed sessions this week', averageCalories: 'Recent average calories', currentWeight: 'Current weight', applyFeedback: 'Adjust future plan from feedback', adjustmentResult: 'Adjustment result', useRpe: 'Working sets use effort rating', reps: 'reps in reserve', noPr: 'No personal records entered; the app will use common load suggestions, effort rating, and rep ranges.', oneRm: 'Estimated 1RM', load: 'Recommended load', sets: 'sets', kilos: 'kg', minutes: 'min', length: 'Long image', fat_loss: 'Fat loss', muscle_gain: 'Muscle gain', recomposition: 'Recomposition', male: 'Male', female: 'Female', novice: 'Novice', intermediate: 'Intermediate', advanced: 'Advanced', gym: 'Gym', bodyweight: 'Bodyweight / home' }
 };
 
 let en = false;
@@ -117,6 +117,25 @@ function parseDateValue(value) { if (!value) return null; const date = new Date(
 function weeksUntil(date) { return Math.max(1, Math.ceil((date.getTime() - Date.now()) / 604800000)); }
 function highlight(id) { $(id).classList.add('red'); }
 function recommendationFromPr(estimate, percent) { return fmt((estimate * percent) / 100); }
+function formatLoadKg(kg) { return `${fmt(kg)} kg / ${Math.round(kg * 2.20462)} lb`; }
+
+function prMeta(sex = $('sex').value) {
+  const female = sex === 'female';
+  return {
+    bench: { label: en ? (female ? 'Dumbbell press record (kg × reps)' : 'Bench press record (kg × reps)') : (female ? '哑铃推举纪录（千克 × 次）' : '卧推纪录（千克 × 次）'), placeholder: female ? '12' : '60' },
+    squat: { label: en ? (female ? 'Goblet squat record (kg × reps)' : 'Back squat record (kg × reps)') : (female ? '高脚杯深蹲纪录（千克 × 次）' : '深蹲纪录（千克 × 次）'), placeholder: female ? '20' : '90' },
+    row: { label: en ? (female ? 'Lat pulldown record (kg × reps)' : 'Row record (kg × reps)') : (female ? '高位下拉纪录（千克 × 次）' : '划船纪录（千克 × 次）'), placeholder: female ? '25' : '50' },
+    hinge: { label: en ? (female ? 'Hip thrust record (kg × reps)' : 'Deadlift record (kg × reps)') : (female ? '臀推纪录（千克 × 次）' : '硬拉纪录（千克 × 次）'), placeholder: female ? '50' : '100' }
+  };
+}
+
+function updatePrFields() {
+  const meta = prMeta();
+  PR_IDS.forEach((key) => {
+    $(`${key}Label`).firstChild.textContent = meta[key].label;
+    $(`${key}Weight`).placeholder = meta[key].placeholder;
+  });
+}
 
 function normalizeInput() {
   return {
@@ -211,7 +230,7 @@ function applyLanguage() {
   document.title = x.title;
   $('lang').textContent = en ? '中文' : 'EN';
   [['title', 'title'], ['subtitle', 'subtitle'], ['profileTitle', 'profile'], ['circTitle', 'circ'], ['circHint', 'hint'], ['prTitle', 'pr'], ['prHint', 'prHint'], ['generate', 'generate']].forEach(([id, key]) => text(id, key));
-  ['sexLabel', 'ageLabel', 'heightLabel', 'weightLabel', 'fatLabel', 'goalLabel', 'targetWeightLabel', 'targetDateLabel', 'frequencyLabel', 'modeLabel', 'experienceLabel', 'benchLabel', 'squatLabel', 'rowLabel', 'hingeLabel'].forEach((id, i) => label(id, ['sex', 'age', 'height', 'weight', 'fat', 'goal', 'targetWeight', 'targetDate', 'frequency', 'mode', 'experience', 'bench', 'squat', 'row', 'hinge'][i]));
+  ['sexLabel', 'ageLabel', 'heightLabel', 'weightLabel', 'fatLabel', 'goalLabel', 'targetWeightLabel', 'targetDateLabel', 'frequencyLabel', 'modeLabel', 'experienceLabel'].forEach((id, i) => label(id, ['sex', 'age', 'height', 'weight', 'fat', 'goal', 'targetWeight', 'targetDate', 'frequency', 'mode', 'experience'][i]));
   ['areaHead', 'currentHead', 'targetHead', 'waistName', 'chestName', 'hipName', 'armName', 'thighName'].forEach((id, i) => $(id).textContent = [x.area, x.current, x.target, x.waist, x.chest, x.hip, x.arm, x.thigh][i]);
   ['sex', 'goal', 'mode', 'experience'].forEach((id) => {
     const sel = $(id);
@@ -228,6 +247,7 @@ function applyLanguage() {
       else if (o.value === 'advanced') o.textContent = x.advanced;
     });
   });
+  updatePrFields();
 }
 
 function buildPlan(input, adjustment = null) {
@@ -286,20 +306,46 @@ function buildPlan(input, adjustment = null) {
   const loadLabel = (key) => recommended(key) ? `${recommended(key)}` : (en ? `RPE ${rpe}` : `用力等级 ${rpe}`);
   const loadUnit = (key) => recommended(key) ? tx().kilos : '';
   const cardioName = input.trainingMode === 'gym' ? (en ? 'Incline treadmill / bike' : '坡度快走 / 动感单车') : (en ? 'Brisk walking / jump rope' : '快走 / 跳绳');
-  const loadText = (key) => recommended(key) ? `${recommended(key)} ${tx().kilos}` : (en ? `RPE ${rpe}, keep ${rir} reps in reserve` : `用力等级 ${rpe}，保留 ${rir} 次余力`);
-  const prBasis = (key) => input.pr[key]
-    ? (en ? `PR estimate: 1RM ${fmt(input.pr[key])} kg × ${loadByGoal[key]}%` : `PR估计：1RM ${fmt(input.pr[key])} 千克 × ${loadByGoal[key]}%`)
-    : (en ? 'PR estimate: no record entered, use RPE instead' : 'PR估计：未填写纪录，按用力等级执行');
-  const freeLoad = (label) => label || (en ? `RPE ${rpe}` : `用力等级 ${rpe}`);
-  const ex = (name, guide, liftKey, sets, reps, reason, tag, loadOverride = null) => ({
+  const experienceFactor = { novice: 0.82, intermediate: 1, advanced: 1.12 }[input.trainingExperience] ?? 1;
+  const sexFactor = input.sex === 'female' ? 0.62 : 1;
+  const modeFactor = input.trainingMode === 'bodyweight' ? 0.62 : 1;
+  const goalFactor = goal === 'muscle_gain' ? 1.08 : goal === 'fat_loss' ? 0.9 : 1;
+  const commonRatios = {
+    bench: 0.48, inclinePress: 0.18, shoulderPress: 0.16, triceps: 0.11, lateralRaise: 0.055,
+    squat: 0.62, splitSquat: 0.2, legCurl: 0.16, calf: 0.32, gobletSquat: 0.28,
+    hinge: 0.72, hipThrust: 0.52, gluteBridge: 0, carry: 0.36,
+    row: 0.42, pulldown: 0.35, curl: 0.09, facePull: 0.1, core: 0, cardio: 0
+  };
+  const anchorMap = { inclinePress: 'bench', shoulderPress: 'bench', triceps: 'bench', lateralRaise: 'bench', gobletSquat: 'squat', splitSquat: 'squat', legCurl: 'hinge', calf: 'squat', hipThrust: 'hinge', gluteBridge: 'hinge', carry: 'hinge', pulldown: 'row', curl: 'row', facePull: 'row' };
+  const anchorFactor = { bench: 1, squat: 1, row: 1, hinge: 1, inclinePress: 0.34, shoulderPress: 0.28, triceps: 0.18, lateralRaise: 0.08, gobletSquat: 0.38, splitSquat: 0.28, legCurl: 0.22, calf: 0.45, hipThrust: 0.65, gluteBridge: 0, carry: 0.45, pulldown: 0.62, curl: 0.18, facePull: 0.18, core: 0, cardio: 0 };
+  const commonKg = (category) => fmt(clamp(weight * (commonRatios[category] ?? 0.2) * sexFactor * experienceFactor * modeFactor * goalFactor, category === 'lateralRaise' || category === 'curl' ? 2 : 0, 140));
+  const loadFromCategory = (category, liftKey = null) => {
+    if (category === 'cardio') return en ? 'No external load (0 kg / 0 lb)' : '无外部负重（0 kg / 0 lb）';
+    if (category === 'core' || category === 'gluteBridge') return en ? 'Bodyweight (0 kg / 0 lb)' : '自重（0 kg / 0 lb）';
+    const anchor = liftKey || anchorMap[category] || category;
+    if (input.pr[anchor]) return formatLoadKg(input.pr[anchor] * (anchorFactor[category] ?? loadByGoal[anchor] / 100));
+    return formatLoadKg(commonKg(category));
+  };
+  const prBasis = (category, liftKey = null) => {
+    const anchor = liftKey || anchorMap[category] || category;
+    if (input.pr[anchor]) {
+      const factor = anchorFactor[category] ?? loadByGoal[anchor] / 100;
+      const label = prMeta(input.sex)[anchor].label;
+      return en
+        ? `PR estimate: ${label.replace(' record (kg × reps)', '')} 1RM ${fmt(input.pr[anchor])} kg × ${Math.round(factor * 100)}%`
+        : `PR估计：${label.replace('纪录（千克 × 次）', '')} 1RM ${fmt(input.pr[anchor])} 千克 × ${Math.round(factor * 100)}%`;
+    }
+    return en ? `Common ${input.trainingMode === 'gym' ? 'gym' : 'home'} load adjusted by sex, body weight, and experience` : `按${input.trainingMode === 'gym' ? '健身房' : '居家'}常用负重，并结合性别、体重和训练经验估算`;
+  };
+  const ex = (name, guide, liftKey, sets, reps, reason, tag, category, loadOverride = null) => ({
     name,
     guide,
     sets,
     reps,
     reason,
     tag,
-    load: loadOverride ?? loadText(liftKey),
-    prBasis: liftKey ? prBasis(liftKey) : (en ? 'PR estimate: not required for this movement' : 'PR估计：该动作不需要 PR')
+    load: loadOverride ?? loadFromCategory(category, liftKey),
+    prBasis: loadOverride ? (en ? 'Load is prescribed by movement type rather than a max record' : '该负重按动作类型处方，不依赖最大重量') : prBasis(category, liftKey)
   });
   const targetReason = en
     ? `This day is biased toward ${goal === 'fat_loss' ? 'energy expenditure, trunk control, and keeping strength while dieting' : goal === 'muscle_gain' ? 'progressive overload and extra hypertrophy volume for the requested body areas' : 'balanced strength, muscle retention, and manageable fatigue'}.`
@@ -308,47 +354,56 @@ function buildPlan(input, adjustment = null) {
   const prSummary = PR_IDS.flatMap((key) => {
     if (!input.pr[key]) return [];
     return [{
-      name: tx()[key],
+      name: prMeta(input.sex)[key].label,
       oneRm: input.pr[key],
       recommended: recommended(key),
       reason: en ? `The working load is set from ${loadByGoal[key]}% of estimated 1RM so the goal gets enough stimulus without unnecessary fatigue.` : `工作负荷按估算个人最大力量的 ${loadByGoal[key]}% 设定，在保留训练刺激的同时避免不必要疲劳。`
     }];
   });
+  const pushBase = input.sex === 'female'
+    ? (en ? 'Upper body push with dumbbell emphasis' : '上肢推日（哑铃优先）')
+    : (en ? 'Upper body push with barbell emphasis' : '上肢推日（杠铃优先）');
+  const lowerBase = input.sex === 'female'
+    ? (en ? 'Lower day built around goblet squat and hip thrust' : '下肢日（高脚杯深蹲 + 臀推）')
+    : (en ? 'Lower day built around back squat and hinge work' : '下肢日（深蹲 + 髋主导）');
+  const pullBase = input.sex === 'female'
+    ? (en ? 'Pull day with pulldown and rowing balance' : '上肢拉日（下拉 + 划船平衡）')
+    : (en ? 'Pull day with row and pulldown balance' : '上肢拉日（划船 + 下拉平衡）');
 
-  const day1 = { title: en ? 'Upper push A' : '上肢推 A', reason: targetReason, blocks: [
-    ex(en ? 'Barbell bench press' : '杠铃卧推', en ? 'Retract shoulder blades, touch the lower chest, press up without bouncing.' : '肩胛后收下沉，杠铃触下胸后主动推起，不要借反弹。', 'bench', chestFocus ? 4 : 3, '6–8', en ? 'Main chest and triceps stimulus; chest targets get one extra set.' : '主要刺激胸部与肱三头肌；有胸围目标时增加 1 组。', en ? 'Chest / triceps' : '胸部 / 肱三头'),
-    ex(en ? 'Incline dumbbell press' : '上斜哑铃推举', en ? 'Use a 20–35 degree incline and keep elbows slightly tucked.' : '椅背 20–35 度，肘部微收，顶部不要撞击哑铃。', null, chestFocus ? 4 : 3, '8–10', en ? 'Adds upper-chest volume for a fuller chest line.' : '补充上胸训练量，让胸部围度目标更有直接刺激。', en ? 'Upper chest' : '上胸', freeLoad()),
-    ex(en ? 'Seated shoulder press' : '坐姿肩推', en ? 'Brace the trunk and press in a slightly forward bar path.' : '收紧核心，沿略向前的轨迹推起，避免腰椎代偿。', 'bench', 3, '8–10', en ? 'Keeps shoulder development balanced with pressing strength.' : '让肩部发展与推力动作保持平衡。', en ? 'Shoulders' : '肩部'),
-    ex(en ? 'Cable / band triceps pressdown' : '绳索 / 弹力带下压', en ? 'Keep elbows fixed and fully extend without swinging the torso.' : '肘部固定，躯干不摆动，主动伸直肘关节。', null, armFocus ? 4 : 3, '10–14', en ? 'Extra arm volume is added when arm circumference is a target.' : '有臂围目标时增加手臂专项训练量。', en ? 'Triceps' : '肱三头', freeLoad(en ? 'Moderate load' : '中等负荷')),
-    ex(en ? 'Lateral raise' : '哑铃侧平举', en ? 'Raise to shoulder height with soft elbows and no shrugging.' : '肘微屈，抬到肩高，避免耸肩借力。', null, 3, '12–15', en ? 'Improves shoulder width and upper-body shape without heavy fatigue.' : '提升肩宽视觉和上肢线条，疲劳成本较低。', en ? 'Side delts' : '中束三角肌', freeLoad(en ? 'Light to moderate' : '轻到中等负荷')),
-    ex(goal === 'fat_loss' ? cardioName : (en ? 'Plank + dead bug' : '平板支撑 + 死虫'), goal === 'fat_loss' ? (en ? 'Keep nasal-breathing pace or short intervals after lifting.' : '力量训练后以可鼻呼吸配速或短间歇完成。') : (en ? 'Keep ribs down and move limbs without losing pelvic control.' : '肋骨下沉，四肢移动时保持骨盆稳定。'), null, goal === 'fat_loss' ? 1 : (waistFocus ? 4 : 3), goal === 'fat_loss' ? (en ? '12–18 min' : '12–18 分钟') : (en ? '30–45 sec + 8/side' : '30–45 秒 + 每侧 8 次'), en ? 'Fat-loss plans add a small conditioning finisher; otherwise this slot reinforces core control.' : '减脂目标加入有氧收尾；非减脂目标则用核心控制提高动作稳定性。', en ? 'Conditioning / core' : '有氧 / 核心', goal === 'fat_loss' ? (en ? 'Zone 2 / interval' : '二区心率 / 间歇') : (en ? 'Core control' : '核心控制'))
-  ], note: en ? 'Push day: enough pressing volume for chest or arm growth, with a conditioning/core slot adjusted by the goal.' : '推日：保证胸部或手臂目标所需训练量，并根据目标选择有氧或核心收尾。' };
+  const day1 = { title: en ? 'Upper push A' : '上肢推 A', reason: pushBase + '。' + targetReason, blocks: [
+    ex(input.sex === 'female' ? (en ? 'Incline dumbbell press' : '上斜哑铃推举') : (en ? 'Barbell bench press' : '杠铃卧推'), input.sex === 'female' ? (en ? 'Use a slight incline and keep the dumbbells under control.' : '保持轻微上斜，哑铃下放和推起都要可控。') : (en ? 'Retract shoulder blades, touch the lower chest, press up without bouncing.' : '肩胛后收下沉，杠铃触下胸后主动推起，不要借反弹。'), 'bench', chestFocus ? 4 : 3, '6–8', en ? 'Main chest and triceps stimulus; chest targets get one extra set.' : '主要刺激胸部与肱三头肌；有胸围目标时增加 1 组。', en ? 'Chest / triceps' : '胸部 / 肱三头', input.sex === 'female' ? 'inclinePress' : 'bench'),
+    ex(input.sex === 'female' ? (en ? 'Dumbbell shoulder press' : '哑铃肩推') : (en ? 'Seated shoulder press' : '坐姿肩推'), input.sex === 'female' ? (en ? 'Press in the scapular plane and keep ribs stacked.' : '沿肩胛平面推起，肋骨始终下沉。') : (en ? 'Brace the trunk and press in a slightly forward bar path.' : '收紧核心，沿略向前的轨迹推起，避免腰椎代偿。'), 'bench', 3, '8–10', en ? 'Keeps shoulder development balanced with pressing strength.' : '让肩部发展与推力动作保持平衡。', en ? 'Shoulders' : '肩部', input.sex === 'female' ? 'shoulderPress' : 'bench'),
+    ex(input.sex === 'female' ? (en ? 'Cable triceps pressdown' : '绳索下压') : (en ? 'Cable / band triceps pressdown' : '绳索 / 弹力带下压'), en ? 'Keep elbows fixed and fully extend without swinging the torso.' : '肘部固定，躯干不摆动，主动伸直肘关节。', null, armFocus ? 4 : 3, '10–14', en ? 'Extra arm volume is added when arm circumference is a target.' : '有臂围目标时增加手臂专项训练量。', en ? 'Triceps' : '肱三头', input.sex === 'female' ? 'triceps' : 'bench'),
+    ex(en ? 'Lateral raise' : '哑铃侧平举', en ? 'Raise to shoulder height with soft elbows and no shrugging.' : '肘微屈，抬到肩高，避免耸肩借力。', null, 3, '12–15', en ? 'Improves shoulder width and upper-body shape without heavy fatigue.' : '提升肩宽视觉和上肢线条，疲劳成本较低。', en ? 'Side delts' : '中束三角肌', 'lateralRaise'),
+    ex(goal === 'fat_loss' ? cardioName : (en ? 'Plank + dead bug' : '平板支撑 + 死虫'), goal === 'fat_loss' ? (en ? 'Keep nasal-breathing pace or short intervals after lifting.' : '力量训练后以可鼻呼吸配速或短间歇完成。') : (en ? 'Keep ribs down and move limbs without losing pelvic control.' : '肋骨下沉，四肢移动时保持骨盆稳定。'), null, goal === 'fat_loss' ? 1 : (waistFocus ? 4 : 3), goal === 'fat_loss' ? (en ? '12–18 min' : '12–18 分钟') : (en ? '30–45 sec + 8/side' : '30–45 秒 + 每侧 8 次'), en ? 'Fat-loss plans add a small conditioning finisher; otherwise this slot reinforces core control.' : '减脂目标加入有氧收尾；非减脂目标则用核心控制提高动作稳定性。', en ? 'Conditioning / core' : '有氧 / 核心', goal === 'fat_loss' ? 'cardio' : 'core'),
+    ex(en ? 'Cable fly / pec deck' : '夹胸 / 飞鸟', en ? 'Squeeze the chest and stop before the shoulder rolls forward.' : '胸部主动夹紧，肩部不要向前滚。', null, chestFocus ? 4 : 3, '10–15', en ? 'Adds a chest isolation slot for visible chest volume.' : '补足胸部孤立训练，提高胸型体积感。', en ? 'Chest isolation' : '胸部孤立', input.sex === 'female' ? 'inclinePress' : 'bench')
+  ], note: en ? 'Push day with a sex-specific main press, one shoulder move, one arm move, one chest isolation move, and one conditioning/core finisher.' : '推日包含性别差异化主动作、肩部、手臂、胸部孤立和收尾动作。' };
 
-  const day2 = { title: en ? 'Lower A' : '下肢 A', reason: targetReason, blocks: [
-    ex(en ? 'Back squat' : '杠铃深蹲', en ? 'Brace before descent, knees track toes, stand up by driving through mid-foot.' : '下蹲前建立腹压，膝盖对齐脚尖，用脚掌中部发力站起。', 'squat', thighFocus ? 4 : 3, '5–8', en ? 'Main quad and glute lift; thigh targets receive more weekly sets.' : '主要刺激股四头肌和臀部；有大腿围目标时增加周训练量。', en ? 'Quads / glutes' : '股四头 / 臀部'),
-    ex(en ? 'Romanian deadlift' : '罗马尼亚硬拉', en ? 'Push hips back, keep lats tight, stop when hamstrings are loaded.' : '髋部后移，背阔收紧，腘绳肌有明显拉伸即可。', 'hinge', hipFocus ? 4 : 3, '6–10', en ? 'Hip-hinge work supports glute and hamstring development.' : '髋主导训练支持臀部和后侧链增长。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌'),
-    ex(en ? 'Bulgarian split squat' : '保加利亚分腿蹲', en ? 'Keep front foot stable and descend under control.' : '前脚稳定，控制下放，身体不要左右晃动。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Unilateral work improves leg symmetry and adds local volume.' : '单侧动作改善左右差异，并增加局部训练量。', en ? 'Single-leg' : '单侧下肢', freeLoad()),
-    ex(en ? 'Leg curl / sliding leg curl' : '腿弯举 / 滑盘腿弯举', en ? 'Curl by pulling heels toward hips and avoid lumbar extension.' : '用脚跟向臀部方向发力，避免腰椎反弓代偿。', null, 3, '10–14', en ? 'Balances knee-dominant work with hamstring isolation.' : '平衡膝主导训练，补充腘绳肌孤立刺激。', en ? 'Hamstrings' : '腘绳肌', freeLoad(en ? 'Moderate load' : '中等负荷')),
-    ex(en ? 'Standing calf raise' : '站姿提踵', en ? 'Pause at the top and lower slowly to full stretch.' : '顶峰停顿，下放到充分拉伸，不要弹震。', null, 3, '12–18', en ? 'Completes lower-leg work and supports ankle stiffness for squats.' : '补足小腿训练，并提升深蹲所需踝部稳定性。', en ? 'Calves' : '小腿', freeLoad(en ? 'Moderate load' : '中等负荷')),
-    ex(en ? 'Side plank' : '侧桥', en ? 'Keep shoulders, hips, and ankles stacked in one line.' : '肩、髋、踝保持一条直线，骨盆不要下沉。', null, waistFocus ? 4 : 3, en ? '30–40 sec/side' : '每侧 30–40 秒', en ? 'Trunk stability supports safer lower-body loading and waist-control goals.' : '躯干稳定能提升下肢负重安全性，也服务腰围控制目标。', en ? 'Core' : '核心', en ? 'Core control' : '核心控制')
-  ], note: en ? 'Lower day: squat and hinge anchors, then unilateral, hamstring, calf, and core work to cover the full lower body.' : '下肢日：以深蹲和髋主导动作为核心，再补充单侧、腘绳肌、小腿和核心。' };
+  const day2 = { title: en ? 'Lower A' : '下肢 A', reason: lowerBase + '。' + targetReason, blocks: [
+    ex(input.sex === 'female' ? (en ? 'Goblet squat' : '高脚杯深蹲') : (en ? 'Back squat' : '杠铃深蹲'), input.sex === 'female' ? (en ? 'Hold the load close and keep the torso upright.' : '负重贴近身体，保持躯干直立。') : (en ? 'Brace before descent, knees track toes, stand up by driving through mid-foot.' : '下蹲前建立腹压，膝盖对齐脚尖，用脚掌中部发力站起。'), 'squat', thighFocus ? 4 : 3, '5–8', en ? 'Main quad and glute lift; thigh targets receive more weekly sets.' : '主要刺激股四头肌和臀部；有大腿围目标时增加周训练量。', en ? 'Quads / glutes' : '股四头 / 臀部', input.sex === 'female' ? 'gobletSquat' : 'squat'),
+    ex(en ? 'Romanian deadlift' : '罗马尼亚硬拉', en ? 'Push hips back, keep lats tight, stop when hamstrings are loaded.' : '髋部后移，背阔收紧，腘绳肌有明显拉伸即可。', 'hinge', hipFocus ? 4 : 3, '6–10', en ? 'Hip-hinge work supports glute and hamstring development.' : '髋主导训练支持臀部和后侧链增长。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', 'hinge'),
+    ex(en ? 'Bulgarian split squat' : '保加利亚分腿蹲', en ? 'Keep front foot stable and descend under control.' : '前脚稳定，控制下放，身体不要左右晃动。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Unilateral work improves leg symmetry and adds local volume.' : '单侧动作改善左右差异，并增加局部训练量。', en ? 'Single-leg' : '单侧下肢', 'splitSquat'),
+    ex(en ? 'Leg curl / sliding leg curl' : '腿弯举 / 滑盘腿弯举', en ? 'Curl by pulling heels toward hips and avoid lumbar extension.' : '用脚跟向臀部方向发力，避免腰椎反弓代偿。', null, 3, '10–14', en ? 'Balances knee-dominant work with hamstring isolation.' : '平衡膝主导训练，补充腘绳肌孤立刺激。', en ? 'Hamstrings' : '腘绳肌', 'legCurl'),
+    ex(en ? 'Standing calf raise' : '站姿提踵', en ? 'Pause at the top and lower slowly to full stretch.' : '顶峰停顿，下放到充分拉伸，不要弹震。', null, 3, '12–18', en ? 'Completes lower-leg work and supports ankle stiffness for squats.' : '补足小腿训练，并提升深蹲所需踝部稳定性。', en ? 'Calves' : '小腿', 'calf'),
+    ex(en ? 'Side plank' : '侧桥', en ? 'Keep shoulders, hips, and ankles stacked in one line.' : '肩、髋、踝保持一条直线，骨盆不要下沉。', null, waistFocus ? 4 : 3, en ? '30–40 sec/side' : '每侧 30–40 秒', en ? 'Trunk stability supports safer lower-body loading and waist-control goals.' : '躯干稳定能提升下肢负重安全性，也服务腰围控制目标。', en ? 'Core' : '核心', 'core')
+  ], note: en ? 'Lower day with sex-specific main squat pattern, then hinge, unilateral, hamstring, calf, and core work.' : '下肢日根据性别调整主蹲模式，再补充髋主导、单侧、腘绳肌、小腿和核心。' };
 
-  const day3 = { title: en ? 'Upper pull A' : '上肢拉 A', reason: targetReason, blocks: [
-    ex(en ? 'Bent-over row' : '杠铃俯身划船', en ? 'Hold a stable hinge and pull elbows toward the hip line.' : '保持稳定髋铰链姿势，肘部向髋部方向拉。', 'row', armFocus ? 4 : 3, '6–10', en ? 'Main back-thickness lift with meaningful biceps involvement.' : '主要提升背部厚度，同时对肱二头有明显刺激。', en ? 'Back / biceps' : '背部 / 肱二头'),
-    ex(en ? 'Lat pulldown / pull-up' : '高位下拉 / 引体向上', en ? 'Start by depressing the shoulder blades, then pull elbows down.' : '先下压肩胛，再让肘部向下拉，不要只用手臂硬拽。', null, 4, '6–10', en ? 'Vertical pulling improves lat width and upper-body proportion.' : '垂直拉力提升背阔宽度和上肢比例。', en ? 'Lats' : '背阔肌', freeLoad()),
-    ex(en ? 'Seated cable row / band row' : '坐姿划船 / 弹力带划船', en ? 'Pull to the lower ribs and pause for one second.' : '拉到下肋位置并停顿 1 秒，避免身体后仰借力。', 'row', 3, '8–12', en ? 'Adds controlled horizontal pulling volume for posture.' : '补充可控水平拉力训练量，改善体态。', en ? 'Mid-back' : '中背'),
-    ex(en ? 'Dumbbell curl' : '哑铃弯举', en ? 'Keep upper arms still and avoid swinging the torso.' : '上臂固定，躯干不摆动，控制离心。', null, armFocus ? 4 : 3, '10–14', en ? 'Arm targets receive direct biceps volume instead of relying only on rows.' : '有臂围目标时增加肱二头直接训练，而不是只依赖划船。', en ? 'Biceps' : '肱二头', freeLoad(en ? 'Moderate load' : '中等负荷')),
-    ex(en ? 'Face pull' : '面拉', en ? 'Pull toward eye level and rotate thumbs back.' : '向眼睛高度拉，末端让拇指略向后旋。', null, 3, '12–15', en ? 'Protects shoulder mechanics from the higher pressing and pulling volume.' : '在较高推拉训练量下保护肩部力学。', en ? 'Rear delts' : '后三角', freeLoad(en ? 'Light to moderate' : '轻到中等负荷')),
-    ex(en ? 'Pallof press' : '抗旋转推拉', en ? 'Press straight out and resist trunk rotation.' : '向正前方推出，躯干抵抗旋转，不要侧弯。', null, waistFocus ? 4 : 3, en ? '10/side' : '每侧 10 次', en ? 'Anti-rotation work supports a stronger and tighter trunk.' : '抗旋转训练提升核心稳定和躯干紧致度。', en ? 'Core' : '核心', en ? 'Core control' : '核心控制')
-  ], note: en ? 'Pull day: back width, back thickness, direct arm work, rear delts, and core anti-rotation.' : '拉日：覆盖背宽、背厚、手臂专项、后三角和抗旋转核心。' };
+  const day3 = { title: en ? 'Upper pull A' : '上肢拉 A', reason: pullBase + '。' + targetReason, blocks: [
+    ex(input.sex === 'female' ? (en ? 'Lat pulldown' : '高位下拉') : (en ? 'Bent-over row' : '杠铃俯身划船'), input.sex === 'female' ? (en ? 'Start with shoulder blade depression and pull to the upper chest.' : '先下压肩胛，再向上胸部方向拉。') : (en ? 'Hold a stable hinge and pull elbows toward the hip line.' : '保持稳定髋铰链姿势，肘部向髋部方向拉。'), 'row', armFocus ? 4 : 3, '6–10', en ? 'Main back-thickness lift with meaningful biceps involvement.' : '主要提升背部厚度，同时对肱二头有明显刺激。', en ? 'Back / biceps' : '背部 / 肱二头', input.sex === 'female' ? 'pulldown' : 'row'),
+    ex(en ? 'Lat pulldown / pull-up' : '高位下拉 / 引体向上', en ? 'Start by depressing the shoulder blades, then pull elbows down.' : '先下压肩胛，再让肘部向下拉，不要只用手臂硬拽。', null, 4, '6–10', en ? 'Vertical pulling improves lat width and upper-body proportion.' : '垂直拉力提升背阔宽度和上肢比例。', en ? 'Lats' : '背阔肌', 'pulldown'),
+    ex(en ? 'Seated cable row / band row' : '坐姿划船 / 弹力带划船', en ? 'Pull to the lower ribs and pause for one second.' : '拉到下肋位置并停顿 1 秒，避免身体后仰借力。', 'row', 3, '8–12', en ? 'Adds controlled horizontal pulling volume for posture.' : '补充可控水平拉力训练量，改善体态。', en ? 'Mid-back' : '中背', 'row'),
+    ex(en ? 'Dumbbell curl' : '哑铃弯举', en ? 'Keep upper arms still and avoid swinging the torso.' : '上臂固定，躯干不摆动，控制离心。', null, armFocus ? 4 : 3, '10–14', en ? 'Arm targets receive direct biceps volume instead of relying only on rows.' : '有臂围目标时增加肱二头直接训练，而不是只依赖划船。', en ? 'Biceps' : '肱二头', 'curl'),
+    ex(en ? 'Face pull' : '面拉', en ? 'Pull toward eye level and rotate thumbs back.' : '向眼睛高度拉，末端让拇指略向后旋。', null, 3, '12–15', en ? 'Protects shoulder mechanics from the higher pressing and pulling volume.' : '在较高推拉训练量下保护肩部力学。', en ? 'Rear delts' : '后三角', 'facePull'),
+    ex(en ? 'Pallof press' : '抗旋转推拉', en ? 'Press straight out and resist trunk rotation.' : '向正前方推出，躯干抵抗旋转，不要侧弯。', null, waistFocus ? 4 : 3, en ? '10/side' : '每侧 10 次', en ? 'Anti-rotation work supports a stronger and tighter trunk.' : '抗旋转训练提升核心稳定和躯干紧致度。', en ? 'Core' : '核心', 'core')
+  ], note: en ? 'Pull day with a sex-specific main pull, vertical pull, horizontal pull, arm work, rear delt work, and core anti-rotation.' : '拉日根据性别调整主拉动作，并补充垂直拉、水平拉、手臂、后三角和核心。' };
 
-  const day4 = { title: en ? 'Conditioning and core' : '有氧与核心', reason: targetReason, blocks: [
-    ex(cardioName, en ? 'Use a pace that can be repeated weekly; stop before form breaks down.' : '选择每周可重复的强度，动作或跑姿变形前停止。', null, 1, goal === 'fat_loss' ? (en ? '20–30 min' : '20–30 分钟') : (en ? '12–20 min' : '12–20 分钟'), en ? 'Conditioning raises weekly energy expenditure and improves recovery capacity.' : '有氧提升每周能量消耗，并改善恢复能力。', en ? 'Cardio' : '有氧', en ? 'Zone 2 / interval' : '二区心率 / 间歇'),
-    ex(en ? 'Hip thrust' : '臀推', en ? 'Drive through heels, lock ribs down, pause at the top.' : '脚跟发力，肋骨下沉，顶峰主动夹臀停顿。', 'hinge', hipFocus ? 4 : 3, '8–12', en ? 'Direct glute volume is prioritized when hip circumference is a target.' : '有臀围目标时优先安排臀部直接训练量。', en ? 'Glutes' : '臀部'),
-    ex(en ? 'Goblet squat' : '高脚杯深蹲', en ? 'Hold the weight close and keep a controlled upright squat.' : '重量贴近身体，保持躯干稳定直立下蹲。', 'squat', thighFocus ? 4 : 3, '10–12', en ? 'Adds recoverable quad volume without the fatigue of another heavy squat day.' : '增加可恢复的大腿训练量，但不制造第二个重深蹲日的疲劳。', en ? 'Quads' : '股四头'),
-    ex(en ? 'Glute bridge march' : '臀桥交替抬腿', en ? 'Keep hips level while alternating legs.' : '交替抬腿时保持骨盆水平，不要塌腰。', null, hipFocus ? 4 : 3, en ? '10/side' : '每侧 10 次', en ? 'Reinforces glute control and pelvic stability.' : '强化臀部控制和骨盆稳定。', en ? 'Glutes / core' : '臀部 / 核心', en ? 'Bodyweight control' : '自重控制'),
-    ex(en ? 'Hanging knee raise' : '悬垂举膝', en ? 'Curl the pelvis up instead of just swinging the legs.' : '主动卷起骨盆，而不是摆腿借力。', null, waistFocus ? 4 : 3, '10–15', en ? 'Direct abdominal work improves trunk control, not spot fat loss.' : '直接训练腹部肌群，用于核心控制，而不是承诺局部减脂。', en ? 'Abs' : '腹部', en ? 'Core control' : '核心控制'),
-    ex(en ? 'Farmer carry' : '农夫行走', en ? 'Walk tall, ribs down, shoulders packed, and grip firmly.' : '身体站高，肋骨下沉，肩胛稳定，握紧负重前行。', null, 3, en ? '30–45 sec' : '30–45 秒', en ? 'Finishes with grip, trunk stiffness, and low-skill conditioning.' : '用低技术门槛动作补充握力、躯干刚性和体能。', en ? 'Carry / core' : '负重行走 / 核心', freeLoad(en ? 'Moderate carry load' : '中等行走负重'))
+  const day4 = { title: en ? 'Conditioning and core' : '有氧与核心', reason: (goal === 'fat_loss' ? (en ? 'Conditioning is used to raise energy expenditure while protecting recovery.' : '有氧用于提高能量消耗，同时保护恢复。') : goal === 'muscle_gain' ? (en ? 'This day gives extra lower-body and glute volume without turning the week into a fatigue trap.' : '这一天增加下肢和臀部训练量，但不会把周计划变成疲劳陷阱。') : (en ? 'This day balances conditioning and extra volume without overloading recovery.' : '这一天平衡有氧和补充训练量，不会过度压榨恢复。')) + ' ' + targetReason, blocks: [
+    ex(cardioName, en ? 'Use a pace that can be repeated weekly; stop before form breaks down.' : '选择每周可重复的强度，动作或跑姿变形前停止。', null, 1, goal === 'fat_loss' ? (en ? '20–30 min' : '20–30 分钟') : (en ? '12–20 min' : '12–20 分钟'), en ? 'Conditioning raises weekly energy expenditure and improves recovery capacity.' : '有氧提升每周能量消耗，并改善恢复能力。', en ? 'Cardio' : '有氧', 'cardio'),
+    ex(en ? 'Hip thrust' : '臀推', en ? 'Drive through heels, lock ribs down, pause at the top.' : '脚跟发力，肋骨下沉，顶峰主动夹臀停顿。', 'hinge', hipFocus ? 4 : 3, '8–12', en ? 'Direct glute volume is prioritized when hip circumference is a target.' : '有臀围目标时优先安排臀部直接训练量。', en ? 'Glutes' : '臀部', 'hipThrust'),
+    ex(en ? 'Goblet squat' : '高脚杯深蹲', en ? 'Hold the weight close and keep a controlled upright squat.' : '重量贴近身体，保持躯干稳定直立下蹲。', 'squat', thighFocus ? 4 : 3, '10–12', en ? 'Adds recoverable quad volume without the fatigue of another heavy squat day.' : '增加可恢复的大腿训练量，但不制造第二个重深蹲日的疲劳。', en ? 'Quads' : '股四头', 'gobletSquat'),
+    ex(en ? 'Glute bridge march' : '臀桥交替抬腿', en ? 'Keep hips level while alternating legs.' : '交替抬腿时保持骨盆水平，不要塌腰。', null, hipFocus ? 4 : 3, en ? '10/side' : '每侧 10 次', en ? 'Reinforces glute control and pelvic stability.' : '强化臀部控制和骨盆稳定。', en ? 'Glutes / core' : '臀部 / 核心', 'gluteBridge'),
+    ex(en ? 'Hanging knee raise' : '悬垂举膝', en ? 'Curl the pelvis up instead of just swinging the legs.' : '主动卷起骨盆，而不是摆腿借力。', null, waistFocus ? 4 : 3, '10–15', en ? 'Direct abdominal work improves trunk control, not spot fat loss.' : '直接训练腹部肌群，用于核心控制，而不是承诺局部减脂。', en ? 'Abs' : '腹部', 'core'),
+    ex(en ? 'Farmer carry' : '农夫行走', en ? 'Walk tall, ribs down, shoulders packed, and grip firmly.' : '身体站高，肋骨下沉，肩胛稳定，握紧负重前行。', null, 3, en ? '30–45 sec' : '30–45 秒', en ? 'Finishes with grip, trunk stiffness, and low-skill conditioning.' : '用低技术门槛动作补充握力、躯干刚性和体能。', en ? 'Carry / core' : '负重行走 / 核心', 'carry')
   ], note: en ? 'Conditioning day: energy expenditure, glute or thigh support, and core work without disrupting recovery.' : '有氧与核心日：增加能量消耗，补充臀腿目标训练，并避免影响恢复。' };
 
   const workouts = input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : [day1, day2];
@@ -502,6 +557,7 @@ function setInitialDate() {
 }
 
 $('form').addEventListener('submit', generate);
+$('sex').addEventListener('change', updatePrFields);
 $('lang').addEventListener('click', () => { en = !en; applyLanguage(); refreshFromLanguage(); });
 
 setInitialDate();
