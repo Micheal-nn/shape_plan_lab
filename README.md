@@ -40,7 +40,7 @@ npm start
 
 离线 Android MVP 位于 [`android/shape-plan-android`](android/shape-plan-android)。计划生成、目标自动修正、围度聚焦和训练强度规则都内置在应用中，安装后不依赖开发服务器。
 
-当前发布版本：`android-v1.0.2`。该版本在 `android-v1.0.1` 的围度输入、中文动作、PR 负荷和长图导出基础上，新增目标日期约束、可点击展开的每日动作组合、动作级推荐负荷/组数/次数、可折叠的计划生成逻辑/科学依据/安排原因，以及执行反馈入口。反馈会根据训练完成次数、近期平均热量和当前体重调整后续计划的热量或训练组数。
+当前发布版本：`android-v1.0.3`。该版本在 `android-v1.0.2` 的目标日期、每日动作明细、可折叠解释和执行反馈基础上，优化每日训练安排展示：每天提供 5-6 个动作，并按“动作指导、建议重量、建议次数、建议组数、PR 估计、安排原因”的结构展示。动作组合会继续根据减脂、增肌、体态重组和围度目标调整。
 
 1. 推送 `android-v*` 格式的标签后，GitHub Actions 会构建 APK 并发布到 Releases。
 2. 手动运行 GitHub 的 **Build Android APK** 工作流，也会在工作流产物中提供可下载 APK。
@@ -93,7 +93,7 @@ Run `npm test` and `npm start`, then open [http://localhost:3000](http://localho
 
 The offline Android MVP is in [`android/shape-plan-android`](android/shape-plan-android). Its plan generation, goal normalization, circumference emphasis, and intensity rules run inside the app, without a development server.
 
-Current release: `android-v1.0.2`. Building on `android-v1.0.1`, this release adds target-date constraints, tappable daily workout details, exercise-level load/sets/reps recommendations, collapsible planning logic/scientific basis/reasoning sections, and an execution-feedback panel. Feedback can adjust future calories or set volume from completed sessions, recent average calories, and current weight.
+Current release: `android-v1.0.3`. Building on `android-v1.0.2`, this release improves the daily workout layout: each day now includes 5-6 exercises and shows guide, suggested weight, suggested reps, suggested sets, PR estimate, and arrangement reason. Exercise selection still adapts to fat loss, muscle gain, recomposition, and circumference targets.
 
 1. Push an `android-v*` tag to build and publish an APK in GitHub Releases.
 2. You can also run the **Build Android APK** GitHub workflow manually and download its APK artifact.
