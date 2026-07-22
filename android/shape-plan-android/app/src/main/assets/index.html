@@ -6,7 +6,7 @@
   <title>塑形计划实验室</title>
   <style>
     :root{--ink:#173a2d;--paper:#f5f2e8;--card:#fffdf7;--line:#d7ddd3;--green:#315a44;--lime:#dcecae;--red:#b63a32;--muted:#647168;}
-    *{box-sizing:border-box} body{margin:0;background:linear-gradient(150deg,#f8f5ed,#edf2e7);color:var(--ink);font:16px/1.45 sans-serif} main{max-width:860px;margin:auto;padding:16px 14px 40px} header{padding:16px 0 10px} h1{margin:0;font:700 29px/1.1 Georgia,serif} h2{margin:0 0 10px;font-size:20px} p{margin:8px 0} .sub,.hint{color:var(--muted);font-size:13px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center} button{border:0;border-radius:9px;padding:12px 14px;font:700 14px sans-serif;cursor:pointer}.lang{background:#e6edda;color:var(--green)} .primary{width:100%;background:var(--green);color:#fff;margin-top:12px}.card{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:0 7px 24px rgba(25,58,45,.05)} .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} label{display:block;color:#415249;font-size:13px;font-weight:700} input,select{width:100%;margin-top:5px;min-height:42px;padding:9px;border:1px solid #cbd4c9;border-radius:7px;color:var(--ink);background:#fff;font:16px sans-serif} .measure{margin-top:10px;display:grid;grid-template-columns:.8fr 1fr 1fr;gap:8px;align-items:center}.measure span{font-size:13px;font-weight:700}.measure input{margin:0} .section{margin-top:12px} .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metric{padding:12px;background:#f0f5e8;border-radius:8px}.metric b{display:block;font:700 23px Georgia,serif}.metric small{color:var(--muted)} .warning{margin-top:10px;padding:10px;border-left:3px solid var(--red);background:#fff0ed;color:#74342f;font-size:13px}.red{border-color:var(--red)!important;background:#fff5f3}.chip{display:inline-block;margin:4px 4px 0 0;padding:3px 7px;border-radius:4px;background:var(--lime);font-size:11px;font-weight:700}.workout{padding:10px 0;border-top:1px solid var(--line)} .workout b{display:block}.exercise-note{margin:5px 0 0;color:var(--muted);font-size:13px}.result[hidden]{display:none} details{margin-top:10px;border-top:1px solid var(--line)} summary{padding:12px 0;cursor:pointer;font-weight:700} .two-col{display:grid;grid-template-columns:1fr 1fr;gap:8px} .svg-tip{font-size:12px;color:var(--muted)} @media (max-width:560px){.grid,.two-col{grid-template-columns:1fr}.measure{grid-template-columns:.75fr 1fr 1fr}}
+    *{box-sizing:border-box} body{margin:0;background:linear-gradient(150deg,#f8f5ed,#edf2e7);color:var(--ink);font:16px/1.45 sans-serif} main{max-width:860px;margin:auto;padding:16px 14px 40px} header{padding:16px 0 10px} h1{margin:0;font:700 29px/1.1 Georgia,serif} h2{margin:0 0 10px;font-size:20px} p{margin:8px 0} .sub,.hint{color:var(--muted);font-size:13px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center} button{border:0;border-radius:9px;padding:12px 14px;font:700 14px sans-serif;cursor:pointer}.lang{background:#e6edda;color:var(--green)} .primary{width:100%;background:var(--green);color:#fff;margin-top:12px}.card{margin-top:14px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:0 7px 24px rgba(25,58,45,.05)} .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} label{display:block;color:#415249;font-size:13px;font-weight:700} input,select{width:100%;margin-top:5px;min-height:42px;padding:9px;border:1px solid #cbd4c9;border-radius:7px;color:var(--ink);background:#fff;font:16px sans-serif} .measure{margin-top:10px;display:grid;grid-template-columns:.8fr 1fr 1fr;gap:8px;align-items:center}.measure span{font-size:13px;font-weight:700}.measure input{margin:0} .section{margin-top:12px} .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.metric{padding:12px;background:#f0f5e8;border-radius:8px}.metric b{display:block;font:700 23px Georgia,serif}.metric small{color:var(--muted)} .warning{margin-top:10px;padding:10px;border-left:3px solid var(--red);background:#fff0ed;color:#74342f;font-size:13px}.red{border-color:var(--red)!important;background:#fff5f3}.chip{display:inline-block;margin:4px 4px 0 0;padding:3px 7px;border-radius:4px;background:var(--lime);font-size:11px;font-weight:700}.workout{padding:10px 0;border-top:1px solid var(--line)} .workout b{display:block}.exercise-note{margin:5px 0 0;color:var(--muted);font-size:13px}.result[hidden]{display:none} details{margin-top:10px;border-top:1px solid var(--line)} summary{padding:12px 0;cursor:pointer;font-weight:700} .svg-tip{font-size:12px;color:var(--muted)} @media (max-width:560px){.grid,.measure{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -35,6 +35,7 @@
         <select id="goal"><option value="fat_loss">减脂 / 减重</option><option value="muscle_gain">增肌</option><option value="recomposition">体态重组</option></select>
       </label>
       <label id="targetWeightLabel">目标体重（千克）<input id="targetWeight" type="number" value="74" step="0.1" /></label>
+      <label id="targetDateLabel">目标日期<input id="targetDate" type="date" /></label>
       <label id="frequencyLabel">每周训练次数<select id="frequency"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
       <label id="modeLabel">训练场景<select id="mode"><option value="gym">健身房</option><option value="bodyweight">自重 / 居家</option></select></label>
       <label id="experienceLabel">训练经验<select id="experience"><option value="novice">新手</option><option value="intermediate">中级</option><option value="advanced">高级</option></select></label>
@@ -56,7 +57,7 @@
     <div class="section">
       <h2 id="prTitle">个人纪录与训练强度</h2>
       <p id="prHint" class="hint">填写“重量 + 次数”后，应用会估算个人最大力量，再据此给出训练重量；未填写时使用主观用力等级。</p>
-      <div class="two-col">
+      <div class="grid">
         <label id="benchLabel">卧推纪录（千克 × 次）<input id="benchWeight" type="number" placeholder="60" /> <input id="benchReps" type="number" placeholder="8" /></label>
         <label id="squatLabel">深蹲纪录（千克 × 次）<input id="squatWeight" type="number" placeholder="90" /> <input id="squatReps" type="number" placeholder="6" /></label>
         <label id="rowLabel">划船/下拉纪录（千克 × 次）<input id="rowWeight" type="number" placeholder="50" /> <input id="rowReps" type="number" placeholder="10" /></label>
@@ -68,35 +69,405 @@
   </form>
 
   <section id="result" class="card result" hidden></section>
+  <section id="feedback" class="card result" hidden></section>
 </main>
 
 <script>
 const $ = (id) => document.getElementById(id);
-const t = { zh: { title:'塑形计划实验室', subtitle:'离线 Android 版 · 支持下载长图', profile:'基础指标与目标', sex:'性别', age:'年龄', height:'身高（厘米）', weight:'体重（千克）', fat:'体脂率（百分比）', goal:'目标类型', targetWeight:'目标体重（千克）', frequency:'每周训练次数', mode:'训练场景', experience:'训练经验', circ:'可选围度目标（厘米）', hint:'当前值和目标值需成对填写。腰围用于整体减脂评估，胸/臂/臀/大腿围可用于局部训练侧重。', area:'部位', current:'当前值', target:'目标值', waist:'腰围', chest:'胸围', hip:'臀围', arm:'臂围', thigh:'大腿围', pr:'个人纪录与训练强度', prHint:'填写“重量 + 次数”后，应用会估算个人最大力量，再据此给出训练重量；未填写时使用主观用力等级。', bench:'卧推纪录（千克 × 次）', squat:'深蹲纪录（千克 × 次）', row:'划船/下拉纪录（千克 × 次）', hinge:'硬拉/臀推纪录（千克 × 次）', generate:'生成科学计划', plan:'你的计划', cal:'每日热量', protein:'蛋白质', fatText:'脂肪', carb:'碳水化合物', logic:'计划生成逻辑', strength:'训练强度处方', why:'为什么这样安排', workouts:'每周训练安排', download:'导出长图', exportDone:'长图已保存到下载目录', saveFail:'长图保存失败，请重试', useRpe:'工作组采用主观用力等级', reps:'次余力', noPr:'未填写个人纪录，使用主观用力等级与次数区间。', oneRm:'估算个人最大力量', load:'推荐负荷', sets:'组', kilos:'千克', minutes:'分钟', length:'长图', fat_loss:'减脂 / 减重', muscle_gain:'增肌', recomposition:'体态重组', male:'男性', female:'女性', novice:'新手', intermediate:'中级', advanced:'高级', gym:'健身房', bodyweight:'自重 / 居家' }, en: { title:'Shape Plan Lab', subtitle:'Offline Android edition · long-image download supported', profile:'Baseline metrics and goal', sex:'Sex', age:'Age', height:'Height (cm)', weight:'Weight (kg)', fat:'Body fat (%)', goal:'Goal type', targetWeight:'Target weight (kg)', frequency:'Weekly sessions', mode:'Training setting', experience:'Training experience', circ:'Optional circumference targets (cm)', hint:'Enter current and target values as a pair. Waist guides overall fat-loss evaluation, while chest/arm/hip/thigh values can shift training emphasis.', area:'Area', current:'Current', target:'Target', waist:'Waist', chest:'Chest', hip:'Hip', arm:'Arm', thigh:'Thigh', pr:'Personal records and intensity', prHint:'Enter weight + reps to estimate 1RM, then use that to set training loads. Otherwise the app uses effort-based guidance.', bench:'Bench record (kg × reps)', squat:'Squat record (kg × reps)', row:'Row / pulldown record (kg × reps)', hinge:'Deadlift / hip-thrust record (kg × reps)', generate:'Generate plan', plan:'Your plan', cal:'Daily calories', protein:'Protein', fatText:'Fat', carb:'Carbohydrate', logic:'Plan generation logic', strength:'Intensity prescription', why:'Why this plan', workouts:'Weekly training schedule', download:'Export long image', exportDone:'Long image saved to downloads', saveFail:'Failed to save long image', useRpe:'Working sets use effort rating', reps:'reps in reserve', noPr:'No personal records entered; the app will use effort rating and rep ranges.', oneRm:'Estimated 1RM', load:'Recommended load', sets:'sets', kilos:'kg', minutes:'min', length:'Long image', fat_loss:'Fat loss', muscle_gain:'Muscle gain', recomposition:'Recomposition', male:'Male', female:'Female', novice:'Novice', intermediate:'Intermediate', advanced:'Advanced', gym:'Gym', bodyweight:'Bodyweight / home' } };
-let en = false; let currentPlan = null;
-const RANGES = { fat_loss:{ gym:{ chest:[65,75], squat:[70,80], row:[65,75], hinge:[70,80] }, bodyweight:{ chest:[10,14], squat:[12,18], row:[10,14], hinge:[12,16] } }, muscle_gain:{ gym:{ chest:[70,80], squat:[75,85], row:[70,80], hinge:[75,85] }, bodyweight:{ chest:[8,12], squat:[10,16], row:[8,12], hinge:[10,14] } }, recomposition:{ gym:{ chest:[67,77], squat:[72,82], row:[67,77], hinge:[72,82] }, bodyweight:{ chest:[9,13], squat:[11,17], row:[9,13], hinge:[11,15] } } };
-const PR_IDS = ['bench','squat','row','hinge'];
-function tx(){return t[en?'en':'zh'];}
-function text(id,key){$(id).textContent=tx()[key];}
-function label(id,key){$(id).firstChild.textContent=tx()[key];}
-function fmt(n){return Math.round(n*10)/10;}
-function estimate1RM(load,reps){ return load>0 && reps>0 ? load * (1 + reps / 30) : null; }
-function getPr(key){ const w = Number($(key+'Weight').value); const r = Number($(key+'Reps').value); return w > 0 && r > 0 ? estimate1RM(w, r) : null; }
-function applyLanguage(){ const x = tx(); document.documentElement.lang = en ? 'en' : 'zh-CN'; document.title = x.title; $('lang').textContent = en ? '中文' : 'EN'; [['title','title'],['subtitle','subtitle'],['profileTitle','profile'],['circTitle','circ'],['circHint','hint'],['prTitle','pr'],['prHint','prHint'],['generate','generate']].forEach(([id,key])=>text(id,key)); ['sexLabel','ageLabel','heightLabel','weightLabel','fatLabel','goalLabel','targetWeightLabel','frequencyLabel','modeLabel','experienceLabel','benchLabel','squatLabel','rowLabel','hingeLabel'].forEach((id,i)=>{ const map=['sex','age','height','weight','fat','goal','targetWeight','frequency','mode','experience','bench','squat','row','hinge']; label(id,map[i]); }); ['areaHead','currentHead','targetHead','waistName','chestName','hipName','armName','thighName'].forEach((id,i)=>{$(id).textContent=[x.area,x.current,x.target,x.waist,x.chest,x.hip,x.arm,x.thigh][i];}); ['sex','goal','mode','experience'].forEach(id=>{ const sel=$(id); [...sel.options].forEach(o=>{ if (o.value==='bodyweight') o.textContent=x.bodyweight; else if (o.value==='fat_loss') o.textContent=x.fat_loss; else if (o.value==='muscle_gain') o.textContent=x.muscle_gain; else if (o.value==='recomposition') o.textContent=x.recomposition; else if (o.value==='male') o.textContent=x.male; else if (o.value==='female') o.textContent=x.female; else if (o.value==='gym') o.textContent=x.gym; else if (o.value==='novice') o.textContent=x.novice; else if (o.value==='intermediate') o.textContent=x.intermediate; else if (o.value==='advanced') o.textContent=x.advanced; }); }); }
-function parseNum(id){ const v = Number($(id).value); return Number.isFinite(v) && v > 0 ? v : null; }
-function normalizeInput(){ const input = { sex: $('sex').value, age: Number($('age').value), heightCm: Number($('height').value), weightKg: Number($('weight').value), bodyFatPct: parseNum('fat'), goal:{ type:$('goal').value, targetWeightKg: parseNum('targetWeight') }, trainingMode:$('mode').value, frequencyPerWeek:Number($('frequency').value), trainingExperience:$('experience').value, currentCircumference:{ waistCm:parseNum('waist'), chestCm:parseNum('chest'), hipCm:parseNum('hip'), armCm:parseNum('arm'), thighCm:parseNum('thigh') }, goalCircumference:{ waistCm:parseNum('targetWaist'), chestCm:parseNum('targetChest'), hipCm:parseNum('targetHip'), armCm:parseNum('targetArm'), thighCm:parseNum('targetThigh') }, pr:{ bench:getPr('bench'), squat:getPr('squat'), row:getPr('row'), hinge:getPr('hinge') } };
-  return input;
+const t = {
+  zh: {
+    title: '塑形计划实验室', subtitle: '离线 Android 版 · 支持下载长图', profile: '基础指标与目标', sex: '性别', age: '年龄', height: '身高（厘米）', weight: '体重（千克）', fat: '体脂率（百分比）', goal: '目标类型', targetWeight: '目标体重（千克）', targetDate: '目标日期', frequency: '每周训练次数', mode: '训练场景', experience: '训练经验', circ: '可选围度目标（厘米）', hint: '当前值和目标值需成对填写。腰围用于整体减脂评估，胸/臂/臀/大腿围可用于局部训练侧重。', area: '部位', current: '当前值', target: '目标值', waist: '腰围', chest: '胸围', hip: '臀围', arm: '臂围', thigh: '大腿围', pr: '个人纪录与训练强度', prHint: '填写“重量 + 次数”后，应用会估算个人最大力量，再据此给出训练重量；未填写时使用主观用力等级。', bench: '卧推纪录（千克 × 次）', squat: '深蹲纪录（千克 × 次）', row: '划船/下拉纪录（千克 × 次）', hinge: '硬拉/臀推纪录（千克 × 次）', generate: '生成科学计划', plan: '你的计划', cal: '每日热量', protein: '蛋白质', fatText: '脂肪', carb: '碳水化合物', logic: '计划生成逻辑', science: '科学依据', strength: '训练强度处方', why: '为什么这样安排', workouts: '每周训练安排', download: '导出长图', feedback: '执行反馈与计划调整', feedbackHint: '填写完成次数、近期平均热量和当前体重后，应用会调整后续计划。', doneSessions: '本周完成训练次数', averageCalories: '近期平均热量', currentWeight: '当前体重', applyFeedback: '根据反馈调整后续计划', adjustmentResult: '调整结果', useRpe: '工作组采用主观用力等级', reps: '次余力', noPr: '未填写个人纪录，使用主观用力等级与次数区间。', oneRm: '估算个人最大力量', load: '推荐负荷', sets: '组', kilos: '千克', minutes: '分钟', length: '长图', fat_loss: '减脂 / 减重', muscle_gain: '增肌', recomposition: '体态重组', male: '男性', female: '女性', novice: '新手', intermediate: '中级', advanced: '高级', gym: '健身房', bodyweight: '自重 / 居家' },
+  en: {
+    title: 'Shape Plan Lab', subtitle: 'Offline Android edition · long-image download supported', profile: 'Baseline metrics and goal', sex: 'Sex', age: 'Age', height: 'Height (cm)', weight: 'Weight (kg)', fat: 'Body fat (%)', goal: 'Goal type', targetWeight: 'Target weight (kg)', targetDate: 'Target date', frequency: 'Weekly sessions', mode: 'Training setting', experience: 'Training experience', circ: 'Optional circumference targets (cm)', hint: 'Enter current and target values as a pair. Waist guides overall fat-loss evaluation, while chest/arm/hip/thigh values can shift training emphasis.', area: 'Area', current: 'Current', target: 'Target', waist: 'Waist', chest: 'Chest', hip: 'Hip', arm: 'Arm', thigh: 'Thigh', pr: 'Personal records and intensity', prHint: 'Enter weight + reps to estimate 1RM, then use that to set training loads. Otherwise the app uses effort-based guidance.', bench: 'Bench record (kg × reps)', squat: 'Squat record (kg × reps)', row: 'Row / pulldown record (kg × reps)', hinge: 'Deadlift / hip-thrust record (kg × reps)', generate: 'Generate plan', plan: 'Your plan', cal: 'Daily calories', protein: 'Protein', fatText: 'Fat', carb: 'Carbohydrate', logic: 'Plan generation logic', science: 'Scientific basis', strength: 'Intensity prescription', why: 'Why this plan', workouts: 'Weekly training schedule', download: 'Export long image', feedback: 'Execution feedback and plan adjustment', feedbackHint: 'Enter session completion, recent average calories, and current weight so the app can adjust the next plan.', doneSessions: 'Completed sessions this week', averageCalories: 'Recent average calories', currentWeight: 'Current weight', applyFeedback: 'Adjust future plan from feedback', adjustmentResult: 'Adjustment result', useRpe: 'Working sets use effort rating', reps: 'reps in reserve', noPr: 'No personal records entered; the app will use effort rating and rep ranges.', oneRm: 'Estimated 1RM', load: 'Recommended load', sets: 'sets', kilos: 'kg', minutes: 'min', length: 'Long image', fat_loss: 'Fat loss', muscle_gain: 'Muscle gain', recomposition: 'Recomposition', male: 'Male', female: 'Female', novice: 'Novice', intermediate: 'Intermediate', advanced: 'Advanced', gym: 'Gym', bodyweight: 'Bodyweight / home' }
+};
+
+let en = false;
+let currentPlan = null;
+let currentInput = null;
+let currentAdjustment = null;
+let currentFeedback = null;
+
+const RANGES = {
+  fat_loss: {
+    gym: { chest: [65, 75], squat: [70, 80], row: [65, 75], hinge: [70, 80] },
+    bodyweight: { chest: [10, 14], squat: [12, 18], row: [10, 14], hinge: [12, 16] }
+  },
+  muscle_gain: {
+    gym: { chest: [70, 80], squat: [75, 85], row: [70, 80], hinge: [75, 85] },
+    bodyweight: { chest: [8, 12], squat: [10, 16], row: [8, 12], hinge: [10, 14] }
+  },
+  recomposition: {
+    gym: { chest: [67, 77], squat: [72, 82], row: [67, 77], hinge: [72, 82] },
+    bodyweight: { chest: [9, 13], squat: [11, 17], row: [9, 13], hinge: [11, 15] }
+  }
+};
+
+const PR_IDS = ['bench', 'squat', 'row', 'hinge'];
+const SAFE_RATE = { fat_loss: 0.0075, muscle_gain: 0.0035, recomposition: 0.0025 };
+
+function tx() { return t[en ? 'en' : 'zh']; }
+function text(id, key) { $(id).textContent = tx()[key]; }
+function label(id, key) { $(id).firstChild.textContent = tx()[key]; }
+function fmt(n) { return Math.round(n * 10) / 10; }
+function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
+function estimate1RM(load, reps) { return load > 0 && reps > 0 ? load * (1 + reps / 30) : null; }
+function getPr(key) { const w = Number($(key + 'Weight').value); const r = Number($(key + 'Reps').value); return w > 0 && r > 0 ? estimate1RM(w, r) : null; }
+function parseNum(id) { const v = Number($(id).value); return Number.isFinite(v) && v > 0 ? v : null; }
+function parseDateValue(value) { if (!value) return null; const date = new Date(`${value}T00:00:00`); return Number.isNaN(date.getTime()) ? null : date; }
+function weeksUntil(date) { return Math.max(1, Math.ceil((date.getTime() - Date.now()) / 604800000)); }
+function highlight(id) { $(id).classList.add('red'); }
+function recommendationFromPr(estimate, percent) { return fmt((estimate * percent) / 100); }
+
+function normalizeInput() {
+  return {
+    sex: $('sex').value,
+    age: Number($('age').value),
+    heightCm: Number($('height').value),
+    weightKg: Number($('weight').value),
+    bodyFatPct: parseNum('fat'),
+    goal: { type: $('goal').value, targetWeightKg: parseNum('targetWeight'), targetDate: $('targetDate').value || '' },
+    trainingMode: $('mode').value,
+    frequencyPerWeek: Number($('frequency').value),
+    trainingExperience: $('experience').value,
+    currentCircumference: { waistCm: parseNum('waist'), chestCm: parseNum('chest'), hipCm: parseNum('hip'), armCm: parseNum('arm'), thighCm: parseNum('thigh') },
+    goalCircumference: { waistCm: parseNum('targetWaist'), chestCm: parseNum('targetChest'), hipCm: parseNum('targetHip'), armCm: parseNum('targetArm'), thighCm: parseNum('targetThigh') },
+    pr: { bench: getPr('bench'), squat: getPr('squat'), row: getPr('row'), hinge: getPr('hinge') }
+  };
 }
-function normalizeGoals(input){ const notes=[]; const weight=input.weightKg; const goal=input.goal.type; if (goal==='fat_loss' && input.goal.targetWeightKg != null && input.goal.targetWeightKg >= weight) { input.goal.targetWeightKg = fmt(weight * 0.98); notes.push(en ? 'Target weight was lowered below current weight for fat loss.' : '减脂目标体重已调整为低于当前体重。'); $('targetWeight').classList.add('red'); } if (goal==='muscle_gain' && input.goal.targetWeightKg != null && input.goal.targetWeightKg <= weight) { input.goal.targetWeightKg = fmt(weight * 1.02); notes.push(en ? 'Target weight was raised above current weight for muscle gain.' : '增肌目标体重已调整为高于当前体重。'); $('targetWeight').classList.add('red'); } ['waist','chest','hip','arm','thigh'].forEach(key=>{ const c = input.currentCircumference[key+'Cm']; const tVal = input.goalCircumference[key+'Cm']; const targetField = $('target'+key[0].toUpperCase()+key.slice(1)); if (c != null && tVal != null) { if (key === 'waist' && tVal >= c) { input.goalCircumference[key+'Cm'] = fmt(c * 0.97); targetField.classList.add('red'); notes.push(en ? 'Waist target was lowered below current waist.' : '腰围目标已调整为低于当前腰围。'); } if (['chest','hip','arm','thigh'].includes(key) && tVal <= c) { input.goalCircumference[key+'Cm'] = fmt(c * 1.03); targetField.classList.add('red'); notes.push(en ? `${key} target was raised above current value.` : `${key==='chest'?'胸围':key==='hip'?'臀围':key==='arm'?'臂围':'大腿围'}目标已调整为高于当前值。`); } } }); return notes; }
-function e1rmLabel(v){ return en ? `${fmt(v)} kg` : `${fmt(v)} 千克`; }
-function recommendationFromPr(estimate, percent){ const load = estimate * percent / 100; return fmt(load); }
-function renderPlan(plan){ const x=tx(); const intensity = plan.intensity; const result = $("result"); const metrics = `<div class="metrics"><div class="metric"><b>${plan.calories}</b><small>${x.cal}</small></div><div class="metric"><b>${plan.protein}g</b><small>${x.protein}</small></div><div class="metric"><b>${plan.fat}g</b><small>${x.fatText}</small></div><div class="metric"><b>${plan.carb}g</b><small>${x.carb}</small></div></div>`; const corrections = plan.notes.map(n=>`<p class="warning">${n}</p>`).join(''); const prBox = plan.prSummary ? `<div class="card section"><h2>${x.oneRm}</h2>${plan.prSummary.map(item=>`<div class="workout"><b>${item.name}</b><span>${x.oneRm} ${e1rmLabel(item.oneRm)} · ${x.load} ${item.recommended} ${x.kilos}</span><p class="exercise-note">${item.reason}</p></div>`).join('')}</div>` : `<div class="card section"><h2>${x.oneRm}</h2><p class="hint">${x.noPr}</p></div>`; const intensityCard = `<details open><summary>${x.strength}</summary><p>${intensity.summary}</p><div>${intensity.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div><p class="exercise-note">${intensity.progress}</p></details>`; const workouts = `<details open><summary>${x.workouts}</summary>${plan.workouts.map(day=>`<div class="workout"><b>${day.title}</b><span>${day.blocks.map(b=>`${b.sets} ${x.sets} × ${b.reps} · ${b.load} ${x.kilos}`).join(' / ')}</span><p class="exercise-note">${day.note}</p><div>${day.blocks.map(b=>`<span class="chip">${b.name}</span>`).join('')}</div></div>`).join('')}</details>`; const logic = `<details><summary>${x.logic}</summary><p>${plan.logic}</p></details>`; const reason = `<details><summary>${x.why}</summary><p>${plan.reason}</p></details>`; result.hidden = false; result.innerHTML = `<h2>${x.plan}</h2>${corrections}${metrics}${prBox}${intensityCard}${workouts}${logic}${reason}`; }
-function buildPlan(input){ const notes = normalizeGoals(input); const tdee = Math.round((10*input.weightKg + 6.25*input.heightCm - 5*input.age + (input.sex === 'male' ? 5 : -161)) * 1.375); const goal = input.goal.type; const delta = goal==='fat_loss' ? -450 : goal==='muscle_gain' ? 220 : -150; const calories = tdee + delta; const protein = Math.round(input.weightKg * (goal==='fat_loss' ? 2.0 : 1.8)); const fat = Math.round(input.weightKg * 0.8); const carb = Math.max(80, Math.round((calories - protein*4 - fat*9)/4)); const exp = input.trainingExperience; const rpe = exp==='advanced' ? '8–9' : exp==='intermediate' ? '8' : '7–8'; const rir = exp==='advanced' ? '1–2' : exp==='intermediate' ? '2' : '2–3'; const prNames = en ? { bench:'Bench', squat:'Squat', row:'Row / Pulldown', hinge:'Deadlift / Hip Thrust' } : { bench:'卧推', squat:'深蹲', row:'划船 / 下拉', hinge:'硬拉 / 臀推' }; const percentByLift = { fat_loss:{ bench:72, squat:72, row:70, hinge:72 }, muscle_gain:{ bench:80, squat:78, row:78, hinge:80 }, recomposition:{ bench:76, squat:74, row:74, hinge:76 } }[goal]; const recommended = (key) => input.pr[key] ? fmt(recommendationFromPr(input.pr[key], percentByLift[key])) : null; const prSummary = PR_IDS.map(key => input.pr[key] ? ({ key, name: prNames[key], oneRm: input.pr[key], recommended: recommended(key), reason: en ? 'Based on the one-rep max estimated from your entered weight and repetitions.' : '基于你填写的重量和次数估算个人最大力量，再按目标百分比给出推荐负荷。' }) : null).filter(Boolean); const loadLabel = (key) => recommended(key) ? `${recommended(key)}` : (en ? `RPE ${rpe}` : `用力等级 ${rpe}`); const armFocus = input.currentCircumference.armCm != null && input.goalCircumference.armCm != null && input.goalCircumference.armCm > input.currentCircumference.armCm; const chestFocus = input.currentCircumference.chestCm != null && input.goalCircumference.chestCm != null && input.goalCircumference.chestCm > input.currentCircumference.chestCm; const hipFocus = input.currentCircumference.hipCm != null && input.goalCircumference.hipCm != null && input.goalCircumference.hipCm > input.currentCircumference.hipCm; const thighFocus = input.currentCircumference.thighCm != null && input.goalCircumference.thighCm != null && input.goalCircumference.thighCm > input.currentCircumference.thighCm; const waistFocus = input.currentCircumference.waistCm != null && input.goalCircumference.waistCm != null && input.goalCircumference.waistCm < input.currentCircumference.waistCm; const tags = [en ? `RPE ${rpe} · RIR ${rir}` : `用力等级 ${rpe} · 保留 ${rir} 次余力`]; if (armFocus) tags.push(en ? 'Arm target + direct arm work' : '臂围目标 + 手臂直接训练'); if (waistFocus) tags.push(en ? 'Waist target + energy deficit' : '腰围目标 + 热量缺口与有氧'); const day1 = { title: en ? 'Upper A' : '上肢 A', blocks:[ { name: en ? 'Bench press' : '卧推', sets: chestFocus ? 4 : 3, reps: goal==='muscle_gain' ? '6–8' : '8–12', loadLabel: loadLabel('bench'), unit: recommended('bench') ? tx().kilos : '' }, { name: en ? 'Lat pulldown' : '高位下拉', sets: 3, reps: '8–12', loadLabel: loadLabel('row'), unit: recommended('row') ? tx().kilos : '' } ], note: en ? 'Focus on controlled reps and keep the planned repetitions in reserve.' : '以可控节奏完成动作，并保留计划要求的余力次数。' }; const day2 = { title: en ? 'Lower A' : '下肢 A', blocks:[ { name: en ? 'Squat' : '深蹲', sets: thighFocus ? 4 : 3, reps: goal==='muscle_gain' ? '5–8' : '8–10', loadLabel: loadLabel('squat'), unit: recommended('squat') ? tx().kilos : '' }, { name: en ? 'Hip thrust' : '臀推', sets: hipFocus ? 4 : 3, reps: '8–12', loadLabel: loadLabel('hinge'), unit: recommended('hinge') ? tx().kilos : '' } ], note: en ? 'Use the estimated 1RM to choose a clean, repeatable load.' : '基于个人最大力量估算选择可重复完成的训练负荷。' }; const day3 = { title: en ? 'Upper B' : '上肢 B', blocks:[ { name: en ? 'Row / Pulldown' : '划船 / 下拉', sets: 3, reps: '8–12', loadLabel: loadLabel('row'), unit: recommended('row') ? tx().kilos : '' }, { name: en ? 'Close-grip press' : '窄距推举', sets: armFocus ? 4 : 3, reps: '8–12', loadLabel: loadLabel('bench'), unit: recommended('bench') ? tx().kilos : '' } ], note: en ? 'If the target area is arms or chest, related upper-body movements receive one extra working set.' : '如果目标涉及手臂或胸围，上肢相关动作增加 1 个工作组。' }; const day4 = { title: en ? 'Lower B' : '下肢 B', blocks:[ { name: en ? 'Romanian deadlift' : '罗马尼亚硬拉', sets: hipFocus ? 4 : 3, reps: '6–10', loadLabel: loadLabel('hinge'), unit: recommended('hinge') ? tx().kilos : '' }, { name: en ? 'Split squat' : '分腿蹲', sets: thighFocus ? 4 : 3, reps: '8–12', loadLabel: en ? `RPE ${rpe}` : `用力等级 ${rpe}`, unit: '' } ], note: en ? 'Use a moderate load that keeps form stable and supports weekly volume.' : '使用中等负荷，保证动作稳定并支撑每周训练量。' }; const workouts = input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : [day1, day2]; const intensity = { summary: en ? `Working sets use RPE ${rpe} and keep ${rir} reps in reserve. If you entered a personal record, loads are derived from estimated one-rep max values and adjusted to the goal.` : `工作组采用主观用力等级 ${rpe}，并保留 ${rir} 次余力。如果你填写了个人纪录，系统会先估算个人最大力量，再按目标给出推荐负荷。`, tags, progress: en ? 'Increase load by about 2.5%–5% only after every working set hits the top of the rep range with stable form. For bodyweight work, increase reps, tempo control, or leverage difficulty instead of blindly adding fatigue.' : '仅当所有工作组都以标准动作达到次数上限时，再增加约 2.5%–5% 的负荷；自重动作优先增加次数、放慢离心或提高动作难度，而不是盲目堆疲劳。' };
-  return { calories, protein, fat, carb, workouts, intensity, prSummary, logic: en ? `The target is probability-based, not guaranteed. The app narrows unsafe targets, assigns weekly volume to target areas, and uses objective records where available.` : `目标可达性是基于概率判断，并非结果保证。应用会收敛不安全目标、为目标部位分配每周训练量，并在有个人纪录时使用客观负荷。`, reason: en ? `The weekly plan balances energy intake, training frequency, target-area volume, and recovery so the user can actually sustain the target.` : `每周计划会平衡热量摄入、训练频率、目标部位训练量和恢复，让目标具有可执行性。`, notes };
+
+function normalizeGoals(input) {
+  const notes = [];
+  const weight = input.weightKg;
+  const goal = input.goal.type;
+  const targetDate = parseDateValue(input.goal.targetDate);
+
+  if (targetDate && targetDate.getTime() < Date.now()) {
+    notes.push(en ? 'The target date is in the past; the app will still generate a plan from the current state.' : '目标日期已早于当前时间；应用仍会基于当前状态生成计划。');
+  }
+
+  if (goal === 'fat_loss' && input.goal.targetWeightKg != null && input.goal.targetWeightKg >= weight) {
+    input.goal.targetWeightKg = fmt(weight * 0.98);
+    highlight('targetWeight');
+    notes.push(en ? 'Target weight was lowered below current weight for fat loss.' : '减脂目标体重已调整为低于当前体重。');
+  }
+  if (goal === 'muscle_gain' && input.goal.targetWeightKg != null && input.goal.targetWeightKg <= weight) {
+    input.goal.targetWeightKg = fmt(weight * 1.02);
+    highlight('targetWeight');
+    notes.push(en ? 'Target weight was raised above current weight for muscle gain.' : '增肌目标体重已调整为高于当前体重。');
+  }
+
+  if (targetDate && input.goal.targetWeightKg != null) {
+    const weeks = weeksUntil(targetDate);
+    const maxShift = weight * SAFE_RATE[goal] * weeks;
+    if (goal === 'fat_loss') {
+      const feasible = fmt(weight - maxShift);
+      if (input.goal.targetWeightKg < feasible) {
+        input.goal.targetWeightKg = feasible;
+        highlight('targetWeight');
+        notes.push(en ? 'The weight target was lifted to keep the loss rate realistic for the selected deadline.' : '已抬高目标体重，以匹配所选日期下可实现的减重速度。');
+      }
+    } else if (goal === 'muscle_gain') {
+      const feasible = fmt(weight + maxShift);
+      if (input.goal.targetWeightKg > feasible) {
+        input.goal.targetWeightKg = feasible;
+        highlight('targetWeight');
+        notes.push(en ? 'The weight target was reduced to keep the gain rate realistic for the selected deadline.' : '已下调目标体重，以匹配所选日期下可实现的增重速度。');
+      }
+    } else if (goal === 'recomposition') {
+      const maxMove = weight * SAFE_RATE.recomposition * weeks;
+      const delta = input.goal.targetWeightKg - weight;
+      if (Math.abs(delta) > maxMove) {
+        input.goal.targetWeightKg = fmt(weight + Math.sign(delta) * maxMove);
+        highlight('targetWeight');
+        notes.push(en ? 'The target weight was narrowed to keep recomposition within a sustainable range.' : '已收窄目标体重，使体态重组保持在可持续范围内。');
+      }
+    }
+  }
+
+  const fieldMap = { waist: 'targetWaist', chest: 'targetChest', hip: 'targetHip', arm: 'targetArm', thigh: 'targetThigh' };
+  ['waist', 'chest', 'hip', 'arm', 'thigh'].forEach((key) => {
+    const currentValue = input.currentCircumference[`${key}Cm`];
+    const targetValue = input.goalCircumference[`${key}Cm`];
+    if (currentValue == null || targetValue == null) return;
+    const field = fieldMap[key];
+    if (key === 'waist' && targetValue >= currentValue) {
+      input.goalCircumference[`${key}Cm`] = fmt(currentValue * 0.97);
+      highlight(field);
+      notes.push(en ? 'Waist target was lowered below the current value.' : '腰围目标已调整为低于当前值。');
+    }
+    if (['chest', 'hip', 'arm', 'thigh'].includes(key) && targetValue <= currentValue) {
+      input.goalCircumference[`${key}Cm`] = fmt(currentValue * 1.03);
+      highlight(field);
+      notes.push(en ? `${tx()[key]} target was raised above the current value.` : `${tx()[key]}目标已调整为高于当前值。`);
+    }
+  });
+
+  return notes;
 }
-function exportLongImage(plan){ const lines = [en ? 'Shape Plan Lab' : '塑形计划实验室', `${tx().cal} ${plan.calories}`, `${tx().protein} ${plan.protein}g`, `${tx().fatText} ${plan.fat}g`, `${tx().carb} ${plan.carb}g`, en ? 'Intensity prescription' : '训练强度处方', plan.intensity.summary, ...plan.intensity.tags.map(x=>`• ${x}`), ...plan.workouts.flatMap(d=>[d.title, ...d.blocks.map(b=>`${b.name} ${b.sets}${en?' sets':'组'} × ${b.reps} · ${b.loadLabel}${b.unit ? ' ' + b.unit : ''}`), d.note]), en ? 'Why this plan' : '为什么这样安排', plan.reason]; const width=1080; const lineHeight=28; const height=Math.max(760, 110 + lines.length*lineHeight); const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); const text=lines.map((line,i)=>`<text x="64" y="${96+i*lineHeight}" font-size="${i===0?34:18}" font-weight="${i===0?700:400}" fill="${i===0?'#163022':'#2f4b3a'}">${esc(line)}</text>`).join(''); const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#f4f1e8"/><rect x="34" y="32" width="${width-68}" height="${height-64}" rx="8" fill="#fbfaf5" stroke="#d8ddd4"/>${text}<text x="64" y="${height-44}" font-size="14" fill="#637269">${esc(new Date().toISOString().slice(0,10))}</text></svg>`; if (window.ShapePlanAndroid && window.ShapePlanAndroid.saveSvg) { window.ShapePlanAndroid.saveSvg(svg, `shape-plan-${en?'en':'zh'}-${Date.now()}.svg`); } else { const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'})); a.download=`shape-plan-${Date.now()}.svg`; a.click(); URL.revokeObjectURL(a.href); } }
-function generate(e){ if(e)e.preventDefault(); document.querySelectorAll('.red').forEach(x=>x.classList.remove('red')); const input=normalizeInput(); const plan=buildPlan(input); currentPlan=plan; const x=tx(); $('result').hidden=false; $('result').innerHTML=`<h2>${x.plan}</h2>${plan.notes.map(n=>`<p class="warning">${n}</p>`).join('')}<div class="metrics"><div class="metric"><b>${plan.calories}</b><small>${x.cal}</small></div><div class="metric"><b>${plan.protein}g</b><small>${x.protein}</small></div><div class="metric"><b>${plan.fat}g</b><small>${x.fatText}</small></div><div class="metric"><b>${plan.carb}g</b><small>${x.carb}</small></div></div><div class="card section"><h2>${x.pr}</h2>${plan.prSummary.length?plan.prSummary.map(p=>`<div class="workout"><b>${p.name}</b><span>${x.oneRm} ${p.oneRm.toFixed(1)} ${x.kilos} · ${x.load} ${p.recommended} ${x.kilos}</span><p class="exercise-note">${p.reason}</p></div>`).join(''):`<p class="hint">${x.noPr}</p>`}</div><div class="card section"><h2>${x.strength}</h2><p>${plan.intensity.summary}</p><div>${plan.intensity.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div><p class="exercise-note">${plan.intensity.progress}</p></div><details class="card section" open><summary>${x.workouts}</summary>${plan.workouts.map(day=>`<div class="workout"><b>${day.title}</b><span>${day.blocks.map(b=>`${b.sets} ${x.sets} × ${b.reps} · ${b.loadLabel}${b.unit ? ' ' + b.unit : ''}`).join(' / ')}</span><p class="exercise-note">${day.note}</p><div>${day.blocks.map(b=>`<span class="chip">${b.name}</span>`).join('')}</div></div>`).join('')}</details><details class="card section"><summary>${x.logic}</summary><p>${plan.logic}</p></details><details class="card section"><summary>${x.why}</summary><p>${plan.reason}</p></details><button class="primary section" type="button" id="download">${x.download}</button>`; $('download').addEventListener('click',()=>exportLongImage(plan)); $('result').scrollIntoView({behavior:'smooth'}); }
-$('form').addEventListener('submit',generate); $('lang').addEventListener('click',()=>{en=!en; applyLanguage(); if(currentPlan) generate();}); applyLanguage();
+
+function applyLanguage() {
+  const x = tx();
+  document.documentElement.lang = en ? 'en' : 'zh-CN';
+  document.title = x.title;
+  $('lang').textContent = en ? '中文' : 'EN';
+  [['title', 'title'], ['subtitle', 'subtitle'], ['profileTitle', 'profile'], ['circTitle', 'circ'], ['circHint', 'hint'], ['prTitle', 'pr'], ['prHint', 'prHint'], ['generate', 'generate']].forEach(([id, key]) => text(id, key));
+  ['sexLabel', 'ageLabel', 'heightLabel', 'weightLabel', 'fatLabel', 'goalLabel', 'targetWeightLabel', 'targetDateLabel', 'frequencyLabel', 'modeLabel', 'experienceLabel', 'benchLabel', 'squatLabel', 'rowLabel', 'hingeLabel'].forEach((id, i) => label(id, ['sex', 'age', 'height', 'weight', 'fat', 'goal', 'targetWeight', 'targetDate', 'frequency', 'mode', 'experience', 'bench', 'squat', 'row', 'hinge'][i]));
+  ['areaHead', 'currentHead', 'targetHead', 'waistName', 'chestName', 'hipName', 'armName', 'thighName'].forEach((id, i) => $(id).textContent = [x.area, x.current, x.target, x.waist, x.chest, x.hip, x.arm, x.thigh][i]);
+  ['sex', 'goal', 'mode', 'experience'].forEach((id) => {
+    const sel = $(id);
+    [...sel.options].forEach((o) => {
+      if (o.value === 'bodyweight') o.textContent = x.bodyweight;
+      else if (o.value === 'fat_loss') o.textContent = x.fat_loss;
+      else if (o.value === 'muscle_gain') o.textContent = x.muscle_gain;
+      else if (o.value === 'recomposition') o.textContent = x.recomposition;
+      else if (o.value === 'male') o.textContent = x.male;
+      else if (o.value === 'female') o.textContent = x.female;
+      else if (o.value === 'gym') o.textContent = x.gym;
+      else if (o.value === 'novice') o.textContent = x.novice;
+      else if (o.value === 'intermediate') o.textContent = x.intermediate;
+      else if (o.value === 'advanced') o.textContent = x.advanced;
+    });
+  });
+}
+
+function buildPlan(input, adjustment = null) {
+  const notes = normalizeGoals(input);
+  const weight = input.weightKg;
+  const age = input.age;
+  const height = input.heightCm;
+  const bodyFatPct = input.bodyFatPct ?? (input.goal.type === 'fat_loss' ? 24 : 18);
+  const leanMass = weight * (1 - bodyFatPct / 100);
+  const bmr = input.bodyFatPct
+    ? 370 + 21.6 * leanMass
+    : (input.sex === 'male' ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161);
+  const activity = { novice: 1.35, intermediate: 1.5, advanced: 1.65 }[input.trainingExperience] ?? 1.45;
+  const tdee = Math.round(bmr * activity);
+  const goal = input.goal.type;
+  const targetDate = parseDateValue(input.goal.targetDate);
+  const weeks = targetDate ? weeksUntil(targetDate) : 12;
+  const targetDelta = input.goal.targetWeightKg != null ? input.goal.targetWeightKg - weight : null;
+
+  let calories;
+  if (goal === 'fat_loss') {
+    const deficit = targetDelta != null && targetDelta < 0 ? clamp(Math.abs(targetDelta) * 7700 / weeks / 7, 300, 700) : (bodyFatPct >= 25 ? 550 : 400);
+    calories = Math.max(1200, Math.round(tdee - deficit));
+  } else if (goal === 'muscle_gain') {
+    const surplus = targetDelta != null && targetDelta > 0 ? clamp(targetDelta * 7700 / weeks / 7, 150, 350) : 250;
+    calories = Math.max(1500, Math.round(tdee + surplus));
+  } else {
+    calories = Math.max(1400, Math.round(tdee - (bodyFatPct >= 20 ? 150 : 50)));
+  }
+
+  if (adjustment?.calorieDelta) calories = Math.max(1200, calories + adjustment.calorieDelta);
+
+  const proteinFactor = goal === 'fat_loss' ? 2.0 : goal === 'muscle_gain' ? 1.8 : 1.9;
+  const fatFactor = goal === 'muscle_gain' ? 0.7 : 0.8;
+  const protein = Math.round(weight * proteinFactor);
+  const fat = Math.max(45, Math.round(weight * fatFactor));
+  const carb = Math.max(0, Math.round((calories - protein * 4 - fat * 9) / 4));
+
+  const focus = {};
+  ['waist', 'chest', 'hip', 'arm', 'thigh'].forEach((key) => {
+    const currentValue = input.currentCircumference[`${key}Cm`];
+    const targetValue = input.goalCircumference[`${key}Cm`];
+    focus[key] = currentValue != null && targetValue != null ? Math.abs(targetValue - currentValue) : 0;
+  });
+
+  const waistFocus = focus.waist >= 2;
+  const chestFocus = focus.chest >= 2;
+  const hipFocus = focus.hip >= 2;
+  const armFocus = focus.arm >= 1.5;
+  const thighFocus = focus.thigh >= 2;
+
+  const rpe = input.trainingExperience === 'novice' ? 6 : input.trainingExperience === 'advanced' ? 8 : 7;
+  const rir = 10 - rpe;
+  const loadByGoal = { fat_loss: { bench: 72, squat: 72, row: 70, hinge: 72 }, muscle_gain: { bench: 80, squat: 78, row: 78, hinge: 80 }, recomposition: { bench: 76, squat: 74, row: 74, hinge: 76 } }[goal];
+  const recommended = (key) => input.pr[key] ? recommendationFromPr(input.pr[key], loadByGoal[key]) : null;
+  const loadLabel = (key) => recommended(key) ? `${recommended(key)}` : (en ? `RPE ${rpe}` : `用力等级 ${rpe}`);
+  const loadUnit = (key) => recommended(key) ? tx().kilos : '';
+  const cardioName = input.trainingMode === 'gym' ? (en ? 'Incline treadmill / bike' : '坡度快走 / 动感单车') : (en ? 'Brisk walking / jump rope' : '快走 / 跳绳');
+
+  const prSummary = PR_IDS.flatMap((key) => {
+    if (!input.pr[key]) return [];
+    return [{
+      name: tx()[key],
+      oneRm: input.pr[key],
+      recommended: recommended(key),
+      reason: en ? `The working load is set from ${loadByGoal[key]}% of estimated 1RM so the goal gets enough stimulus without unnecessary fatigue.` : `工作负荷按估算个人最大力量的 ${loadByGoal[key]}% 设定，在保留训练刺激的同时避免不必要疲劳。`
+    }];
+  });
+
+  const day1 = { title: en ? 'Upper push A' : '上肢推 A', blocks: [
+    { name: en ? 'Barbell bench press' : '杠铃卧推', sets: chestFocus ? 4 : 3, reps: '6–8', loadLabel: loadLabel('bench'), unit: loadUnit('bench'), reason: en ? 'Primary horizontal push for chest and triceps.' : '主要水平推力，用于胸部与肱三头肌。' },
+    { name: en ? 'Incline dumbbell press' : '上斜哑铃推举', sets: chestFocus ? 4 : 3, reps: '8–10', loadLabel: en ? `RPE ${rpe}` : `用力等级 ${rpe}`, unit: '', reason: en ? 'Adds upper-chest volume and a slightly different pressing angle.' : '补充上胸训练量，并提供不同推举角度。' },
+    { name: en ? 'Plank + dead bug' : '平板支撑 + 死虫', sets: waistFocus ? 4 : 3, reps: en ? '30–45 sec + 8/side' : '30–45 秒 + 每侧 8 次', loadLabel: en ? 'Core control' : '核心控制', unit: '', reason: en ? 'Supports trunk stiffness, bracing, and safer pressing mechanics.' : '提高躯干稳定性、腹压控制和推举安全性。' }
+  ], note: en ? 'Chest-focused push session with core stability work.' : '以胸部为主的推日，并加入核心稳定训练。' };
+
+  const day2 = { title: en ? 'Lower A' : '下肢 A', blocks: [
+    { name: en ? 'Back squat' : '杠铃深蹲', sets: thighFocus ? 4 : 3, reps: '5–8', loadLabel: loadLabel('squat'), unit: loadUnit('squat'), reason: en ? 'Main knee-dominant lift for quads, glutes, and lower-body tension.' : '主要膝主导动作，用于股四头肌、臀部和下肢整体张力。' },
+    { name: en ? 'Romanian deadlift' : '罗马尼亚硬拉', sets: hipFocus ? 4 : 3, reps: '6–10', loadLabel: loadLabel('hinge'), unit: loadUnit('hinge'), reason: en ? 'Loads the hip hinge pattern and posterior chain.' : '强化髋主导模式与后侧链。' },
+    { name: en ? 'Split squat' : '分腿蹲', sets: thighFocus ? 4 : 3, reps: '8–12', loadLabel: en ? `RPE ${rpe}` : `用力等级 ${rpe}`, unit: '', reason: en ? 'Adds unilateral work for leg balance and extra quad volume.' : '补充单侧训练，改善左右平衡并增加股四头刺激。' },
+    { name: en ? 'Side plank' : '侧桥', sets: waistFocus ? 4 : 3, reps: en ? '30–40 sec/side' : '每侧 30–40 秒', loadLabel: en ? 'Core control' : '核心控制', unit: '', reason: en ? 'Improves lateral trunk stability and pelvic control.' : '增强侧向躯干稳定性与骨盆控制。' }
+  ], note: en ? 'Lower-body strength day with bracing and anti-rotation work.' : '下肢力量日，并加入抗旋转核心训练。' };
+
+  const day3 = { title: en ? 'Upper pull A' : '上肢拉 A', blocks: [
+    { name: en ? 'Bent-over row' : '杠铃俯身划船', sets: armFocus ? 4 : 3, reps: '6–10', loadLabel: loadLabel('row'), unit: loadUnit('row'), reason: en ? 'Primary pulling pattern for back thickness and arm involvement.' : '主要拉力动作，用于背部厚度和手臂参与。' },
+    { name: en ? 'Lat pulldown / pull-up' : '高位下拉 / 引体向上', sets: 4, reps: '6–10', loadLabel: en ? `RPE ${rpe}` : `用力等级 ${rpe}`, unit: '', reason: en ? 'Builds vertical pulling strength and lat width.' : '建立垂直拉力与背阔宽度。' },
+    { name: en ? 'Face pull' : '面拉', sets: 3, reps: '12–15', loadLabel: en ? 'Light to moderate' : '轻到中等负荷', unit: '', reason: en ? 'Supports rear delts and shoulder health.' : '强化后三角和肩部健康。' },
+    { name: en ? 'Pallof press' : '抗旋转推拉', sets: waistFocus ? 4 : 3, reps: en ? '10/side' : '每侧 10 次', loadLabel: en ? 'Core control' : '核心控制', unit: '', reason: en ? 'Trains anti-rotation strength for a tighter trunk.' : '训练抗旋转能力，提升核心紧致度。' }
+  ], note: en ? 'Pull day plus posture and anti-rotation work.' : '拉力日，并加入体态和抗旋转训练。' };
+
+  const day4 = { title: en ? 'Conditioning and core' : '有氧与核心', blocks: [
+    { name: cardioName, sets: 1, reps: goal === 'fat_loss' ? (en ? '20–30 min' : '20–30 分钟') : (en ? '12–20 min' : '12–20 分钟'), loadLabel: en ? 'Zone 2 / interval' : '二区心率 / 间歇', unit: '', reason: en ? 'Raises weekly energy expenditure and supports recovery-capable conditioning.' : '提升每周能量消耗，并保持可恢复的体能训练量。' },
+    { name: en ? 'Hip thrust' : '臀推', sets: hipFocus ? 4 : 3, reps: '8–12', loadLabel: loadLabel('hinge'), unit: loadUnit('hinge'), reason: en ? 'Adds glute-specific volume when hip growth is a target.' : '当臀围或臀部发达是目标时，增加臀部专项训练量。' },
+    { name: en ? 'Hanging knee raise' : '悬垂举膝', sets: waistFocus ? 4 : 3, reps: '10–15', loadLabel: en ? 'Core control' : '核心控制', unit: '', reason: en ? 'Direct abdominal work without pretending it spot-reduces fat.' : '直接训练腹部肌群，但不把它包装成“局部减脂”。' }
+  ], note: en ? 'Conditioning day that complements the strength work.' : '补充力量训练的有氧与核心日。' };
+
+  const workouts = input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : [day1, day2];
+  const adjustedWorkouts = adjustment?.setDelta ? workouts.map((day) => ({ ...day, blocks: day.blocks.map((block) => ({ ...block, sets: Math.max(2, block.sets + adjustment.setDelta) })) })) : workouts;
+
+  const intensity = {
+    summary: en ? `Working sets use RPE ${rpe} and keep ${rir} reps in reserve. If a personal record is entered, loads are derived from estimated 1RM values and then constrained by the target.` : `工作组采用主观用力等级 ${rpe}，并保留 ${rir} 次余力。如果填写了个人纪录，系统会先估算个人最大力量，再按目标与日期约束计算训练负荷。`,
+    tags: [input.trainingMode === 'gym' ? (en ? 'Gym equipment first' : '健身房器械优先') : (en ? 'Bodyweight first' : '自重优先'), `${en ? 'RPE' : '用力等级'} ${rpe}`, `${en ? 'Reps in reserve' : '保留次数'} ${rir}`, goal === 'fat_loss' ? (en ? 'Cardio included' : '含有氧') : (en ? 'Progressive overload' : '渐进超负荷')],
+    progress: en ? 'Increase load by about 2.5%–5% only after every working set reaches the top of the rep range with stable form. For bodyweight work, increase reps, tempo control, or leverage difficulty instead of blindly adding fatigue.' : '仅当所有工作组都以标准动作达到次数上限时，再增加约 2.5%–5% 的负荷；自重动作优先增加次数、放慢离心或提高动作难度，而不是盲目堆疲劳。'
+  };
+
+  const logicSections = [
+    { title: en ? '1. Input and target check' : '1. 输入与目标校验', body: en ? 'The app checks whether current weight, target weight, target date, body-fat level, and optional circumference targets point in the same direction. When the request conflicts with the selected goal, the app adjusts the target to the nearest feasible value.' : '应用会检查当前体重、目标体重、目标日期、体脂率与可选围度目标是否方向一致。当目标方向与目标类型冲突时，系统会将目标调整到最接近且可执行的值。' },
+    { title: en ? '2. Energy target' : '2. 热量目标', body: en ? 'BMR is estimated from body composition when body-fat data exists, otherwise the app falls back to a height-weight-age formula. TDEE is then scaled by training experience, and calories are set as a controlled deficit or surplus instead of a guess.' : '有体脂数据时优先按体成分估算基础代谢；没有体脂数据时退回身高-体重-年龄公式。随后按训练经验换算 TDEE，并基于目标设定可控的热量缺口或盈余，而不是凭感觉给数值。' },
+    { title: en ? '3. Weekly volume' : '3. 周训练量', body: en ? 'The schedule keeps major movement patterns in the week and adds extra sets where a specific circumference target is present. This is how the app links visible training volume to the body area the user cares about.' : '计划会保留每周主要动作模式，并在有特定围度目标时增加对应肌群的训练组数。这样可以把可见的训练量变化和用户关心的身体部位直接关联起来。' },
+    { title: en ? '4. Intensity rule' : '4. 强度规则', body: en ? 'If you enter a personal record, the app estimates 1RM from weight × reps and uses that to set a working load percentage. If you do not, the app falls back to RPE so the plan still has a clear effort target.' : '如果输入个人纪录，应用会按“重量 × 次数”估算 1RM，并据此计算工作组负荷比例；如果没有输入，则回退到主观用力等级，仍然给出明确的强度目标。' },
+    { title: en ? '5. Feedback loop' : '5. 反馈闭环', body: en ? 'Weekly completion, current weight, and recent calorie intake are read back into the plan. If execution falls short or progress is too slow, the next plan reduces set count or adjusts calories instead of pretending the original prescription was perfect.' : '每周完成情况、当前体重和近期摄入会回写到计划中。如果执行不足或进展过慢，下一版计划会减少组数或调整热量，而不是假装原始方案已经足够完美。' }
+  ];
+
+  const scienceSections = [
+    { title: en ? '1. Energy balance and rate of change' : '1. 能量平衡与变化速度', body: en ? 'Fat loss and muscle gain both depend on sustained energy balance changes. The app limits the pace of change to a realistic range so the selected deadline does not push the user into an unsafe or self-defeating prescription.' : '减脂和增肌都依赖于长期稳定的能量平衡变化。应用会把变化速度限制在合理区间，避免目标日期把用户推向不安全或自我挫败的处方。' },
+    { title: en ? '2. Resistance training stimulus' : '2. 抗阻训练刺激', body: en ? 'The plan uses familiar compound lifts and standard accessory work because they deliver the most reliable stimulus for the largest number of users. Extra single-joint or core work is added only when it supports the target.' : '计划优先使用最常见、最标准的复合动作和辅助动作，因为它们对大多数用户都能提供最稳定的刺激。只有当它们有助于目标时，才会追加单关节或核心动作。' },
+    { title: en ? '3. Protein and recovery' : '3. 蛋白质与恢复', body: en ? 'Protein is kept high enough to support satiety and lean-mass retention or gain. Training frequency and session density are then kept within a recoverable range so the app does not overpromise weekly output.' : '蛋白质会保持在足够支持饱腹感和瘦体重维持或增长的水平。训练频率和单次训练密度也会被控制在可恢复范围内，避免应用对周训练输出做过度承诺。' },
+    { title: en ? '4. Cardio and core' : '4. 有氧与核心', body: en ? 'Conditioning is included because it improves weekly energy expenditure and recovery tolerance. Core work is programmed for trunk control, not for the false promise of spot reduction.' : '加入有氧是为了提升每周能量消耗和恢复耐受度。核心训练的目的是真正提升躯干控制能力，而不是制造“局部减脂”的假象。' }
+  ];
+
+  const reasonSections = [
+    { title: en ? '1. Why this weekly split' : '1. 为什么这样分周', body: en ? 'The split alternates push, lower-body, pull, and conditioning so the largest movement patterns are trained without stacking too much fatigue into one day. That makes the plan easier to follow and easier to review.' : '周计划按推、下肢、拉、有氧与核心交替安排，避免把过多疲劳堆到同一天，同时让主要动作模式都能被覆盖。这样更容易执行，也更容易复评。' },
+    { title: en ? '2. Why these exercises' : '2. 为什么是这些动作', body: en ? 'Bench press, squat, row, hinge work, lunges, pulldowns, and core drills are standard, widely used patterns. They are easy to scale, easy to coach, and easy to tie to a clear load prescription.' : '卧推、深蹲、划船、髋主导动作、弓步、下拉和核心训练都是标准化程度高、使用面广的模式。它们容易分级、容易指导，也容易对应明确的负荷处方。' },
+    { title: en ? '3. Why the plan can change later' : '3. 为什么计划可以后续调整', body: en ? 'The feedback panel is not decorative. It is the signal used to reduce weekly volume, lower calories, or preserve the current prescription when the user is executing well, so the next plan reflects real-world adherence.' : '反馈面板不是装饰。它会在执行不足时降低周训练量、在进展偏慢时调整热量、在执行良好时保留当前方案，让下一版计划真正反映现实执行情况。' }
+  ];
+
+  return { calories, protein, fat, carb, workouts: adjustedWorkouts, intensity, prSummary, logicSections, scienceSections, reasonSections, notes };
+}
+
+function renderWorkoutDay(day) {
+  const x = tx();
+  return `<details class="workout"><summary>${day.title}</summary>${day.blocks.map((block) => `<div class="exercise-note"><b>${block.name}</b><br>${x.load}：${block.loadLabel}${block.unit ? ` ${block.unit}` : ''} · ${block.sets} ${x.sets} × ${block.reps}${block.reason ? `<br>${block.reason}` : ''}</div>`).join('')}<p class="exercise-note">${day.note}</p></details>`;
+}
+
+function renderFeedback() {
+  const x = tx();
+  const resultHtml = currentFeedback ? `<div class="warning"><b>${x.adjustmentResult}</b><br>${currentFeedback.notes.map((note) => `• ${note}`).join('<br>')}<br>${x.cal}：${currentPlan.calories}</div>` : `<p class="hint">${x.feedbackHint}</p>`;
+  $('feedback').hidden = false;
+  $('feedback').innerHTML = `<h2>${x.feedback}</h2><div class="grid"><label>${x.doneSessions}<input id="doneSessions" type="number" min="0" max="7" value="${currentInput.frequencyPerWeek}" /></label><label>${x.averageCalories}<input id="averageCalories" type="number" value="${currentPlan.calories}" /></label><label>${x.currentWeight}<input id="feedbackWeight" type="number" step="0.1" value="${currentInput.weightKg}" /></label></div><button class="primary" type="button" id="applyFeedback">${x.applyFeedback}</button>${resultHtml}`;
+  $('applyFeedback').addEventListener('click', applyFeedback);
+}
+
+function renderPlan(plan) {
+  const x = tx();
+  $('result').hidden = false;
+  $('result').innerHTML = `<h2>${x.plan}</h2>${plan.notes.map((note) => `<p class="warning">${note}</p>`).join('')}<div class="metrics"><div class="metric"><b>${plan.calories}</b><small>${x.cal}</small></div><div class="metric"><b>${plan.protein}g</b><small>${x.protein}</small></div><div class="metric"><b>${plan.fat}g</b><small>${x.fatText}</small></div><div class="metric"><b>${plan.carb}g</b><small>${x.carb}</small></div></div><div class="card section"><h2>${x.pr}</h2>${plan.prSummary.length ? plan.prSummary.map((item) => `<div class="workout"><b>${item.name}</b><span>${x.oneRm} ${item.oneRm.toFixed(1)} ${x.kilos} · ${x.load} ${item.recommended} ${x.kilos}</span><p class="exercise-note">${item.reason}</p></div>`).join('') : `<p class="hint">${x.noPr}</p>`}</div><div class="card section"><h2>${x.strength}</h2><p>${plan.intensity.summary}</p><div>${plan.intensity.tags.map((tag) => `<span class="chip">${tag}</span>`).join('')}</div><p class="exercise-note">${plan.intensity.progress}</p></div><details class="card section" open><summary>${x.workouts}</summary><p class="hint">${en ? 'Tap a day to see the full exercise combination, recommended load, sets, and reps.' : '点击某一天可查看完整动作组合、推荐负荷、组数和次数范围。'}</p>${plan.workouts.map(renderWorkoutDay).join('')}</details><details class="card section"><summary>${x.logic}</summary>${plan.logicSections.map((item) => `<details class="section" open><summary>${item.title}</summary><p>${item.body}</p></details>`).join('')}</details><details class="card section"><summary>${x.science}</summary>${plan.scienceSections.map((item) => `<details class="section" open><summary>${item.title}</summary><p>${item.body}</p></details>`).join('')}</details><details class="card section"><summary>${x.why}</summary>${plan.reasonSections.map((item) => `<details class="section" open><summary>${item.title}</summary><p>${item.body}</p></details>`).join('')}</details><button class="primary section" type="button" id="download">${x.download}</button>`;
+  $('download').addEventListener('click', () => exportLongImage(plan));
+  renderFeedback();
+  $('result').scrollIntoView({ behavior: 'smooth' });
+}
+
+function applyFeedback() {
+  if (!currentPlan || !currentInput) return;
+  const done = Number($('doneSessions').value);
+  const avgCalories = Number($('averageCalories').value);
+  const nowWeight = Number($('feedbackWeight').value);
+  const notes = [];
+  let setDelta = 0;
+  let calorieDelta = 0;
+
+  if (done < currentInput.frequencyPerWeek) {
+    setDelta = -1;
+    notes.push(en ? 'Training completion was below plan; next week reduces one accessory set and keeps the main lifts.' : '本周训练完成率低于计划；下周减少 1 个辅助工作组，保留主要动作。');
+  } else {
+    notes.push(en ? 'Training completion matched the plan; keep the current split and progression rule.' : '本周训练完成率达到计划；保持当前分化和进阶规则。');
+  }
+
+  if (currentInput.goal.type === 'fat_loss' && nowWeight >= currentInput.weightKg - 0.2 && avgCalories >= currentPlan.calories) {
+    calorieDelta = -100;
+    notes.push(en ? 'Fat-loss trend is slower than expected; the next target is reduced by 100 kcal/day.' : '减脂趋势慢于预期；下一阶段每日热量下调 100 千卡。');
+  }
+  if (currentInput.goal.type === 'muscle_gain' && nowWeight <= currentInput.weightKg + 0.1 && avgCalories <= currentPlan.calories) {
+    calorieDelta = 120;
+    notes.push(en ? 'Muscle-gain trend is slower than expected; the next target adds 120 kcal/day.' : '增肌趋势慢于预期；下一阶段每日热量上调 120 千卡。');
+  }
+
+  currentAdjustment = { setDelta, calorieDelta };
+  currentFeedback = { notes };
+  currentPlan = buildPlan(currentInput, currentAdjustment);
+  renderPlan(currentPlan);
+}
+
+function exportLongImage(plan) {
+  const lines = [
+    en ? 'Shape Plan Lab' : '塑形计划实验室',
+    `${tx().cal} ${plan.calories}`,
+    `${tx().protein} ${plan.protein}g`,
+    `${tx().fatText} ${plan.fat}g`,
+    `${tx().carb} ${plan.carb}g`,
+    en ? 'Intensity prescription' : '训练强度处方',
+    plan.intensity.summary,
+    ...plan.intensity.tags.map((value) => `• ${value}`),
+    ...plan.logicSections.flatMap((section) => [section.title, section.body]),
+    ...plan.workouts.flatMap((day) => [day.title, ...day.blocks.map((block) => `${block.name} ${block.sets}${en ? ' sets' : '组'} × ${block.reps} · ${block.loadLabel}${block.unit ? ` ${block.unit}` : ''}`), day.note]),
+    en ? 'Why this plan' : '为什么这样安排',
+    ...plan.reasonSections.flatMap((section) => [section.title, section.body])
+  ];
+  const width = 1080;
+  const lineHeight = 28;
+  const height = Math.max(760, 110 + lines.length * lineHeight);
+  const esc = (s) => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  const text = lines.map((line, i) => `<text x="64" y="${96 + i * lineHeight}" font-size="${i === 0 ? 34 : 18}" font-weight="${i === 0 ? 700 : 400}" fill="${i === 0 ? '#163022' : '#2f4b3a'}">${esc(line)}</text>`).join('');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#f4f1e8"/><rect x="34" y="32" width="${width - 68}" height="${height - 64}" rx="8" fill="#fbfaf5" stroke="#d8ddd4"/>${text}<text x="64" y="${height - 44}" font-size="14" fill="#637269">${esc(new Date().toISOString().slice(0, 10))}</text></svg>`;
+  if (window.ShapePlanAndroid && window.ShapePlanAndroid.saveSvg) {
+    window.ShapePlanAndroid.saveSvg(svg, `shape-plan-${en ? 'en' : 'zh'}-${Date.now()}.svg`);
+  } else {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+    a.download = `shape-plan-${Date.now()}.svg`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }
+}
+
+function generate(e) {
+  if (e) e.preventDefault();
+  document.querySelectorAll('.red').forEach((item) => item.classList.remove('red'));
+  currentInput = normalizeInput();
+  currentAdjustment = null;
+  currentFeedback = null;
+  currentPlan = buildPlan(currentInput);
+  renderPlan(currentPlan);
+}
+
+function refreshFromLanguage() {
+  if (!currentInput) return;
+  currentPlan = buildPlan(currentInput, currentAdjustment);
+  renderPlan(currentPlan);
+}
+
+function setInitialDate() {
+  const today = new Date();
+  today.setDate(today.getDate() + 90);
+  $('targetDate').value = today.toISOString().slice(0, 10);
+}
+
+$('form').addEventListener('submit', generate);
+$('lang').addEventListener('click', () => { en = !en; applyLanguage(); refreshFromLanguage(); });
+
+setInitialDate();
+applyLanguage();
 </script>
 </body>
 </html>
