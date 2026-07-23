@@ -230,3 +230,25 @@ test("Android WebView planner keeps scenario-sensitive outputs aligned with the 
   }
   assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length);
 });
+
+test("Android PR loads use conservative safe max and movement-specific scaling", () => {
+  const { context, elements } = loadAndroidContext();
+  setAndroidInput(elements, { sex: "male", goal: "muscle_gain", mode: "gym", frequency: 4, focus: focusCases[0] });
+  elements.benchWeight.value = "75";
+  elements.benchReps.value = "10";
+  const input = context.normalizeInput();
+  const plan = context.buildPlan(input);
+  const pushDay = plan.workouts[0];
+  const loadKg = (namePart) => {
+    const block = pushDay.blocks.find((item) => item.name.includes(namePart));
+    assert.ok(block, `${namePart} should be present`);
+    return Number(block.load.match(/^([\d.]+)/)?.[1]);
+  };
+
+  assert.equal(input.pr.bench, 84);
+  assert.ok(plan.prSummary[0].reason.includes("保守安全训练最大值") || plan.prSummary[0].reason.includes("safe training max"));
+  assert.ok(loadKg("杠铃卧推") >= 66 && loadKg("杠铃卧推") <= 68);
+  assert.ok(loadKg("坐姿肩推") >= 19 && loadKg("坐姿肩推") <= 21);
+  assert.ok(loadKg("下压") >= 9 && loadKg("下压") <= 11);
+  assert.ok(loadKg("侧平举") >= 4 && loadKg("侧平举") <= 5);
+});

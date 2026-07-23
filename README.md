@@ -40,7 +40,7 @@ npm start
 
 离线 Android MVP 位于 [`android/shape-plan-android`](android/shape-plan-android)。计划生成、目标自动修正、围度聚焦和训练强度规则都内置在应用中，安装后不依赖开发服务器。
 
-当前发布版本：`android-v1.0.6`。该版本在 `android-v1.0.5` 的基础上，新增全量/边缘场景测试全集和可读测试报告，覆盖 Web 与 Android WebView 各 20736 个组合，并修复每周 1 次训练、低频臂围目标和低频臀围目标的动作响应。动作计划继续按“动作指导、建议重量、建议次数、建议组数、PR 估计、安排原因”的结构展示。
+当前发布版本：`android-v1.0.7`。该版本在 `android-v1.0.6` 的基础上，修复 PR 负荷处方：用户填写“重量 × 次数”后不再把理论 1RM 当作无辅助安全最大重量，也不再把卧推锚点直接套到坐姿推肩、绳索下压、哑铃侧平举等辅助动作。应用现在先估算保守安全训练最大值，再按动作类型比例生成建议重量。
 
 测试报告位于 [`docs/scenario-test-report.md`](docs/scenario-test-report.md)，包含全量矩阵覆盖范围、边缘场景和典型输入/输出样例。
 
@@ -95,7 +95,7 @@ Run `npm test`, `npm run test:report`, and `npm start`, then open [http://localh
 
 The offline Android MVP is in [`android/shape-plan-android`](android/shape-plan-android). Its plan generation, goal normalization, circumference emphasis, and intensity rules run inside the app, without a development server.
 
-Current release: `android-v1.0.6`. Building on `android-v1.0.5`, this release adds comprehensive and edge-case scenario tests plus a readable test report, covering 20736 Web combinations and 20736 Android WebView combinations. It also fixes one-session training plans and low-frequency arm/hip circumference target responses. The daily workout layout still shows guide, suggested weight, suggested reps, suggested sets, PR estimate, and arrangement reason.
+Current release: `android-v1.0.7`. Building on `android-v1.0.6`, this release fixes PR-based load prescription: entered weight × reps no longer becomes an aggressive unspotted theoretical 1RM, and bench anchors are no longer copied directly to seated shoulder press, triceps pressdown, lateral raise, or other accessory movements. The app now derives a conservative safe training max and scales suggested loads by movement type.
 
 The test report is available at [`docs/scenario-test-report.md`](docs/scenario-test-report.md), with matrix coverage, edge cases, and representative input/output examples.
 
