@@ -40,7 +40,7 @@ npm start
 
 离线 Android MVP 位于 [`android/shape-plan-android`](android/shape-plan-android)。计划生成、目标自动修正、围度聚焦和训练强度规则都内置在应用中，安装后不依赖开发服务器。
 
-当前发布版本：`android-v1.0.4`。该版本在 `android-v1.0.3` 的基础上，进一步把建议重量改为按健身房 / 居家常用重量和用户 PR 锚点推断，并根据性别切换常用动作录入方式。动作计划继续按“动作指导、建议重量、建议次数、建议组数、PR 估计、安排原因”的结构展示。
+当前发布版本：`android-v1.0.5`。该版本在 `android-v1.0.4` 的基础上，补齐 Android 与 Web 的多场景一致性：支持 2/3/4/5/6 天不同训练拆分、日常活动与单次训练时长输入、保持目标、居家动作不混入健身房器械动作，并用场景矩阵测试覆盖性别、目标类型、训练场景、训练频率和围度目标组合。动作计划继续按“动作指导、建议重量、建议次数、建议组数、PR 估计、安排原因”的结构展示。
 
 1. 推送 `android-v*` 格式的标签后，GitHub Actions 会构建 APK 并发布到 Releases。
 2. 手动运行 GitHub 的 **Build Android APK** 工作流，也会在工作流产物中提供可下载 APK。
@@ -93,7 +93,7 @@ Run `npm test` and `npm start`, then open [http://localhost:3000](http://localho
 
 The offline Android MVP is in [`android/shape-plan-android`](android/shape-plan-android). Its plan generation, goal normalization, circumference emphasis, and intensity rules run inside the app, without a development server.
 
-Current release: `android-v1.0.4`. Building on `android-v1.0.3`, this release infers suggested weights from common gym/home loads and user PR anchors instead of copying one weight across movements, and it switches the PR entry labels and exercise defaults by sex. The daily workout layout still shows guide, suggested weight, suggested reps, suggested sets, PR estimate, and arrangement reason.
+Current release: `android-v1.0.5`. Building on `android-v1.0.4`, this release aligns Android and Web behavior across scenarios: 2/3/4/5/6-day splits, daily activity and session-length inputs, maintenance goals, home plans that avoid gym-only equipment, and a scenario matrix test covering sex, goal type, training mode, weekly frequency, and circumference targets. The daily workout layout still shows guide, suggested weight, suggested reps, suggested sets, PR estimate, and arrangement reason.
 
 1. Push an `android-v*` tag to build and publish an APK in GitHub Releases.
 2. You can also run the **Build Android APK** GitHub workflow manually and download its APK artifact.

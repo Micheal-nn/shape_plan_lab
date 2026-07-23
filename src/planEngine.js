@@ -120,7 +120,7 @@ function intensityProfile(input) {
 
 function makeWorkout(label, focus, groups, mode, input, focusGroups) {
   const profile = intensityProfile(input);
-  const exercises = pickExercises(groups, mode).map((exercise) => {
+  const exercises = pickExercises(groups, mode, input).map((exercise) => {
     const emphasized = focusGroups.includes(exercise.muscleGroup);
     const sets = exercise.sets + (emphasized ? 1 : 0);
     return {
@@ -149,7 +149,8 @@ function measurementFocus(input) {
 function translateFocus(focus) {
   const labels = {
     "Full Body A": "全身训练 A", "Full Body B": "全身训练 B", "Full Body C": "全身训练 C",
-    "Upper A": "上肢训练 A", "Upper B": "上肢训练 B", "Lower A": "下肢训练 A", "Lower B": "下肢训练 B"
+    "Upper A": "上肢训练 A", "Upper B": "上肢训练 B", "Upper C": "上肢训练 C",
+    "Lower A": "下肢训练 A", "Lower B": "下肢训练 B", "Lower C": "下肢训练 C"
   };
   return labels[focus] ?? focus;
 }
@@ -185,6 +186,31 @@ function buildWorkoutSplit(input) {
         make("Day 1", "Full Body A", ["quads", "chest", "back", "core"]),
         make("Day 2", "Full Body B", ["hamstrings", "shoulder", "biceps", "core"]),
         make("Day 3", "Full Body C", ["glutes", "chest", "triceps", "calves"])
+      ]
+    };
+  }
+  if (days === 5) {
+    return {
+      split: "upper_lower_full_5d",
+      workouts: [
+        make("Day 1", "Upper A", ["chest", "back", "shoulder", "triceps"]),
+        make("Day 2", "Lower A", ["quads", "hamstrings", "glutes", "core"]),
+        make("Day 3", "Upper B", ["back", "chest", "biceps", "shoulder"]),
+        make("Day 4", "Lower B", ["glutes", "quads", "calves", "core"]),
+        make("Day 5", "Full Body C", ["chest", "back", "glutes", "core"])
+      ]
+    };
+  }
+  if (days >= 6) {
+    return {
+      split: "upper_lower_6d",
+      workouts: [
+        make("Day 1", "Upper A", ["chest", "back", "shoulder", "triceps"]),
+        make("Day 2", "Lower A", ["quads", "hamstrings", "glutes", "core"]),
+        make("Day 3", "Upper B", ["back", "chest", "biceps", "shoulder"]),
+        make("Day 4", "Lower B", ["glutes", "hamstrings", "quads", "calves"]),
+        make("Day 5", "Upper C", ["shoulder", "chest", "back", "biceps", "triceps"]),
+        make("Day 6", "Lower C", ["quads", "glutes", "hamstrings", "core"])
       ]
     };
   }
@@ -346,6 +372,13 @@ export function generatePlan(input) {
   if ((input.sessionMinutes ?? 45) < 35) warnings.push("Short sessions reduce weekly training volume.");
   if (input.trainingMode === "bodyweight" && input.goal.type === "muscle_gain") warnings.push("Bodyweight-only muscle gain usually progresses more slowly.");
 
+  const splitLabelsZh = {
+    full_body_2d: "每周 2 次全身训练",
+    full_body_3d: "每周 3 次全身训练",
+    upper_lower_4d: "每周 4 次上下肢分化",
+    upper_lower_full_5d: "每周 5 次上下肢 + 全身补充",
+    upper_lower_6d: "每周 6 次上下肢分化"
+  };
   const plan = {
     feasible: feasibility.feasible,
     confidence: feasibility.confidence,
@@ -360,11 +393,11 @@ export function generatePlan(input) {
         : `当前时间、频率和目标相互匹配，计划按可持续${{ fat_loss: "减脂", muscle_gain: "增肌", recomposition: "体态重组", maintain: "保持" }[input.goal.type]}路径生成。`
       : "当前目标与截止日期或训练频率不匹配，建议先调整约束条件。",
     targets,
-    planningLogic: buildPlanningLogic(input, targets, { ...split, splitZh: { full_body_2d: "每周 2 次全身训练", full_body_3d: "每周 3 次全身训练", upper_lower_4d: "每周 4 次上下肢分化" }[split.split] }, focusedMeasurements, intensityPlan),
+    planningLogic: buildPlanningLogic(input, targets, { ...split, splitZh: splitLabelsZh[split.split] }, focusedMeasurements, intensityPlan),
     trainingPlan: {
       split: split.split,
-      splitZh: { full_body_2d: "每周 2 次全身训练", full_body_3d: "每周 3 次全身训练", upper_lower_4d: "每周 4 次上下肢分化" }[split.split],
-      days: input.frequencyPerWeek ?? 3,
+      splitZh: splitLabelsZh[split.split],
+      days: split.workouts.length,
       workouts: split.workouts
     },
     intensityPlan,

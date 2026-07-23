@@ -31,12 +31,14 @@
       <label id="heightLabel">身高（厘米）<input id="height" type="number" value="175" /></label>
       <label id="weightLabel">体重（千克）<input id="weight" type="number" value="82" step="0.1" /></label>
       <label id="fatLabel">体脂率（百分比）<input id="fat" type="number" value="24" step="0.1" /></label>
+      <label id="activityLabel">日常活动<select id="activity"><option value="sedentary">久坐</option><option value="light" selected>轻活动</option><option value="moderate">中等活动</option><option value="high">高活动</option></select></label>
       <label id="goalLabel">目标类型
-        <select id="goal"><option value="fat_loss">减脂 / 减重</option><option value="muscle_gain">增肌</option><option value="recomposition">体态重组</option></select>
+        <select id="goal"><option value="fat_loss">减脂 / 减重</option><option value="muscle_gain">增肌</option><option value="recomposition">体态重组</option><option value="maintain">保持</option></select>
       </label>
       <label id="targetWeightLabel">目标体重（千克）<input id="targetWeight" type="number" value="74" step="0.1" /></label>
       <label id="targetDateLabel">目标日期<input id="targetDate" type="date" /></label>
       <label id="frequencyLabel">每周训练次数<select id="frequency"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
+      <label id="sessionLabel">单次训练时长（分钟）<input id="session" type="number" min="20" max="180" value="60" /></label>
       <label id="modeLabel">训练场景<select id="mode"><option value="gym">健身房</option><option value="bodyweight">自重 / 居家</option></select></label>
       <label id="experienceLabel">训练经验<select id="experience"><option value="novice">新手</option><option value="intermediate">中级</option><option value="advanced">高级</option></select></label>
     </div>
@@ -76,9 +78,9 @@
 const $ = (id) => document.getElementById(id);
 const t = {
   zh: {
-    title: '塑形计划实验室', subtitle: '离线 Android 版 · 支持下载长图', profile: '基础指标与目标', sex: '性别', age: '年龄', height: '身高（厘米）', weight: '体重（千克）', fat: '体脂率（百分比）', goal: '目标类型', targetWeight: '目标体重（千克）', targetDate: '目标日期', frequency: '每周训练次数', mode: '训练场景', experience: '训练经验', circ: '可选围度目标（厘米）', hint: '当前值和目标值需成对填写。腰围用于整体减脂评估，胸/臂/臀/大腿围可用于局部训练侧重。', area: '部位', current: '当前值', target: '目标值', waist: '腰围', chest: '胸围', hip: '臀围', arm: '臂围', thigh: '大腿围', pr: '个人纪录与训练强度', prHint: '根据性别展示常用能力锚点。填写“重量 + 次数”后，应用会估算个人最大力量，再按动作类型推断训练重量；未填写时使用常用器械/居家重量和用力等级。', bench: '卧推纪录（千克 × 次）', squat: '深蹲纪录（千克 × 次）', row: '划船/下拉纪录（千克 × 次）', hinge: '硬拉/臀推纪录（千克 × 次）', generate: '生成科学计划', plan: '你的计划', cal: '每日热量', protein: '蛋白质', fatText: '脂肪', carb: '碳水化合物', logic: '计划生成逻辑', science: '科学依据', strength: '训练强度处方', why: '为什么这样安排', workouts: '每周训练安排', download: '导出长图', feedback: '执行反馈与计划调整', feedbackHint: '填写完成次数、近期平均热量和当前体重后，应用会调整后续计划。', doneSessions: '本周完成训练次数', averageCalories: '近期平均热量', currentWeight: '当前体重', applyFeedback: '根据反馈调整后续计划', adjustmentResult: '调整结果', useRpe: '工作组采用主观用力等级', reps: '次余力', noPr: '未填写个人纪录，使用常用重量建议、主观用力等级与次数区间。', oneRm: '估算个人最大力量', load: '推荐负荷', sets: '组', kilos: '千克', minutes: '分钟', length: '长图', fat_loss: '减脂 / 减重', muscle_gain: '增肌', recomposition: '体态重组', male: '男性', female: '女性', novice: '新手', intermediate: '中级', advanced: '高级', gym: '健身房', bodyweight: '自重 / 居家' },
+    title: '塑形计划实验室', subtitle: '离线 Android 版 · 支持下载长图', profile: '基础指标与目标', sex: '性别', age: '年龄', height: '身高（厘米）', weight: '体重（千克）', fat: '体脂率（百分比）', activity: '日常活动', session: '单次训练时长（分钟）', goal: '目标类型', targetWeight: '目标体重（千克）', targetDate: '目标日期', frequency: '每周训练次数', mode: '训练场景', experience: '训练经验', circ: '可选围度目标（厘米）', hint: '当前值和目标值需成对填写。腰围用于整体减脂评估，胸/臂/臀/大腿围可用于局部训练侧重。', area: '部位', current: '当前值', target: '目标值', waist: '腰围', chest: '胸围', hip: '臀围', arm: '臂围', thigh: '大腿围', pr: '个人纪录与训练强度', prHint: '根据性别展示常用能力锚点。填写“重量 + 次数”后，应用会估算个人最大力量，再按动作类型推断训练重量；未填写时使用常用器械/居家重量和用力等级。', bench: '卧推纪录（千克 × 次）', squat: '深蹲纪录（千克 × 次）', row: '划船/下拉纪录（千克 × 次）', hinge: '硬拉/臀推纪录（千克 × 次）', generate: '生成科学计划', plan: '你的计划', cal: '每日热量', protein: '蛋白质', fatText: '脂肪', carb: '碳水化合物', logic: '计划生成逻辑', science: '科学依据', strength: '训练强度处方', why: '为什么这样安排', workouts: '每周训练安排', download: '导出长图', feedback: '执行反馈与计划调整', feedbackHint: '填写完成次数、近期平均热量和当前体重后，应用会调整后续计划。', doneSessions: '本周完成训练次数', averageCalories: '近期平均热量', currentWeight: '当前体重', applyFeedback: '根据反馈调整后续计划', adjustmentResult: '调整结果', useRpe: '工作组采用主观用力等级', reps: '次余力', noPr: '未填写个人纪录，使用常用重量建议、主观用力等级与次数区间。', oneRm: '估算个人最大力量', load: '推荐负荷', sets: '组', kilos: '千克', minutes: '分钟', length: '长图', fat_loss: '减脂 / 减重', muscle_gain: '增肌', recomposition: '体态重组', maintain: '保持', male: '男性', female: '女性', novice: '新手', intermediate: '中级', advanced: '高级', gym: '健身房', bodyweight: '自重 / 居家', sedentary: '久坐', light: '轻活动', moderate: '中等活动', high: '高活动' },
   en: {
-    title: 'Shape Plan Lab', subtitle: 'Offline Android edition · long-image download supported', profile: 'Baseline metrics and goal', sex: 'Sex', age: 'Age', height: 'Height (cm)', weight: 'Weight (kg)', fat: 'Body fat (%)', goal: 'Goal type', targetWeight: 'Target weight (kg)', targetDate: 'Target date', frequency: 'Weekly sessions', mode: 'Training setting', experience: 'Training experience', circ: 'Optional circumference targets (cm)', hint: 'Enter current and target values as a pair. Waist guides overall fat-loss evaluation, while chest/arm/hip/thigh values can shift training emphasis.', area: 'Area', current: 'Current', target: 'Target', waist: 'Waist', chest: 'Chest', hip: 'Hip', arm: 'Arm', thigh: 'Thigh', pr: 'Personal records and intensity', prHint: 'The app shows sex-specific common strength anchors. Enter weight + reps to estimate 1RM and infer exercise loads; otherwise it uses common gym/home loads plus RPE.', bench: 'Bench record (kg × reps)', squat: 'Squat record (kg × reps)', row: 'Row / pulldown record (kg × reps)', hinge: 'Deadlift / hip-thrust record (kg × reps)', generate: 'Generate plan', plan: 'Your plan', cal: 'Daily calories', protein: 'Protein', fatText: 'Fat', carb: 'Carbohydrate', logic: 'Plan generation logic', science: 'Scientific basis', strength: 'Intensity prescription', why: 'Why this plan', workouts: 'Weekly training schedule', download: 'Export long image', feedback: 'Execution feedback and plan adjustment', feedbackHint: 'Enter session completion, recent average calories, and current weight so the app can adjust the next plan.', doneSessions: 'Completed sessions this week', averageCalories: 'Recent average calories', currentWeight: 'Current weight', applyFeedback: 'Adjust future plan from feedback', adjustmentResult: 'Adjustment result', useRpe: 'Working sets use effort rating', reps: 'reps in reserve', noPr: 'No personal records entered; the app will use common load suggestions, effort rating, and rep ranges.', oneRm: 'Estimated 1RM', load: 'Recommended load', sets: 'sets', kilos: 'kg', minutes: 'min', length: 'Long image', fat_loss: 'Fat loss', muscle_gain: 'Muscle gain', recomposition: 'Recomposition', male: 'Male', female: 'Female', novice: 'Novice', intermediate: 'Intermediate', advanced: 'Advanced', gym: 'Gym', bodyweight: 'Bodyweight / home' }
+    title: 'Shape Plan Lab', subtitle: 'Offline Android edition · long-image download supported', profile: 'Baseline metrics and goal', sex: 'Sex', age: 'Age', height: 'Height (cm)', weight: 'Weight (kg)', fat: 'Body fat (%)', activity: 'Daily activity', session: 'Session length (min)', goal: 'Goal type', targetWeight: 'Target weight (kg)', targetDate: 'Target date', frequency: 'Weekly sessions', mode: 'Training setting', experience: 'Training experience', circ: 'Optional circumference targets (cm)', hint: 'Enter current and target values as a pair. Waist guides overall fat-loss evaluation, while chest/arm/hip/thigh values can shift training emphasis.', area: 'Area', current: 'Current', target: 'Target', waist: 'Waist', chest: 'Chest', hip: 'Hip', arm: 'Arm', thigh: 'Thigh', pr: 'Personal records and intensity', prHint: 'The app shows sex-specific common strength anchors. Enter weight + reps to estimate 1RM and infer exercise loads; otherwise it uses common gym/home loads plus RPE.', bench: 'Bench record (kg × reps)', squat: 'Squat record (kg × reps)', row: 'Row / pulldown record (kg × reps)', hinge: 'Deadlift / hip-thrust record (kg × reps)', generate: 'Generate plan', plan: 'Your plan', cal: 'Daily calories', protein: 'Protein', fatText: 'Fat', carb: 'Carbohydrate', logic: 'Plan generation logic', science: 'Scientific basis', strength: 'Intensity prescription', why: 'Why this plan', workouts: 'Weekly training schedule', download: 'Export long image', feedback: 'Execution feedback and plan adjustment', feedbackHint: 'Enter session completion, recent average calories, and current weight so the app can adjust the next plan.', doneSessions: 'Completed sessions this week', averageCalories: 'Recent average calories', currentWeight: 'Current weight', applyFeedback: 'Adjust future plan from feedback', adjustmentResult: 'Adjustment result', useRpe: 'Working sets use effort rating', reps: 'reps in reserve', noPr: 'No personal records entered; the app will use common load suggestions, effort rating, and rep ranges.', oneRm: 'Estimated 1RM', load: 'Recommended load', sets: 'sets', kilos: 'kg', minutes: 'min', length: 'Long image', fat_loss: 'Fat loss', muscle_gain: 'Muscle gain', recomposition: 'Recomposition', maintain: 'Maintenance', male: 'Male', female: 'Female', novice: 'Novice', intermediate: 'Intermediate', advanced: 'Advanced', gym: 'Gym', bodyweight: 'Bodyweight / home', sedentary: 'Sedentary', light: 'Lightly active', moderate: 'Moderately active', high: 'Highly active' }
 };
 
 let en = false;
@@ -99,11 +101,15 @@ const RANGES = {
   recomposition: {
     gym: { chest: [67, 77], squat: [72, 82], row: [67, 77], hinge: [72, 82] },
     bodyweight: { chest: [9, 13], squat: [11, 17], row: [9, 13], hinge: [11, 15] }
+  },
+  maintain: {
+    gym: { chest: [65, 75], squat: [70, 80], row: [65, 75], hinge: [70, 80] },
+    bodyweight: { chest: [10, 14], squat: [12, 18], row: [10, 14], hinge: [12, 16] }
   }
 };
 
 const PR_IDS = ['bench', 'squat', 'row', 'hinge'];
-const SAFE_RATE = { fat_loss: 0.0075, muscle_gain: 0.0035, recomposition: 0.0025 };
+const SAFE_RATE = { fat_loss: 0.0075, muscle_gain: 0.0035, recomposition: 0.0025, maintain: 0.02 };
 
 function tx() { return t[en ? 'en' : 'zh']; }
 function text(id, key) { $(id).textContent = tx()[key]; }
@@ -144,9 +150,11 @@ function normalizeInput() {
     heightCm: Number($('height').value),
     weightKg: Number($('weight').value),
     bodyFatPct: parseNum('fat'),
+    activityLevel: $('activity').value,
     goal: { type: $('goal').value, targetWeightKg: parseNum('targetWeight'), targetDate: $('targetDate').value || '' },
     trainingMode: $('mode').value,
     frequencyPerWeek: Number($('frequency').value),
+    sessionMinutes: Number($('session').value) || 60,
     trainingExperience: $('experience').value,
     currentCircumference: { waistCm: parseNum('waist'), chestCm: parseNum('chest'), hipCm: parseNum('hip'), armCm: parseNum('arm'), thighCm: parseNum('thigh') },
     goalCircumference: { waistCm: parseNum('targetWaist'), chestCm: parseNum('targetChest'), hipCm: parseNum('targetHip'), armCm: parseNum('targetArm'), thighCm: parseNum('targetThigh') },
@@ -173,6 +181,11 @@ function normalizeGoals(input) {
     input.goal.targetWeightKg = fmt(weight * 1.02);
     highlight('targetWeight');
     notes.push(en ? 'Target weight was raised above current weight for muscle gain.' : '增肌目标体重已调整为高于当前体重。');
+  }
+  if (goal === 'maintain' && input.goal.targetWeightKg != null && Math.abs(input.goal.targetWeightKg - weight) > weight * 0.02) {
+    input.goal.targetWeightKg = fmt(weight);
+    highlight('targetWeight');
+    notes.push(en ? 'Maintenance keeps body weight near the current level, so the target weight was reset.' : '保持目标需要体重接近当前水平，因此已重置目标体重。');
   }
 
   if (targetDate && input.goal.targetWeightKg != null) {
@@ -230,18 +243,23 @@ function applyLanguage() {
   document.title = x.title;
   $('lang').textContent = en ? '中文' : 'EN';
   [['title', 'title'], ['subtitle', 'subtitle'], ['profileTitle', 'profile'], ['circTitle', 'circ'], ['circHint', 'hint'], ['prTitle', 'pr'], ['prHint', 'prHint'], ['generate', 'generate']].forEach(([id, key]) => text(id, key));
-  ['sexLabel', 'ageLabel', 'heightLabel', 'weightLabel', 'fatLabel', 'goalLabel', 'targetWeightLabel', 'targetDateLabel', 'frequencyLabel', 'modeLabel', 'experienceLabel'].forEach((id, i) => label(id, ['sex', 'age', 'height', 'weight', 'fat', 'goal', 'targetWeight', 'targetDate', 'frequency', 'mode', 'experience'][i]));
+  ['sexLabel', 'ageLabel', 'heightLabel', 'weightLabel', 'fatLabel', 'activityLabel', 'goalLabel', 'targetWeightLabel', 'targetDateLabel', 'frequencyLabel', 'sessionLabel', 'modeLabel', 'experienceLabel'].forEach((id, i) => label(id, ['sex', 'age', 'height', 'weight', 'fat', 'activity', 'goal', 'targetWeight', 'targetDate', 'frequency', 'session', 'mode', 'experience'][i]));
   ['areaHead', 'currentHead', 'targetHead', 'waistName', 'chestName', 'hipName', 'armName', 'thighName'].forEach((id, i) => $(id).textContent = [x.area, x.current, x.target, x.waist, x.chest, x.hip, x.arm, x.thigh][i]);
-  ['sex', 'goal', 'mode', 'experience'].forEach((id) => {
+  ['sex', 'activity', 'goal', 'mode', 'experience'].forEach((id) => {
     const sel = $(id);
     [...sel.options].forEach((o) => {
       if (o.value === 'bodyweight') o.textContent = x.bodyweight;
       else if (o.value === 'fat_loss') o.textContent = x.fat_loss;
       else if (o.value === 'muscle_gain') o.textContent = x.muscle_gain;
       else if (o.value === 'recomposition') o.textContent = x.recomposition;
+      else if (o.value === 'maintain') o.textContent = x.maintain;
       else if (o.value === 'male') o.textContent = x.male;
       else if (o.value === 'female') o.textContent = x.female;
       else if (o.value === 'gym') o.textContent = x.gym;
+      else if (o.value === 'sedentary') o.textContent = x.sedentary;
+      else if (o.value === 'light') o.textContent = x.light;
+      else if (o.value === 'moderate') o.textContent = x.moderate;
+      else if (o.value === 'high') o.textContent = x.high;
       else if (o.value === 'novice') o.textContent = x.novice;
       else if (o.value === 'intermediate') o.textContent = x.intermediate;
       else if (o.value === 'advanced') o.textContent = x.advanced;
@@ -260,38 +278,40 @@ function buildPlan(input, adjustment = null) {
   const bmr = input.bodyFatPct
     ? 370 + 21.6 * leanMass
     : (input.sex === 'male' ? 10 * weight + 6.25 * height - 5 * age + 5 : 10 * weight + 6.25 * height - 5 * age - 161);
-  const activity = { novice: 1.35, intermediate: 1.5, advanced: 1.65 }[input.trainingExperience] ?? 1.45;
+  const activity = { sedentary: 1.2, light: 1.375, moderate: 1.55, high: 1.725 }[input.activityLevel] ?? 1.375;
   const tdee = Math.round(bmr * activity);
   const goal = input.goal.type;
   const targetDate = parseDateValue(input.goal.targetDate);
   const weeks = targetDate ? weeksUntil(targetDate) : 12;
   const targetDelta = input.goal.targetWeightKg != null ? input.goal.targetWeightKg - weight : null;
-
-  let calories;
-  if (goal === 'fat_loss') {
-    const deficit = targetDelta != null && targetDelta < 0 ? clamp(Math.abs(targetDelta) * 7700 / weeks / 7, 300, 700) : (bodyFatPct >= 25 ? 550 : 400);
-    calories = Math.max(1200, Math.round(tdee - deficit));
-  } else if (goal === 'muscle_gain') {
-    const surplus = targetDelta != null && targetDelta > 0 ? clamp(targetDelta * 7700 / weeks / 7, 150, 350) : 250;
-    calories = Math.max(1500, Math.round(tdee + surplus));
-  } else {
-    calories = Math.max(1400, Math.round(tdee - (bodyFatPct >= 20 ? 150 : 50)));
-  }
-
-  if (adjustment?.calorieDelta) calories = Math.max(1200, calories + adjustment.calorieDelta);
-
-  const proteinFactor = goal === 'fat_loss' ? 2.0 : goal === 'muscle_gain' ? 1.8 : 1.9;
-  const fatFactor = goal === 'muscle_gain' ? 0.7 : 0.8;
-  const protein = Math.round(weight * proteinFactor);
-  const fat = Math.max(45, Math.round(weight * fatFactor));
-  const carb = Math.max(0, Math.round((calories - protein * 4 - fat * 9) / 4));
-
   const focus = {};
   ['waist', 'chest', 'hip', 'arm', 'thigh'].forEach((key) => {
     const currentValue = input.currentCircumference[`${key}Cm`];
     const targetValue = input.goalCircumference[`${key}Cm`];
     focus[key] = currentValue != null && targetValue != null ? Math.abs(targetValue - currentValue) : 0;
   });
+
+  let calories;
+  if (goal === 'fat_loss') {
+    const deficit = targetDelta != null && targetDelta < 0 ? clamp(Math.abs(targetDelta) * 7700 / weeks / 7, 250, 800) : (bodyFatPct >= (input.sex === 'male' ? 20 : 30) ? 600 : 450);
+    calories = Math.round(tdee - deficit);
+  } else if (goal === 'muscle_gain') {
+    const surplus = targetDelta != null && targetDelta > 0 ? clamp(targetDelta * 7700 / weeks / 7 / 0.6, 100, 300) : (bodyFatPct >= (input.sex === 'male' ? 20 : 30) ? 100 : 250);
+    calories = Math.round(tdee + surplus);
+  } else if (goal === 'recomposition') {
+    calories = Math.round(tdee - (bodyFatPct >= (input.sex === 'male' ? 20 : 30) ? 250 : 100));
+  } else {
+    calories = Math.round(tdee - (focus.waist >= 2 ? 150 : 0));
+  }
+
+  if (adjustment?.calorieDelta) calories += adjustment.calorieDelta;
+
+  const proteinFactor = goal === 'fat_loss' ? 2.0 : goal === 'muscle_gain' ? 1.8 : 1.6;
+  const fatFactor = goal === 'fat_loss' ? 0.8 : 0.9;
+  const protein = Math.round(weight * proteinFactor);
+  const fat = Math.round(weight * fatFactor);
+  calories = Math.max(Math.round(calories), Math.round(protein * 4 + fat * 9 + weight * 4));
+  const carb = Math.max(0, Math.round((calories - protein * 4 - fat * 9) / 4));
 
   const waistFocus = focus.waist >= 2;
   const chestFocus = focus.chest >= 2;
@@ -301,7 +321,7 @@ function buildPlan(input, adjustment = null) {
 
   const rpe = input.trainingExperience === 'novice' ? 6 : input.trainingExperience === 'advanced' ? 8 : 7;
   const rir = 10 - rpe;
-  const loadByGoal = { fat_loss: { bench: 72, squat: 72, row: 70, hinge: 72 }, muscle_gain: { bench: 80, squat: 78, row: 78, hinge: 80 }, recomposition: { bench: 76, squat: 74, row: 74, hinge: 76 } }[goal];
+  const loadByGoal = { fat_loss: { bench: 72, squat: 72, row: 70, hinge: 72 }, muscle_gain: { bench: 80, squat: 78, row: 78, hinge: 80 }, recomposition: { bench: 76, squat: 74, row: 74, hinge: 76 }, maintain: { bench: 72, squat: 72, row: 70, hinge: 72 } }[goal];
   const recommended = (key) => input.pr[key] ? recommendationFromPr(input.pr[key], loadByGoal[key]) : null;
   const loadLabel = (key) => recommended(key) ? `${recommended(key)}` : (en ? `RPE ${rpe}` : `用力等级 ${rpe}`);
   const loadUnit = (key) => recommended(key) ? tx().kilos : '';
@@ -348,8 +368,8 @@ function buildPlan(input, adjustment = null) {
     prBasis: loadOverride ? (en ? 'Load is prescribed by movement type rather than a max record' : '该负重按动作类型处方，不依赖最大重量') : prBasis(category, liftKey)
   });
   const targetReason = en
-    ? `This day is biased toward ${goal === 'fat_loss' ? 'energy expenditure, trunk control, and keeping strength while dieting' : goal === 'muscle_gain' ? 'progressive overload and extra hypertrophy volume for the requested body areas' : 'balanced strength, muscle retention, and manageable fatigue'}.`
-    : `本日安排重点是${goal === 'fat_loss' ? '提高能量消耗、强化核心控制，并在减脂期保留力量' : goal === 'muscle_gain' ? '渐进超负荷，并为目标围度部位增加增肌训练量' : '平衡力量、肌肉维持和可恢复疲劳'}。`;
+    ? `This day is biased toward ${goal === 'fat_loss' ? 'energy expenditure, trunk control, and keeping strength while dieting' : goal === 'muscle_gain' ? 'progressive overload and extra hypertrophy volume for the requested body areas' : goal === 'maintain' ? 'stable performance, posture, and measurable adherence without forcing weight change' : 'balanced strength, muscle retention, and manageable fatigue'}.`
+    : `本日安排重点是${goal === 'fat_loss' ? '提高能量消耗、强化核心控制，并在减脂期保留力量' : goal === 'muscle_gain' ? '渐进超负荷，并为目标围度部位增加增肌训练量' : goal === 'maintain' ? '稳定训练表现、维持体态和可衡量执行，不强行改变体重' : '平衡力量、肌肉维持和可恢复疲劳'}。`;
 
   const prSummary = PR_IDS.flatMap((key) => {
     if (!input.pr[key]) return [];
@@ -406,8 +426,102 @@ function buildPlan(input, adjustment = null) {
     ex(en ? 'Farmer carry' : '农夫行走', en ? 'Walk tall, ribs down, shoulders packed, and grip firmly.' : '身体站高，肋骨下沉，肩胛稳定，握紧负重前行。', null, 3, en ? '30–45 sec' : '30–45 秒', en ? 'Finishes with grip, trunk stiffness, and low-skill conditioning.' : '用低技术门槛动作补充握力、躯干刚性和体能。', en ? 'Carry / core' : '负重行走 / 核心', 'carry')
   ], note: en ? 'Conditioning day: energy expenditure, glute or thigh support, and core work without disrupting recovery.' : '有氧与核心日：增加能量消耗，补充臀腿目标训练，并避免影响恢复。' };
 
-  const workouts = input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : [day1, day2];
+  const bodyweightLoad = en ? 'Bodyweight (0 kg / 0 lb)' : '自重（0 kg / 0 lb）';
+  const bandLight = en ? 'Light band, about 2-5 kg / 4-11 lb' : '轻弹力带，约 2-5 kg / 4-11 lb';
+  const bandMedium = en ? 'Medium band/backpack, about 5-12 kg / 11-26 lb' : '中等弹力带/背包，约 5-12 kg / 11-26 lb';
+
+  if (input.trainingMode === 'bodyweight') {
+    day1.reason = (en ? 'Home push day uses bodyweight and bands instead of barbell or machines. ' : '居家推日使用自重和弹力带替代杠铃或器械。') + targetReason;
+    day1.blocks = [
+      ex(en ? 'Push-up' : '俯卧撑', en ? 'Keep the trunk rigid and lower under control.' : '保持躯干稳定，控制下放后推起。', null, chestFocus ? 4 : 3, '8–15', en ? 'Main home chest movement; elevate hands if full push-ups are not stable.' : '居家胸部主动作；标准俯卧撑不稳定时可垫高手。', en ? 'Chest / triceps' : '胸部 / 肱三头', 'core', bodyweightLoad),
+      ex(en ? 'Pike push-up' : '派克俯卧撑', en ? 'Push through the shoulders while keeping the neck neutral.' : '臀部抬高，头颈中立，用肩部推起。', null, 3, '6–10', en ? 'Home shoulder pressing pattern.' : '居家肩部推力动作。', en ? 'Shoulders' : '肩部', 'core', bodyweightLoad),
+      ex(en ? 'Close-grip push-up' : '窄距俯卧撑', en ? 'Keep elbows tracking back and use a controlled range.' : '肘部向后，控制全程，避免塌腰。', null, armFocus ? 4 : 3, '8–12', en ? 'Adds direct triceps work for arm targets.' : '为臂围目标补充肱三头直接训练。', en ? 'Triceps' : '肱三头', 'core', bodyweightLoad),
+      ex(en ? 'Band lateral raise' : '弹力带侧平举', en ? 'Raise to shoulder height without shrugging.' : '抬到肩高，避免耸肩借力。', null, 3, '12–15', en ? 'Low-skill shoulder-width work at home.' : '居家低门槛肩宽训练。', en ? 'Side delts' : '中束三角肌', 'lateralRaise', bandLight),
+      ex(goal === 'fat_loss' ? cardioName : (en ? 'Plank + dead bug' : '平板支撑 + 死虫'), goal === 'fat_loss' ? (en ? 'Keep a repeatable pace after strength work.' : '力量后用可重复的配速完成。') : (en ? 'Keep ribs down and pelvis stable.' : '肋骨下沉，骨盆保持稳定。'), null, goal === 'fat_loss' ? 1 : (waistFocus ? 4 : 3), goal === 'fat_loss' ? (en ? '12–18 min' : '12–18 分钟') : (en ? '30–45 sec + 8/side' : '30–45 秒 + 每侧 8 次'), en ? 'Matches the target by adding conditioning or trunk control.' : '根据目标选择有氧或核心控制。', en ? 'Conditioning / core' : '有氧 / 核心', goal === 'fat_loss' ? 'cardio' : 'core'),
+      ex(en ? 'Band chest fly' : '弹力带夹胸', en ? 'Squeeze the chest and avoid shoulder rolling forward.' : '胸部主动夹紧，肩部不要向前滚。', null, chestFocus ? 4 : 3, '12–15', en ? 'Adds chest isolation without gym machines.' : '不用器械也能补充胸部孤立刺激。', en ? 'Chest isolation' : '胸部孤立', 'bench', bandMedium)
+    ];
+    day2.reason = (en ? 'Home lower day uses squat, lunge, hinge, and core patterns without gym machines. ' : '居家下肢日用深蹲、弓步、髋主导和核心动作替代器械。') + targetReason;
+    day2.blocks = [
+      ex(en ? 'Bodyweight squat' : '自重深蹲', en ? 'Track knees over toes and stand with even foot pressure.' : '膝盖跟随脚尖，脚掌均匀发力站起。', null, thighFocus ? 4 : 3, '12–20', en ? 'Main home quad movement.' : '居家股四头主动作。', en ? 'Quads / glutes' : '股四头 / 臀部', 'core', bodyweightLoad),
+      ex(en ? 'Single-leg Romanian deadlift' : '单腿罗马尼亚硬拉', en ? 'Hinge at the hips and keep the back long.' : '髋部后移，背部保持平直。', null, hipFocus ? 4 : 3, '10–12/side', en ? 'Home hinge pattern for hamstrings and glutes.' : '居家髋主导动作，刺激腘绳肌和臀部。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', 'core', bodyweightLoad),
+      ex(en ? 'Reverse lunge' : '反向弓步', en ? 'Step back and keep the front foot stable.' : '向后迈步，前脚稳定，控制下放。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Single-leg work improves symmetry and raises local volume.' : '单侧训练改善左右差异并增加局部训练量。', en ? 'Single-leg' : '单侧下肢', 'splitSquat', bandMedium),
+      ex(en ? 'Sliding leg curl' : '滑盘腿弯举', en ? 'Pull heels toward the hips without arching the low back.' : '脚跟向臀部发力，避免腰椎反弓。', null, 3, '10–14', en ? 'Hamstring isolation without a machine.' : '不用器械也能补充腘绳肌孤立刺激。', en ? 'Hamstrings' : '腘绳肌', 'core', bodyweightLoad),
+      ex(en ? 'Standing calf raise' : '站姿提踵', en ? 'Pause at the top and lower slowly.' : '顶峰停顿，下放要慢。', null, 3, '12–20', en ? 'Completes lower-leg work.' : '补足小腿训练。', en ? 'Calves' : '小腿', 'core', bodyweightLoad),
+      ex(en ? 'Side plank' : '侧桥', en ? 'Keep shoulders, hips, and ankles stacked.' : '肩、髋、踝保持一条直线。', null, waistFocus ? 4 : 3, en ? '30–40 sec/side' : '每侧 30–40 秒', en ? 'Supports lower-body loading and waist-control goals.' : '支持下肢动作稳定和腰围控制目标。', en ? 'Core' : '核心', 'core')
+    ];
+    day3.reason = (en ? 'Home pull day uses rows and bands because a full cable stack is unavailable. ' : '居家拉日用反向划船和弹力带替代下拉器械。') + targetReason;
+    day3.blocks = [
+      ex(en ? 'Inverted row / towel row' : '反向划船 / 毛巾划船', en ? 'Keep the body straight and pull elbows back.' : '身体保持直线，肘部向后拉。', null, armFocus ? 4 : 3, '8–12', en ? 'Primary home back movement.' : '居家背部主动作。', en ? 'Back / biceps' : '背部 / 肱二头', 'core', bodyweightLoad),
+      ex(en ? 'Band pulldown' : '弹力带下拉', en ? 'Start by depressing the shoulder blades.' : '先下压肩胛，再让肘部向下拉。', null, 4, '10–15', en ? 'Vertical pulling pattern at home.' : '居家垂直拉力模式。', en ? 'Lats' : '背阔肌', 'pulldown', bandMedium),
+      ex(en ? 'Band row' : '弹力带划船', en ? 'Pull to the lower ribs and pause.' : '拉到下肋位置并短暂停顿。', null, 3, '10–15', en ? 'Adds controllable back volume.' : '增加可控背部训练量。', en ? 'Mid-back' : '中背', 'row', bandMedium),
+      ex(en ? 'Band curl' : '弹力带弯举', en ? 'Keep upper arms still.' : '上臂固定，控制离心。', null, armFocus ? 4 : 3, '12–15', en ? 'Direct biceps work for arm targets.' : '为臂围目标补充肱二头直接训练。', en ? 'Biceps' : '肱二头', 'curl', bandLight),
+      ex(en ? 'Band face pull' : '弹力带面拉', en ? 'Pull toward eye level and rotate thumbs back.' : '向眼睛高度拉，末端拇指略向后旋。', null, 3, '12–15', en ? 'Protects shoulder mechanics.' : '保护肩部力学。', en ? 'Rear delts' : '后三角', 'facePull', bandLight),
+      ex(en ? 'Pallof press' : '抗旋转推拉', en ? 'Press straight out and resist rotation.' : '向前推出，抵抗躯干旋转。', null, waistFocus ? 4 : 3, en ? '10/side' : '每侧 10 次', en ? 'Anti-rotation work supports trunk control.' : '抗旋转训练提升躯干控制。', en ? 'Core' : '核心', 'core')
+    ];
+    day4.reason = (en ? 'Home conditioning day adds simple energy expenditure and glute/core volume. ' : '居家有氧日补充能量消耗，并增加臀部与核心训练量。') + targetReason;
+    day4.blocks = [
+      ex(cardioName, en ? 'Use a repeatable pace or short intervals.' : '用可重复的配速或短间歇完成。', null, 1, goal === 'fat_loss' ? (en ? '20–30 min' : '20–30 分钟') : (en ? '12–20 min' : '12–20 分钟'), en ? 'Raises weekly energy expenditure.' : '提升每周能量消耗。', en ? 'Cardio' : '有氧', 'cardio'),
+      ex(en ? 'Glute bridge' : '臀桥', en ? 'Drive through heels and squeeze glutes at the top.' : '脚跟发力，顶峰主动夹臀。', null, hipFocus ? 4 : 3, '12–20', en ? 'Direct glute work at home.' : '居家臀部直接训练。', en ? 'Glutes' : '臀部', 'gluteBridge'),
+      ex(en ? 'Step-up / reverse lunge' : '台阶上步 / 反向弓步', en ? 'Control the knee and keep the front foot stable.' : '控制膝盖轨迹，前脚稳定。', null, thighFocus ? 4 : 3, '10–12/side', en ? 'Adds recoverable leg volume.' : '增加可恢复的腿部训练量。', en ? 'Quads' : '股四头', 'splitSquat', bandMedium),
+      ex(en ? 'Glute bridge march' : '臀桥交替抬腿', en ? 'Keep hips level while alternating legs.' : '交替抬腿时保持骨盆水平。', null, hipFocus ? 4 : 3, en ? '10/side' : '每侧 10 次', en ? 'Reinforces pelvic stability.' : '强化骨盆稳定。', en ? 'Glutes / core' : '臀部 / 核心', 'gluteBridge'),
+      ex(en ? 'Reverse crunch' : '反向卷腹', en ? 'Curl the pelvis instead of swinging the legs.' : '主动卷起骨盆，不要摆腿借力。', null, waistFocus ? 4 : 3, '10–15', en ? 'Direct abdominal work for trunk control.' : '腹部直接训练，用于核心控制。', en ? 'Abs' : '腹部', 'core'),
+      ex(en ? 'Backpack carry' : '背包负重行走', en ? 'Walk tall with ribs down and a firm grip.' : '身体站高，肋骨下沉，稳定前行。', null, 3, en ? '30–45 sec' : '30–45 秒', en ? 'Low-skill conditioning and trunk stiffness.' : '低门槛体能和躯干刚性训练。', en ? 'Carry / core' : '负重行走 / 核心', 'carry')
+    ];
+  }
+
+  const day5 = { title: en ? 'Full body C' : '全身补充 C', reason: (en ? 'The fifth session adds recoverable target-area volume instead of repeating a heavy day. ' : '第 5 次训练增加可恢复的目标部位训练量，而不是重复重训练日。') + targetReason, blocks: input.trainingMode === 'bodyweight' ? [
+    ex(en ? 'Push-up' : '俯卧撑', en ? 'Use a clean full range.' : '保证完整可控幅度。', null, chestFocus ? 4 : 3, '8–15', en ? 'Extra chest volume.' : '补充胸部训练量。', en ? 'Chest' : '胸部', 'core', bodyweightLoad),
+    ex(en ? 'Band row' : '弹力带划船', en ? 'Pause near the ribs.' : '拉到肋部停顿。', null, 3, '10–15', en ? 'Extra back volume.' : '补充背部训练量。', en ? 'Back' : '背部', 'row', bandMedium),
+    ex(en ? 'Glute bridge' : '臀桥', en ? 'Squeeze the glutes at the top.' : '顶峰主动夹臀。', null, hipFocus ? 4 : 3, '12–20', en ? 'Extra glute stimulus.' : '补充臀部刺激。', en ? 'Glutes' : '臀部', 'gluteBridge'),
+    ex(en ? 'Band curl' : '弹力带弯举', en ? 'Keep elbows fixed.' : '肘部固定。', null, armFocus ? 4 : 3, '12–15', en ? 'Direct biceps volume.' : '肱二头直接训练量。', en ? 'Biceps' : '肱二头', 'curl', bandLight),
+    ex(en ? 'Close-grip push-up' : '窄距俯卧撑', en ? 'Keep elbows tracking back.' : '肘部向后。', null, armFocus ? 4 : 3, '8–12', en ? 'Direct triceps volume.' : '肱三头直接训练量。', en ? 'Triceps' : '肱三头', 'core', bodyweightLoad),
+    ex(en ? 'Dead bug' : '死虫', en ? 'Move slowly without arching.' : '缓慢移动，腰背不要拱起。', null, waistFocus ? 4 : 3, en ? '8/side' : '每侧 8 次', en ? 'Core control.' : '核心控制。', en ? 'Core' : '核心', 'core')
+  ] : [
+    ex(input.sex === 'female' ? (en ? 'Dumbbell press' : '哑铃卧推') : (en ? 'Incline dumbbell press' : '上斜哑铃推举'), en ? 'Use controlled tempo.' : '保持可控节奏。', 'bench', chestFocus ? 4 : 3, '8–10', en ? 'Extra chest volume.' : '补充胸部训练量。', en ? 'Chest' : '胸部', input.sex === 'female' ? 'inclinePress' : 'bench'),
+    ex(input.sex === 'female' ? (en ? 'Lat pulldown' : '高位下拉') : (en ? 'Barbell row' : '杠铃划船'), en ? 'Pull with the elbows.' : '用肘部主导发力。', 'row', 3, '8–12', en ? 'Extra back volume.' : '补充背部训练量。', en ? 'Back' : '背部', input.sex === 'female' ? 'pulldown' : 'row'),
+    ex(en ? 'Hip thrust' : '臀推', en ? 'Pause at the top.' : '顶峰停顿。', 'hinge', hipFocus ? 4 : 3, '8–12', en ? 'Extra glute stimulus.' : '补充臀部刺激。', en ? 'Glutes' : '臀部', 'hipThrust'),
+    ex(en ? 'Dumbbell curl' : '哑铃弯举', en ? 'Control the lowering.' : '控制离心。', null, armFocus ? 4 : 3, '10–14', en ? 'Direct biceps volume.' : '肱二头直接训练量。', en ? 'Biceps' : '肱二头', 'curl'),
+    ex(en ? 'Rope pushdown' : '绳索下压', en ? 'Keep elbows fixed.' : '肘部固定。', null, armFocus ? 4 : 3, '10–14', en ? 'Direct triceps volume.' : '肱三头直接训练量。', en ? 'Triceps' : '肱三头', 'triceps'),
+    ex(en ? 'Dead bug' : '死虫', en ? 'Move slowly without arching.' : '缓慢移动，腰背不要拱起。', null, waistFocus ? 4 : 3, en ? '8/side' : '每侧 8 次', en ? 'Core control.' : '核心控制。', en ? 'Core' : '核心', 'core')
+  ] };
+
+  const day6 = { title: en ? 'Lower C' : '下肢 C', reason: (en ? 'The sixth session distributes lower-body stress so no single day carries all target work. ' : '第 6 次训练分散下肢压力，避免把目标训练量堆在一天。') + targetReason, blocks: input.trainingMode === 'bodyweight' ? [
+    ex(en ? 'Bodyweight squat' : '自重深蹲', en ? 'Use smooth depth.' : '保持平稳下蹲深度。', null, thighFocus ? 4 : 3, '12–20', en ? 'Extra quad volume.' : '补充股四头训练量。', en ? 'Quads' : '股四头', 'core', bodyweightLoad),
+    ex(en ? 'Reverse lunge' : '反向弓步', en ? 'Control each step.' : '每一步都控制。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Single-leg volume.' : '单侧训练量。', en ? 'Single-leg' : '单侧下肢', 'splitSquat', bandMedium),
+    ex(en ? 'Single-leg RDL' : '单腿罗马尼亚硬拉', en ? 'Hinge from the hips.' : '从髋部发起动作。', null, hipFocus ? 4 : 3, '10–12/side', en ? 'Hamstring and glute work.' : '腘绳肌和臀部训练。', en ? 'Posterior chain' : '后侧链', 'core', bodyweightLoad),
+    ex(en ? 'Calf raise' : '站姿提踵', en ? 'Pause at the top.' : '顶峰停顿。', null, 3, '12–20', en ? 'Calf volume.' : '小腿训练量。', en ? 'Calves' : '小腿', 'core', bodyweightLoad),
+    ex(cardioName, en ? 'Keep it easy enough to recover.' : '强度控制在可恢复范围。', null, 1, en ? '12–20 min' : '12–20 分钟', en ? 'Recovery-friendly conditioning.' : '可恢复的有氧。', en ? 'Cardio' : '有氧', 'cardio'),
+    ex(en ? 'Plank' : '平板支撑', en ? 'Keep the body in one line.' : '身体保持一条直线。', null, waistFocus ? 4 : 3, en ? '30–45 sec' : '30–45 秒', en ? 'Trunk control.' : '躯干控制。', en ? 'Core' : '核心', 'core')
+  ] : [
+    ex(input.sex === 'female' ? (en ? 'Goblet squat' : '高脚杯深蹲') : (en ? 'Back squat' : '杠铃深蹲'), en ? 'Brace and control depth.' : '建立腹压并控制深度。', 'squat', thighFocus ? 4 : 3, '5–8', en ? 'Extra quad stimulus.' : '补充股四头刺激。', en ? 'Quads' : '股四头', input.sex === 'female' ? 'gobletSquat' : 'squat'),
+    ex(en ? 'Romanian deadlift' : '罗马尼亚硬拉', en ? 'Keep the load close.' : '负重贴近身体。', 'hinge', hipFocus ? 4 : 3, '6–10', en ? 'Posterior-chain work.' : '后侧链训练。', en ? 'Posterior chain' : '后侧链', 'hinge'),
+    ex(en ? 'Split squat' : '分腿蹲', en ? 'Control both sides.' : '两侧都要控制。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Single-leg volume.' : '单侧训练量。', en ? 'Single-leg' : '单侧下肢', 'splitSquat'),
+    ex(en ? 'Standing calf raise' : '站姿提踵', en ? 'Pause at the top.' : '顶峰停顿。', null, 3, '12–18', en ? 'Calf volume.' : '小腿训练量。', en ? 'Calves' : '小腿', 'calf'),
+    ex(cardioName, en ? 'Keep it easy enough to recover.' : '强度控制在可恢复范围。', null, 1, en ? '12–20 min' : '12–20 分钟', en ? 'Recovery-friendly conditioning.' : '可恢复的有氧。', en ? 'Cardio' : '有氧', 'cardio'),
+    ex(en ? 'Plank' : '平板支撑', en ? 'Keep the body in one line.' : '身体保持一条直线。', null, waistFocus ? 4 : 3, en ? '30–45 sec' : '30–45 秒', en ? 'Trunk control.' : '躯干控制。', en ? 'Core' : '核心', 'core')
+  ] };
+
+  const workouts = input.frequencyPerWeek >= 6 ? [day1, day2, day3, day4, day5, day6] : input.frequencyPerWeek === 5 ? [day1, day2, day3, day4, day5] : input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : [day1, day2];
   const adjustedWorkouts = adjustment?.setDelta ? workouts.map((day) => ({ ...day, blocks: day.blocks.map((block) => ({ ...block, sets: Math.max(2, block.sets + adjustment.setDelta) })) })) : workouts;
+  const splitReason = en
+    ? input.frequencyPerWeek >= 6
+      ? 'Six weekly sessions use upper/lower distribution plus an extra lower day so target muscles receive more frequent stimulus without making one session unreasonably long.'
+      : input.frequencyPerWeek === 5
+        ? 'Five weekly sessions add a recoverable full-body day for target-area volume while keeping heavy push, lower, pull, and conditioning days separate.'
+        : input.frequencyPerWeek >= 4
+          ? 'Four weekly sessions separate push, lower, pull, and conditioning/core work so fatigue is easier to manage.'
+          : input.frequencyPerWeek === 3
+            ? 'Three weekly sessions preserve the main movement patterns with lower weekly volume.'
+            : 'Two weekly sessions prioritize the highest-value full-body patterns and keep the plan realistic.'
+    : input.frequencyPerWeek >= 6
+      ? '每周 6 次采用上肢/下肢分布并增加下肢日，让目标肌群获得更高频刺激，同时避免单次训练过长。'
+      : input.frequencyPerWeek === 5
+        ? '每周 5 次在推、下肢、拉、有氧与核心之外增加可恢复的全身补充日，用于目标部位训练量。'
+        : input.frequencyPerWeek >= 4
+          ? '每周 4 次拆分推、下肢、拉、有氧与核心，便于管理疲劳。'
+          : input.frequencyPerWeek === 3
+            ? '每周 3 次保留主要动作模式，但周训练量更保守。'
+            : '每周 2 次优先保留收益最高的全身动作模式，让计划保持现实可执行。';
 
   const intensity = {
     summary: en ? `Working sets use RPE ${rpe} and keep ${rir} reps in reserve. If a personal record is entered, loads are derived from estimated 1RM values and then constrained by the target.` : `工作组采用主观用力等级 ${rpe}，并保留 ${rir} 次余力。如果填写了个人纪录，系统会先估算个人最大力量，再按目标与日期约束计算训练负荷。`,
@@ -417,8 +531,8 @@ function buildPlan(input, adjustment = null) {
 
   const logicSections = [
     { title: en ? '1. Input and target check' : '1. 输入与目标校验', body: en ? 'The app checks whether current weight, target weight, target date, body-fat level, and optional circumference targets point in the same direction. When the request conflicts with the selected goal, the app adjusts the target to the nearest feasible value.' : '应用会检查当前体重、目标体重、目标日期、体脂率与可选围度目标是否方向一致。当目标方向与目标类型冲突时，系统会将目标调整到最接近且可执行的值。' },
-    { title: en ? '2. Energy target' : '2. 热量目标', body: en ? 'BMR is estimated from body composition when body-fat data exists, otherwise the app falls back to a height-weight-age formula. TDEE is then scaled by training experience, and calories are set as a controlled deficit or surplus instead of a guess.' : '有体脂数据时优先按体成分估算基础代谢；没有体脂数据时退回身高-体重-年龄公式。随后按训练经验换算 TDEE，并基于目标设定可控的热量缺口或盈余，而不是凭感觉给数值。' },
-    { title: en ? '3. Weekly volume' : '3. 周训练量', body: en ? 'The schedule keeps major movement patterns in the week and adds extra sets where a specific circumference target is present. This is how the app links visible training volume to the body area the user cares about.' : '计划会保留每周主要动作模式，并在有特定围度目标时增加对应肌群的训练组数。这样可以把可见的训练量变化和用户关心的身体部位直接关联起来。' },
+    { title: en ? '2. Energy target' : '2. 热量目标', body: en ? 'BMR is estimated from body composition when body-fat data exists, otherwise the app falls back to a height-weight-age formula. TDEE is scaled by daily activity, while training experience is used for intensity and load selection. Calories are set as a controlled deficit, surplus, recomposition target, or maintenance target instead of a guess.' : '有体脂数据时优先按体成分估算基础代谢；没有体脂数据时退回身高-体重-年龄公式。TDEE 按日常活动水平换算，训练经验用于强度和负荷选择。热量会根据减脂、增肌、体态重组或保持目标设置为可控缺口、盈余或维持值，而不是凭感觉给数值。' },
+    { title: en ? '3. Weekly volume' : '3. 周训练量', body: `${splitReason} ${en ? 'The schedule keeps major movement patterns in the week and adds extra sets where a specific circumference target is present. This links visible training volume to the body area the user cares about.' : '计划会保留每周主要动作模式，并在有特定围度目标时增加对应肌群的训练组数，把可见训练量变化和用户关心的身体部位直接关联起来。'}` },
     { title: en ? '4. Intensity rule' : '4. 强度规则', body: en ? 'If you enter a personal record, the app estimates 1RM from weight × reps and uses that to set a working load percentage. If you do not, the app falls back to RPE so the plan still has a clear effort target.' : '如果输入个人纪录，应用会按“重量 × 次数”估算 1RM，并据此计算工作组负荷比例；如果没有输入，则回退到主观用力等级，仍然给出明确的强度目标。' },
     { title: en ? '5. Feedback loop' : '5. 反馈闭环', body: en ? 'Weekly completion, current weight, and recent calorie intake are read back into the plan. If execution falls short or progress is too slow, the next plan reduces set count or adjusts calories instead of pretending the original prescription was perfect.' : '每周完成情况、当前体重和近期摄入会回写到计划中。如果执行不足或进展过慢，下一版计划会减少组数或调整热量，而不是假装原始方案已经足够完美。' }
   ];
@@ -431,8 +545,8 @@ function buildPlan(input, adjustment = null) {
   ];
 
   const reasonSections = [
-    { title: en ? '1. Why this weekly split' : '1. 为什么这样分周', body: en ? 'The split alternates push, lower-body, pull, and conditioning so the largest movement patterns are trained without stacking too much fatigue into one day. That makes the plan easier to follow and easier to review.' : '周计划按推、下肢、拉、有氧与核心交替安排，避免把过多疲劳堆到同一天，同时让主要动作模式都能被覆盖。这样更容易执行，也更容易复评。' },
-    { title: en ? '2. Why these exercises' : '2. 为什么是这些动作', body: en ? 'Bench press, squat, row, hinge work, lunges, pulldowns, and core drills are standard, widely used patterns. They are easy to scale, easy to coach, and easy to tie to a clear load prescription.' : '卧推、深蹲、划船、髋主导动作、弓步、下拉和核心训练都是标准化程度高、使用面广的模式。它们容易分级、容易指导，也容易对应明确的负荷处方。' },
+    { title: en ? '1. Why this weekly split' : '1. 为什么这样分周', body: `${splitReason} ${en ? 'The split alternates stress across movement patterns so adherence and recovery can be reviewed from weekly data.' : '这样的拆分会在不同动作模式之间分散压力，后续也能根据每周数据复评执行和恢复。'}` },
+    { title: en ? '2. Why these exercises' : '2. 为什么是这些动作', body: en ? `${input.trainingMode === 'gym' ? 'Gym mode uses standard loaded patterns such as presses, squats or goblet squats, rows or pulldowns, hinge work, lunges, and cable or dumbbell accessories.' : 'Home mode avoids barbell and machine assumptions, using push-ups, rows with bands or towels, squats, lunges, glute bridges, carries, cardio, and core drills.'} They are easy to scale, easy to coach, and easy to tie to a clear load or effort prescription.` : `${input.trainingMode === 'gym' ? '健身房模式使用标准负重模式，例如推举、深蹲或高脚杯深蹲、划船或下拉、髋主导动作、弓步以及绳索或哑铃辅助动作。' : '居家模式避免默认杠铃和固定器械，使用俯卧撑、弹力带或毛巾划船、深蹲、弓步、臀桥、负重行走、有氧和核心动作。'}这些动作容易分级、容易指导，也容易对应明确的负荷或用力等级处方。` },
     { title: en ? '3. Why the plan can change later' : '3. 为什么计划可以后续调整', body: en ? 'The feedback panel is not decorative. It is the signal used to reduce weekly volume, lower calories, or preserve the current prescription when the user is executing well, so the next plan reflects real-world adherence.' : '反馈面板不是装饰。它会在执行不足时降低周训练量、在进展偏慢时调整热量、在执行良好时保留当前方案，让下一版计划真正反映现实执行情况。' }
   ];
 

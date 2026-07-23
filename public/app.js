@@ -33,6 +33,7 @@ function exerciseDescription(exercise) {
     push_up: "Keep your trunk rigid and lower under control.", bench_press: "Keep shoulder blades set and press with controlled range.",
     inverted_row: "Keep the body aligned and pull the chest toward the bar.", lat_pulldown: "Pull toward the upper chest without using momentum.",
     pike_push_up: "Keep the neck neutral and press through the shoulders.", db_press: "Press overhead with a neutral spine and controlled lowering.",
+    barbell_row: "Hinge at the hips and pull the bar toward the lower ribs.", goblet_squat: "Hold the dumbbell close, stay upright, and descend under control.",
     band_curl: "Keep the upper arm still and avoid swinging.", db_curl: "Keep elbows near the body and lower slowly.",
     close_push_up: "Keep elbows tracking back and control the full range.", rope_pushdown: "Keep upper arms fixed and finish with a controlled lockout.",
     bodyweight_squat: "Track knees over toes and stand with even foot pressure.", barbell_squat: "Brace the trunk and keep the spine neutral throughout.",

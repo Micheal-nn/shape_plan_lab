@@ -1,10 +1,12 @@
 const library = {
   chest: [
     { id: "push_up", name: "Push-Up", nameZh: "俯卧撑", muscleGroup: "chest", muscleGroupZh: "胸部", mode: "bodyweight", sets: 3, reps: "8-15", restSeconds: 60, descriptionZh: "保持躯干稳定，下放至胸部接近地面后推起。" },
-    { id: "bench_press", name: "Bench Press", nameZh: "杠铃卧推", muscleGroup: "chest", muscleGroupZh: "胸部", mode: "gym", sets: 4, reps: "5-8", restSeconds: 120, descriptionZh: "肩胛后收下沉，控制杠铃触胸后推起，避免耸肩。" }
+    { id: "bench_press", name: "Bench Press", nameZh: "杠铃卧推", muscleGroup: "chest", muscleGroupZh: "胸部", mode: "gym", sets: 4, reps: "5-8", restSeconds: 120, descriptionZh: "肩胛后收下沉，控制杠铃触胸后推起，避免耸肩。" },
+    { id: "db_press", name: "Dumbbell Press", nameZh: "哑铃卧推", muscleGroup: "chest", muscleGroupZh: "胸部", mode: "gym", sets: 3, reps: "8-12", restSeconds: 90, descriptionZh: "哑铃下放到胸侧后平稳推起，双侧独立发力。" }
   ],
   back: [
     { id: "inverted_row", name: "Inverted Row", nameZh: "反向划船", muscleGroup: "back", muscleGroupZh: "背部", mode: "bodyweight", sets: 3, reps: "8-12", restSeconds: 60, descriptionZh: "身体保持直线，肘部向后拉，胸部靠近横杆。" },
+    { id: "barbell_row", name: "Barbell Row", nameZh: "杠铃划船", muscleGroup: "back", muscleGroupZh: "背部", mode: "gym", sets: 4, reps: "6-10", restSeconds: 120, descriptionZh: "髋部后移保持躯干角度，杠铃向下腹部方向拉。" },
     { id: "lat_pulldown", name: "Lat Pulldown", nameZh: "高位下拉", muscleGroup: "back", muscleGroupZh: "背部", mode: "gym", sets: 4, reps: "8-12", restSeconds: 90, descriptionZh: "先沉肩，再将横杆拉向上胸，避免身体大幅后仰。" }
   ],
   shoulder: [
@@ -21,7 +23,8 @@ const library = {
   ],
   quads: [
     { id: "bodyweight_squat", name: "Bodyweight Squat", nameZh: "自重深蹲", muscleGroup: "quads", muscleGroupZh: "股四头肌", mode: "bodyweight", sets: 4, reps: "12-20", restSeconds: 60, descriptionZh: "髋膝同步屈曲，膝盖跟随脚尖方向，站起时脚掌均匀发力。" },
-    { id: "barbell_squat", name: "Barbell Squat", nameZh: "杠铃深蹲", muscleGroup: "quads", muscleGroupZh: "股四头肌", mode: "gym", sets: 4, reps: "5-8", restSeconds: 120, descriptionZh: "核心绷紧，髋部向后向下坐，保证脊柱中立后站起。" }
+    { id: "barbell_squat", name: "Barbell Squat", nameZh: "杠铃深蹲", muscleGroup: "quads", muscleGroupZh: "股四头肌", mode: "gym", sets: 4, reps: "5-8", restSeconds: 120, descriptionZh: "核心绷紧，髋部向后向下坐，保证脊柱中立后站起。" },
+    { id: "goblet_squat", name: "Goblet Squat", nameZh: "高脚杯深蹲", muscleGroup: "quads", muscleGroupZh: "股四头肌", mode: "gym", sets: 3, reps: "8-12", restSeconds: 90, descriptionZh: "哑铃贴近胸前，保持躯干直立，控制下蹲和站起。" }
   ],
   hamstrings: [
     { id: "single_leg_rdl", name: "Single-Leg Romanian Deadlift", nameZh: "单腿罗马尼亚硬拉", muscleGroup: "hamstrings", muscleGroupZh: "腘绳肌", mode: "bodyweight", sets: 3, reps: "10-12", restSeconds: 60, descriptionZh: "髋部后移，保持背部平直，用支撑腿后侧控制动作。" },
@@ -51,10 +54,32 @@ const cardioLibrary = {
   }
 };
 
-export function pickExercises(groups, mode) {
-  return groups.flatMap((group) =>
-    (library[group] || []).filter((exercise) => exercise.mode === mode || exercise.mode === "both").slice(0, 1)
-  );
+function preferredExerciseId(group, mode, sex) {
+  const preferred = {
+    chest: { gym: { male: "bench_press", female: "db_press" }, bodyweight: { male: "push_up", female: "push_up" } },
+    back: { gym: { male: "barbell_row", female: "lat_pulldown" }, bodyweight: { male: "inverted_row", female: "inverted_row" } },
+    shoulder: { gym: { male: "db_press", female: "db_press" }, bodyweight: { male: "pike_push_up", female: "pike_push_up" } },
+    biceps: { gym: { male: "db_curl", female: "db_curl" }, bodyweight: { male: "band_curl", female: "band_curl" } },
+    triceps: { gym: { male: "rope_pushdown", female: "rope_pushdown" }, bodyweight: { male: "close_push_up", female: "close_push_up" } },
+    quads: { gym: { male: "barbell_squat", female: "goblet_squat" }, bodyweight: { male: "bodyweight_squat", female: "bodyweight_squat" } },
+    hamstrings: { gym: { male: "rdl", female: "rdl" }, bodyweight: { male: "single_leg_rdl", female: "single_leg_rdl" } },
+    glutes: { gym: { male: "hip_thrust", female: "hip_thrust" }, bodyweight: { male: "glute_bridge", female: "glute_bridge" } },
+    calves: { gym: { male: "calf_raise", female: "calf_raise" }, bodyweight: { male: "calf_raise", female: "calf_raise" } },
+    core: { gym: { male: "plank", female: "dead_bug" }, bodyweight: { male: "plank", female: "dead_bug" } }
+  };
+  return preferred[group]?.[mode]?.[sex] ?? null;
+}
+
+export function pickExercises(groups, mode, input = {}) {
+  return groups.flatMap((group) => {
+    const pool = (library[group] || []).filter((exercise) => exercise.mode === mode || exercise.mode === "both");
+    const preferredId = preferredExerciseId(group, mode, input.sex);
+    if (preferredId) {
+      const preferred = pool.find((exercise) => exercise.id === preferredId);
+      if (preferred) return [preferred];
+    }
+    return pool.slice(0, 1);
+  });
 }
 
 export function pickCardio(type, mode) {
