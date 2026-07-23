@@ -11,6 +11,10 @@ const frequencies = [1, 2, 3, 4, 5, 6];
 const activityLevels = ["sedentary", "light", "moderate", "high"];
 const trainingExperiences = ["novice", "intermediate", "advanced"];
 const sessionLengths = [20, 60, 180];
+const androidPrProfiles = [
+  { name: "no-pr" },
+  { name: "with-pr", benchWeight: "75", benchReps: "10", squatWeight: "100", squatReps: "8", rowWeight: "60", rowReps: "10", hingeWeight: "110", hingeReps: "6" }
+];
 const focusCases = [
   { name: "none", current: {}, target: {} },
   { name: "waist", current: { waistCm: 91 }, target: { waistCm: 86 }, groups: ["core"] },
@@ -155,7 +159,7 @@ function loadAndroidContext() {
   return { context, elements };
 }
 
-function setAndroidInput(elements, { sex, goal, mode, frequency, focus, activityLevel = "light", trainingExperience = "intermediate", sessionMinutes = 60 }) {
+function setAndroidInput(elements, { sex, goal, mode, frequency, focus, activityLevel = "light", trainingExperience = "intermediate", sessionMinutes = 60, prProfile = androidPrProfiles[0] }) {
   const values = {
     sex,
     age: "30",
@@ -180,9 +184,59 @@ function setAndroidInput(elements, { sex, goal, mode, frequency, focus, activity
     targetArm: focus.target.armCm ? String(focus.target.armCm) : "",
     thigh: focus.current.thighCm ? String(focus.current.thighCm) : "",
     targetThigh: focus.target.thighCm ? String(focus.target.thighCm) : "",
-    benchWeight: "", benchReps: "", squatWeight: "", squatReps: "", rowWeight: "", rowReps: "", hingeWeight: "", hingeReps: ""
+    benchWeight: prProfile.benchWeight ?? "", benchReps: prProfile.benchReps ?? "",
+    squatWeight: prProfile.squatWeight ?? "", squatReps: prProfile.squatReps ?? "",
+    rowWeight: prProfile.rowWeight ?? "", rowReps: prProfile.rowReps ?? "",
+    hingeWeight: prProfile.hingeWeight ?? "", hingeReps: prProfile.hingeReps ?? ""
   };
   for (const [id, value] of Object.entries(values)) elements[id].value = value;
+}
+
+function kgFromLoad(load) {
+  const text = String(load);
+  if (/RPE|用力等级/.test(text)) return null;
+  const match = text.match(/([\d.]+)\s*kg/);
+  return match ? Number(match[1]) : null;
+}
+
+function maxReasonableKg(block) {
+  const name = `${block.name} ${block.tag}`;
+  if (/无外部负重|自重|Bodyweight|No external load/.test(block.load)) return 0;
+  if (/侧平举|lateral raise/i.test(name)) return 20;
+  if (/弯举|curl/i.test(name)) return 35;
+  if (/下压|pushdown|triceps/i.test(name)) return 45;
+  if (/飞鸟|夹胸|fly|pec deck/i.test(name)) return 45;
+  if (/肩推|shoulder press|Seated shoulder/i.test(name)) return 70;
+  if (/高脚杯|goblet/i.test(name)) return 60;
+  if (/保加利亚|弓步|split squat|lunge/i.test(name)) return 70;
+  if (/腿弯举|leg curl/i.test(name)) return 70;
+  if (/提踵|calf/i.test(name)) return 120;
+  if (/臀推|hip thrust/i.test(name)) return 180;
+  if (/划船|row|下拉|pulldown/i.test(name)) return 140;
+  if (/卧推|bench|深蹲|squat|硬拉|deadlift|Romanian/i.test(name)) return 200;
+  return 140;
+}
+
+function assertAndroidWorkoutPrescription(plan, scenario) {
+  for (const day of plan.workouts) {
+    assert.ok(day.title.length > 0, `${scenario}: day title missing`);
+    assert.ok(day.reason.length > 0, `${scenario}: day reason missing`);
+    for (const block of day.blocks) {
+      assert.ok(block.name.length > 0, `${scenario}: action name missing`);
+      assert.ok(block.guide.length > 0, `${scenario}: ${block.name} guide missing`);
+      assert.ok(Number.isInteger(block.sets) && block.sets >= 1 && block.sets <= 5, `${scenario}: ${block.name} invalid sets ${block.sets}`);
+      assert.ok(String(block.reps).length > 0, `${scenario}: ${block.name} reps missing`);
+      assert.ok(String(block.load).length > 0, `${scenario}: ${block.name} load missing`);
+      assert.ok(String(block.prBasis).length > 0, `${scenario}: ${block.name} PR basis missing`);
+      assert.ok(String(block.reason).length > 0, `${scenario}: ${block.name} reason missing`);
+      assert.match(String(block.load), /(\d+(?:\.\d+)?(?:-\d+(?:\.\d+)?)?\s*kg\s*\/\s*\d+(?:-\d+)?\s*lb|RPE|用力等级)/, `${scenario}: ${block.name} load must include kg/lb or RPE`);
+      const kg = kgFromLoad(block.load);
+      if (kg !== null) {
+        assert.ok(Number.isFinite(kg) && kg >= 0, `${scenario}: ${block.name} invalid kg ${block.load}`);
+        assert.ok(kg <= maxReasonableKg(block), `${scenario}: ${block.name} load ${kg}kg exceeds cap ${maxReasonableKg(block)}kg`);
+      }
+    }
+  }
 }
 
 test("Android WebView planner keeps scenario-sensitive outputs aligned with the web MVP", () => {
@@ -198,28 +252,32 @@ test("Android WebView planner keeps scenario-sensitive outputs aligned with the 
             for (const activityLevel of activityLevels) {
               for (const trainingExperience of trainingExperiences) {
                 for (const sessionMinutes of sessionLengths) {
-                  setAndroidInput(elements, { sex, goal, mode, frequency, focus, activityLevel, trainingExperience, sessionMinutes });
-                  const input = context.normalizeInput();
-                  const plan = context.buildPlan(input);
-                  checked += 1;
+                  for (const prProfile of androidPrProfiles) {
+                    setAndroidInput(elements, { sex, goal, mode, frequency, focus, activityLevel, trainingExperience, sessionMinutes, prProfile });
+                    const input = context.normalizeInput();
+                    const plan = context.buildPlan(input);
+                    const scenario = `${sex}/${goal}/${mode}/${frequency}/${focus.name}/${activityLevel}/${trainingExperience}/${sessionMinutes}/${prProfile.name}`;
+                    checked += 1;
 
-                  assert.equal(plan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name}/${activityLevel}/${trainingExperience}/${sessionMinutes} should return requested days`);
-                  assert.ok(plan.workouts.every((workout) => workout.blocks.length >= 5 && workout.blocks.length <= 6));
-                  assert.ok(plan.calories > 1000);
-                  assert.ok(plan.protein > 0);
-                  assert.ok(plan.logicSections.length >= 5);
-                  assert.ok(plan.scienceSections.length >= 4);
-                  assert.ok(plan.reasonSections.length >= 3);
+                    assert.equal(plan.workouts.length, frequency, `${scenario} should return requested days`);
+                    assert.ok(plan.workouts.every((workout) => workout.blocks.length >= 5 && workout.blocks.length <= 6));
+                    assert.ok(plan.calories > 1000);
+                    assert.ok(plan.protein > 0);
+                    assert.ok(plan.logicSections.length >= 5);
+                    assert.ok(plan.scienceSections.length >= 4);
+                    assert.ok(plan.reasonSections.length >= 3);
+                    assertAndroidWorkoutPrescription(plan, scenario);
 
-                  const actionText = plan.workouts.flatMap((day) => day.blocks.map((block) => block.name)).join(" ");
-                  if (mode === "bodyweight") assert.doesNotMatch(actionText, gymOnly, `home plan includes gym-only action: ${actionText}`);
-                  if (mode === "gym" && sex === "male") assert.match(actionText, /杠铃卧推|Barbell bench press/);
-                  if (mode === "gym" && sex === "female") assert.match(actionText, /哑铃卧推|上斜哑铃推举|Dumbbell press|Incline dumbbell press/);
-                  if (focus.name === "arm") assert.match(actionText, /弯举|下压|窄距俯卧撑|curl|pushdown|Close-grip push-up/i);
-                  if (focus.name === "hip") assert.match(actionText, /臀|Glute|Hip/i);
-                  if (focus.name === "thigh") assert.match(actionText, /深蹲|弓步|Squat|lunge/i);
-                  if (goal === "fat_loss") assert.ok(plan.calories < context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
-                  if (goal === "muscle_gain") assert.ok(plan.calories > context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
+                    const actionText = plan.workouts.flatMap((day) => day.blocks.map((block) => block.name)).join(" ");
+                    if (mode === "bodyweight") assert.doesNotMatch(actionText, gymOnly, `home plan includes gym-only action: ${actionText}`);
+                    if (mode === "gym" && sex === "male") assert.match(actionText, /杠铃卧推|Barbell bench press/);
+                    if (mode === "gym" && sex === "female") assert.match(actionText, /哑铃卧推|上斜哑铃推举|Dumbbell press|Incline dumbbell press/);
+                    if (focus.name === "arm") assert.match(actionText, /弯举|下压|窄距俯卧撑|curl|pushdown|Close-grip push-up/i);
+                    if (focus.name === "hip") assert.match(actionText, /臀|Glute|Hip/i);
+                    if (focus.name === "thigh") assert.match(actionText, /深蹲|弓步|Squat|lunge/i);
+                    if (goal === "fat_loss") assert.ok(plan.calories < context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
+                    if (goal === "muscle_gain") assert.ok(plan.calories > context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
+                  }
                 }
               }
             }
@@ -228,7 +286,7 @@ test("Android WebView planner keeps scenario-sensitive outputs aligned with the 
       }
     }
   }
-  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length);
+  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length * androidPrProfiles.length);
 });
 
 test("Android PR loads use conservative safe max and movement-specific scaling", () => {
