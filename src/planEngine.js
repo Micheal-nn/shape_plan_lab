@@ -167,9 +167,17 @@ function buildWorkoutSplit(input) {
       : focus.startsWith("Lower")
         ? extraGroups.filter((group) => lowerGroups.has(group))
         : extraGroups;
-    return [...new Set([...groups, ...eligible])].slice(0, 6);
+    return [...new Set([...eligible, ...groups])].slice(0, 6);
   };
   const make = (label, focus, groups) => makeWorkout(label, focus, addFocus(focus, groups), input.trainingMode, input, extraGroups);
+  if (days <= 1) {
+    return {
+      split: "full_body_1d",
+      workouts: [
+        make("Day 1", "Full Body A", ["quads", "chest", "back", "glutes", "core"])
+      ]
+    };
+  }
   if (days <= 2) {
     return {
       split: "full_body_2d",
@@ -373,6 +381,7 @@ export function generatePlan(input) {
   if (input.trainingMode === "bodyweight" && input.goal.type === "muscle_gain") warnings.push("Bodyweight-only muscle gain usually progresses more slowly.");
 
   const splitLabelsZh = {
+    full_body_1d: "每周 1 次全身训练",
     full_body_2d: "每周 2 次全身训练",
     full_body_3d: "每周 3 次全身训练",
     upper_lower_4d: "每周 4 次上下肢分化",

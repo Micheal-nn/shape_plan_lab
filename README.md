@@ -40,7 +40,9 @@ npm start
 
 离线 Android MVP 位于 [`android/shape-plan-android`](android/shape-plan-android)。计划生成、目标自动修正、围度聚焦和训练强度规则都内置在应用中，安装后不依赖开发服务器。
 
-当前发布版本：`android-v1.0.5`。该版本在 `android-v1.0.4` 的基础上，补齐 Android 与 Web 的多场景一致性：支持 2/3/4/5/6 天不同训练拆分、日常活动与单次训练时长输入、保持目标、居家动作不混入健身房器械动作，并用场景矩阵测试覆盖性别、目标类型、训练场景、训练频率和围度目标组合。动作计划继续按“动作指导、建议重量、建议次数、建议组数、PR 估计、安排原因”的结构展示。
+当前发布版本：`android-v1.0.6`。该版本在 `android-v1.0.5` 的基础上，新增全量/边缘场景测试全集和可读测试报告，覆盖 Web 与 Android WebView 各 20736 个组合，并修复每周 1 次训练、低频臂围目标和低频臀围目标的动作响应。动作计划继续按“动作指导、建议重量、建议次数、建议组数、PR 估计、安排原因”的结构展示。
+
+测试报告位于 [`docs/scenario-test-report.md`](docs/scenario-test-report.md)，包含全量矩阵覆盖范围、边缘场景和典型输入/输出样例。
 
 1. 推送 `android-v*` 格式的标签后，GitHub Actions 会构建 APK 并发布到 Releases。
 2. 手动运行 GitHub 的 **Build Android APK** 工作流，也会在工作流产物中提供可下载 APK。
@@ -87,13 +89,15 @@ curl -X POST http://localhost:3000/api/plan/generate \
 
 A zero-dependency Node.js fitness-planning MVP with a responsive browser client. It supports fat loss, muscle gain, recomposition, maintenance, paired current/target circumference inputs, rule-based training prioritization, transparent planning logic, and history-based plan reviews.
 
-Run `npm test` and `npm start`, then open [http://localhost:3000](http://localhost:3000).
+Run `npm test`, `npm run test:report`, and `npm start`, then open [http://localhost:3000](http://localhost:3000).
 
 ### Android installation
 
 The offline Android MVP is in [`android/shape-plan-android`](android/shape-plan-android). Its plan generation, goal normalization, circumference emphasis, and intensity rules run inside the app, without a development server.
 
-Current release: `android-v1.0.5`. Building on `android-v1.0.4`, this release aligns Android and Web behavior across scenarios: 2/3/4/5/6-day splits, daily activity and session-length inputs, maintenance goals, home plans that avoid gym-only equipment, and a scenario matrix test covering sex, goal type, training mode, weekly frequency, and circumference targets. The daily workout layout still shows guide, suggested weight, suggested reps, suggested sets, PR estimate, and arrangement reason.
+Current release: `android-v1.0.6`. Building on `android-v1.0.5`, this release adds comprehensive and edge-case scenario tests plus a readable test report, covering 20736 Web combinations and 20736 Android WebView combinations. It also fixes one-session training plans and low-frequency arm/hip circumference target responses. The daily workout layout still shows guide, suggested weight, suggested reps, suggested sets, PR estimate, and arrangement reason.
+
+The test report is available at [`docs/scenario-test-report.md`](docs/scenario-test-report.md), with matrix coverage, edge cases, and representative input/output examples.
 
 1. Push an `android-v*` tag to build and publish an APK in GitHub Releases.
 2. You can also run the **Build Android APK** GitHub workflow manually and download its APK artifact.

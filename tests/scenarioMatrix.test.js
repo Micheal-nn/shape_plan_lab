@@ -7,7 +7,10 @@ import { generatePlan } from "../src/planEngine.js";
 const goals = ["fat_loss", "muscle_gain", "recomposition", "maintain"];
 const sexes = ["male", "female"];
 const modes = ["gym", "bodyweight"];
-const frequencies = [2, 3, 4, 5, 6];
+const frequencies = [1, 2, 3, 4, 5, 6];
+const activityLevels = ["sedentary", "light", "moderate", "high"];
+const trainingExperiences = ["novice", "intermediate", "advanced"];
+const sessionLengths = [20, 60, 180];
 const focusCases = [
   { name: "none", current: {}, target: {} },
   { name: "waist", current: { waistCm: 91 }, target: { waistCm: 86 }, groups: ["core"] },
@@ -24,19 +27,19 @@ const targetWeightByGoal = {
   maintain: 82
 };
 
-function webInput({ sex, goal, mode, frequency, focus }) {
+function webInput({ sex, goal, mode, frequency, focus, activityLevel = "light", trainingExperience = "intermediate", sessionMinutes = 60 }) {
   return {
     sex,
     age: 30,
     heightCm: sex === "male" ? 175 : 165,
     weightKg: 82,
     bodyFatPct: sex === "male" ? 24 : 31,
-    activityLevel: "light",
+    activityLevel,
     goal: { type: goal, targetDate: "2026-12-31", targetWeightKg: targetWeightByGoal[goal] },
     trainingMode: mode,
     frequencyPerWeek: frequency,
-    sessionMinutes: 60,
-    trainingExperience: "intermediate",
+    sessionMinutes,
+    trainingExperience,
     currentCircumference: focus.current,
     goalCircumference: focus.target
   };
@@ -49,36 +52,46 @@ test("web plan engine responds across sex, goal, mode, frequency, and circumfere
       for (const mode of modes) {
         for (const frequency of frequencies) {
           for (const focus of focusCases) {
-            const plan = generatePlan(webInput({ sex, goal, mode, frequency, focus }));
-            checked += 1;
+            for (const activityLevel of activityLevels) {
+              for (const trainingExperience of trainingExperiences) {
+                for (const sessionMinutes of sessionLengths) {
+                  const params = { sex, goal, mode, frequency, focus, activityLevel, trainingExperience, sessionMinutes };
+                  const plan = generatePlan(webInput(params));
+                  checked += 1;
 
-            assert.equal(plan.trainingPlan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name} should return requested days`);
-            assert.ok(plan.trainingPlan.workouts.every((workout) => workout.exercises.length >= 4 && workout.exercises.length <= 6));
-            assert.ok(plan.targets.dailyCalories > 1000);
-            assert.ok(plan.targets.proteinG > 0);
-            assert.ok(plan.targets.carbG >= 80);
+                  assert.equal(plan.trainingPlan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name}/${activityLevel}/${trainingExperience}/${sessionMinutes} should return requested days`);
+                  assert.ok(plan.trainingPlan.workouts.every((workout) => workout.exercises.length >= 4 && workout.exercises.length <= 6));
+                  assert.ok(plan.targets.dailyCalories > 1000);
+                  assert.ok(plan.targets.proteinG > 0);
+                  assert.ok(plan.targets.carbG >= 80);
+                  assert.ok(plan.intensityPlan.rpe.length > 0);
+                  assert.ok(plan.rationale.length >= 5);
+                  assert.ok(plan.planningLogic.evidenceBasis.length >= 4);
 
-            const exercises = plan.trainingPlan.workouts.flatMap((workout) => workout.exercises);
-            assert.ok(exercises.every((exercise) => exercise.mode === mode || exercise.mode === "both"), `${mode} plan includes an incompatible exercise`);
+                  const exercises = plan.trainingPlan.workouts.flatMap((workout) => workout.exercises);
+                  assert.ok(exercises.every((exercise) => exercise.mode === mode || exercise.mode === "both"), `${mode} plan includes an incompatible exercise`);
 
-            const maintenanceCalories = generatePlan(webInput({ sex, goal: "maintain", mode, frequency, focus: focus.name === "waist" ? focusCases[0] : focus })).targets.dailyCalories;
-            if (goal === "fat_loss") assert.ok(plan.targets.dailyCalories < maintenanceCalories);
-            if (goal === "muscle_gain") assert.ok(plan.targets.dailyCalories > maintenanceCalories);
-            if (goal === "maintain" && focus.name !== "waist") assert.equal(plan.targets.dailyCalories, maintenanceCalories);
+                  const maintenanceCalories = generatePlan(webInput({ ...params, goal: "maintain", focus: focus.name === "waist" ? focusCases[0] : focus })).targets.dailyCalories;
+                  if (goal === "fat_loss") assert.ok(plan.targets.dailyCalories < maintenanceCalories);
+                  if (goal === "muscle_gain") assert.ok(plan.targets.dailyCalories > maintenanceCalories);
+                  if (goal === "maintain" && focus.name !== "waist") assert.equal(plan.targets.dailyCalories, maintenanceCalories);
 
-            if (mode === "gym" && sex === "male") assert.ok(exercises.some((exercise) => exercise.id === "bench_press"));
-            if (mode === "gym" && sex === "female") assert.ok(exercises.some((exercise) => exercise.id === "db_press"));
-            if (mode === "bodyweight") assert.ok(exercises.some((exercise) => exercise.id === "push_up"));
+                  if (mode === "gym" && sex === "male") assert.ok(exercises.some((exercise) => exercise.id === "bench_press"));
+                  if (mode === "gym" && sex === "female") assert.ok(exercises.some((exercise) => exercise.id === "db_press"));
+                  if (mode === "bodyweight") assert.ok(exercises.some((exercise) => exercise.id === "push_up"));
 
-            for (const group of focus.groups ?? []) {
-              assert.ok(exercises.some((exercise) => exercise.muscleGroup === group && exercise.emphasis), `${focus.name} should emphasize ${group}`);
+                  for (const group of focus.groups ?? []) {
+                    assert.ok(exercises.some((exercise) => exercise.muscleGroup === group && exercise.emphasis), `${focus.name} should emphasize ${group}`);
+                  }
+                }
+              }
             }
           }
         }
       }
     }
   }
-  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length);
+  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length);
 });
 
 function createElement(id) {
@@ -142,21 +155,21 @@ function loadAndroidContext() {
   return { context, elements };
 }
 
-function setAndroidInput(elements, { sex, goal, mode, frequency, focus }) {
+function setAndroidInput(elements, { sex, goal, mode, frequency, focus, activityLevel = "light", trainingExperience = "intermediate", sessionMinutes = 60 }) {
   const values = {
     sex,
     age: "30",
     height: sex === "male" ? "175" : "165",
     weight: "82",
     fat: sex === "male" ? "24" : "31",
-    activity: "light",
+    activity: activityLevel,
     goal,
     targetWeight: String(targetWeightByGoal[goal]),
     targetDate: "2026-12-31",
     frequency: String(frequency),
-    session: "60",
+    session: String(sessionMinutes),
     mode,
-    experience: "intermediate",
+    experience: trainingExperience,
     waist: focus.current.waistCm ? String(focus.current.waistCm) : "",
     targetWaist: focus.target.waistCm ? String(focus.target.waistCm) : "",
     chest: focus.current.chestCm ? String(focus.current.chestCm) : "",
@@ -182,26 +195,38 @@ test("Android WebView planner keeps scenario-sensitive outputs aligned with the 
       for (const mode of modes) {
         for (const frequency of frequencies) {
           for (const focus of focusCases) {
-            setAndroidInput(elements, { sex, goal, mode, frequency, focus });
-            const input = context.normalizeInput();
-            const plan = context.buildPlan(input);
-            checked += 1;
+            for (const activityLevel of activityLevels) {
+              for (const trainingExperience of trainingExperiences) {
+                for (const sessionMinutes of sessionLengths) {
+                  setAndroidInput(elements, { sex, goal, mode, frequency, focus, activityLevel, trainingExperience, sessionMinutes });
+                  const input = context.normalizeInput();
+                  const plan = context.buildPlan(input);
+                  checked += 1;
 
-            assert.equal(plan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name} should return requested days`);
-            assert.ok(plan.workouts.every((workout) => workout.blocks.length >= 5 && workout.blocks.length <= 6));
-            assert.ok(plan.calories > 1000);
-            assert.ok(plan.protein > 0);
+                  assert.equal(plan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name}/${activityLevel}/${trainingExperience}/${sessionMinutes} should return requested days`);
+                  assert.ok(plan.workouts.every((workout) => workout.blocks.length >= 5 && workout.blocks.length <= 6));
+                  assert.ok(plan.calories > 1000);
+                  assert.ok(plan.protein > 0);
+                  assert.ok(plan.logicSections.length >= 5);
+                  assert.ok(plan.scienceSections.length >= 4);
+                  assert.ok(plan.reasonSections.length >= 3);
 
-            const actionText = plan.workouts.flatMap((day) => day.blocks.map((block) => block.name)).join(" ");
-            if (mode === "bodyweight") assert.doesNotMatch(actionText, gymOnly, `home plan includes gym-only action: ${actionText}`);
-            if (mode === "gym" && sex === "male") assert.match(plan.workouts[0].blocks[0].name, /杠铃卧推|Barbell bench press/);
-            if (mode === "gym" && sex === "female") assert.match(plan.workouts[0].blocks[0].name, /上斜哑铃推举|Incline dumbbell press/);
-            if (goal === "fat_loss") assert.ok(plan.calories < context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
-            if (goal === "muscle_gain") assert.ok(plan.calories > context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
+                  const actionText = plan.workouts.flatMap((day) => day.blocks.map((block) => block.name)).join(" ");
+                  if (mode === "bodyweight") assert.doesNotMatch(actionText, gymOnly, `home plan includes gym-only action: ${actionText}`);
+                  if (mode === "gym" && sex === "male") assert.match(actionText, /杠铃卧推|Barbell bench press/);
+                  if (mode === "gym" && sex === "female") assert.match(actionText, /哑铃卧推|上斜哑铃推举|Dumbbell press|Incline dumbbell press/);
+                  if (focus.name === "arm") assert.match(actionText, /弯举|下压|窄距俯卧撑|curl|pushdown|Close-grip push-up/i);
+                  if (focus.name === "hip") assert.match(actionText, /臀|Glute|Hip/i);
+                  if (focus.name === "thigh") assert.match(actionText, /深蹲|弓步|Squat|lunge/i);
+                  if (goal === "fat_loss") assert.ok(plan.calories < context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
+                  if (goal === "muscle_gain") assert.ok(plan.calories > context.buildPlan({ ...input, goal: { ...input.goal, type: "maintain", targetWeightKg: 82 } }).calories);
+                }
+              }
+            }
           }
         }
       }
     }
   }
-  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length);
+  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length);
 });

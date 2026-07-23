@@ -37,7 +37,7 @@
       </label>
       <label id="targetWeightLabel">目标体重（千克）<input id="targetWeight" type="number" value="74" step="0.1" /></label>
       <label id="targetDateLabel">目标日期<input id="targetDate" type="date" /></label>
-      <label id="frequencyLabel">每周训练次数<select id="frequency"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
+      <label id="frequencyLabel">每周训练次数<select id="frequency"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option></select></label>
       <label id="sessionLabel">单次训练时长（分钟）<input id="session" type="number" min="20" max="180" value="60" /></label>
       <label id="modeLabel">训练场景<select id="mode"><option value="gym">健身房</option><option value="bodyweight">自重 / 居家</option></select></label>
       <label id="experienceLabel">训练经验<select id="experience"><option value="novice">新手</option><option value="intermediate">中级</option><option value="advanced">高级</option></select></label>
@@ -401,7 +401,7 @@ function buildPlan(input, adjustment = null) {
 
   const day2 = { title: en ? 'Lower A' : '下肢 A', reason: lowerBase + '。' + targetReason, blocks: [
     ex(input.sex === 'female' ? (en ? 'Goblet squat' : '高脚杯深蹲') : (en ? 'Back squat' : '杠铃深蹲'), input.sex === 'female' ? (en ? 'Hold the load close and keep the torso upright.' : '负重贴近身体，保持躯干直立。') : (en ? 'Brace before descent, knees track toes, stand up by driving through mid-foot.' : '下蹲前建立腹压，膝盖对齐脚尖，用脚掌中部发力站起。'), 'squat', thighFocus ? 4 : 3, '5–8', en ? 'Main quad and glute lift; thigh targets receive more weekly sets.' : '主要刺激股四头肌和臀部；有大腿围目标时增加周训练量。', en ? 'Quads / glutes' : '股四头 / 臀部', input.sex === 'female' ? 'gobletSquat' : 'squat'),
-    ex(en ? 'Romanian deadlift' : '罗马尼亚硬拉', en ? 'Push hips back, keep lats tight, stop when hamstrings are loaded.' : '髋部后移，背阔收紧，腘绳肌有明显拉伸即可。', 'hinge', hipFocus ? 4 : 3, '6–10', en ? 'Hip-hinge work supports glute and hamstring development.' : '髋主导训练支持臀部和后侧链增长。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', 'hinge'),
+    hipFocus ? ex(en ? 'Hip thrust' : '臀推', en ? 'Pause at the top and finish with the glutes instead of the low back.' : '顶峰停顿，用臀部完成髋伸，不要用腰代偿。', 'hinge', 4, '8–12', en ? 'Hip-circumference targets need an explicit glute-dominant lift.' : '臀围目标需要明确的臀部主导动作。', en ? 'Glutes' : '臀部', 'hipThrust') : ex(en ? 'Romanian deadlift' : '罗马尼亚硬拉', en ? 'Push hips back, keep lats tight, stop when hamstrings are loaded.' : '髋部后移，背阔收紧，腘绳肌有明显拉伸即可。', 'hinge', 3, '6–10', en ? 'Hip-hinge work supports glute and hamstring development.' : '髋主导训练支持臀部和后侧链增长。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', 'hinge'),
     ex(en ? 'Bulgarian split squat' : '保加利亚分腿蹲', en ? 'Keep front foot stable and descend under control.' : '前脚稳定，控制下放，身体不要左右晃动。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Unilateral work improves leg symmetry and adds local volume.' : '单侧动作改善左右差异，并增加局部训练量。', en ? 'Single-leg' : '单侧下肢', 'splitSquat'),
     ex(en ? 'Leg curl / sliding leg curl' : '腿弯举 / 滑盘腿弯举', en ? 'Curl by pulling heels toward hips and avoid lumbar extension.' : '用脚跟向臀部方向发力，避免腰椎反弓代偿。', null, 3, '10–14', en ? 'Balances knee-dominant work with hamstring isolation.' : '平衡膝主导训练，补充腘绳肌孤立刺激。', en ? 'Hamstrings' : '腘绳肌', 'legCurl'),
     ex(en ? 'Standing calf raise' : '站姿提踵', en ? 'Pause at the top and lower slowly to full stretch.' : '顶峰停顿，下放到充分拉伸，不要弹震。', null, 3, '12–18', en ? 'Completes lower-leg work and supports ankle stiffness for squats.' : '补足小腿训练，并提升深蹲所需踝部稳定性。', en ? 'Calves' : '小腿', 'calf'),
@@ -443,7 +443,7 @@ function buildPlan(input, adjustment = null) {
     day2.reason = (en ? 'Home lower day uses squat, lunge, hinge, and core patterns without gym machines. ' : '居家下肢日用深蹲、弓步、髋主导和核心动作替代器械。') + targetReason;
     day2.blocks = [
       ex(en ? 'Bodyweight squat' : '自重深蹲', en ? 'Track knees over toes and stand with even foot pressure.' : '膝盖跟随脚尖，脚掌均匀发力站起。', null, thighFocus ? 4 : 3, '12–20', en ? 'Main home quad movement.' : '居家股四头主动作。', en ? 'Quads / glutes' : '股四头 / 臀部', 'core', bodyweightLoad),
-      ex(en ? 'Single-leg Romanian deadlift' : '单腿罗马尼亚硬拉', en ? 'Hinge at the hips and keep the back long.' : '髋部后移，背部保持平直。', null, hipFocus ? 4 : 3, '10–12/side', en ? 'Home hinge pattern for hamstrings and glutes.' : '居家髋主导动作，刺激腘绳肌和臀部。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', 'core', bodyweightLoad),
+      hipFocus ? ex(en ? 'Glute bridge' : '臀桥', en ? 'Pause at the top and squeeze the glutes hard.' : '顶峰停顿并主动夹臀。', null, 4, '12–20', en ? 'Hip-circumference targets need an explicit glute-dominant movement.' : '臀围目标需要明确的臀部主导动作。', en ? 'Glutes' : '臀部', 'gluteBridge') : ex(en ? 'Single-leg Romanian deadlift' : '单腿罗马尼亚硬拉', en ? 'Hinge at the hips and keep the back long.' : '髋部后移，背部保持平直。', null, 3, '10–12/side', en ? 'Home hinge pattern for hamstrings and glutes.' : '居家髋主导动作，刺激腘绳肌和臀部。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', 'core', bodyweightLoad),
       ex(en ? 'Reverse lunge' : '反向弓步', en ? 'Step back and keep the front foot stable.' : '向后迈步，前脚稳定，控制下放。', null, thighFocus ? 4 : 3, '8–12/side', en ? 'Single-leg work improves symmetry and raises local volume.' : '单侧训练改善左右差异并增加局部训练量。', en ? 'Single-leg' : '单侧下肢', 'splitSquat', bandMedium),
       ex(en ? 'Sliding leg curl' : '滑盘腿弯举', en ? 'Pull heels toward the hips without arching the low back.' : '脚跟向臀部发力，避免腰椎反弓。', null, 3, '10–14', en ? 'Hamstring isolation without a machine.' : '不用器械也能补充腘绳肌孤立刺激。', en ? 'Hamstrings' : '腘绳肌', 'core', bodyweightLoad),
       ex(en ? 'Standing calf raise' : '站姿提踵', en ? 'Pause at the top and lower slowly.' : '顶峰停顿，下放要慢。', null, 3, '12–20', en ? 'Completes lower-leg work.' : '补足小腿训练。', en ? 'Calves' : '小腿', 'core', bodyweightLoad),
@@ -501,7 +501,22 @@ function buildPlan(input, adjustment = null) {
     ex(en ? 'Plank' : '平板支撑', en ? 'Keep the body in one line.' : '身体保持一条直线。', null, waistFocus ? 4 : 3, en ? '30–45 sec' : '30–45 秒', en ? 'Trunk control.' : '躯干控制。', en ? 'Core' : '核心', 'core')
   ] };
 
-  const workouts = input.frequencyPerWeek >= 6 ? [day1, day2, day3, day4, day5, day6] : input.frequencyPerWeek === 5 ? [day1, day2, day3, day4, day5] : input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : [day1, day2];
+  const day0 = { title: en ? 'Full body A' : '全身训练 A', reason: (en ? 'One weekly session must cover the highest-value patterns in one recoverable session. ' : '每周 1 次训练必须在一次可恢复训练中覆盖收益最高的动作模式。') + targetReason, blocks: input.trainingMode === 'bodyweight' ? [
+    ex(en ? 'Push-up' : '俯卧撑', en ? 'Use a clean full range and stop before form breaks.' : '保证完整可控幅度，在动作变形前停止。', null, chestFocus ? 4 : 3, '8–15', en ? 'Keeps a basic upper-body push pattern in the minimum-frequency plan.' : '在最低频率计划中保留基础上肢推动作。', en ? 'Chest' : '胸部', 'core', bodyweightLoad),
+    ex(en ? 'Bodyweight squat' : '自重深蹲', en ? 'Keep knees tracking over toes.' : '膝盖跟随脚尖方向，保持稳定。', null, thighFocus ? 4 : 3, '12–20', en ? 'Covers knee-dominant lower-body work.' : '覆盖膝主导下肢训练。', en ? 'Quads' : '股四头', 'core', bodyweightLoad),
+    ex(en ? 'Inverted row / towel row' : '反向划船 / 毛巾划船', en ? 'Pull the elbows back and keep the body rigid.' : '肘部向后拉，躯干保持稳定。', null, 3, '8–12', en ? 'Balances pressing with pulling.' : '用拉的动作平衡推动作。', en ? 'Back' : '背部', 'row', bandMedium),
+    ex(en ? 'Glute bridge' : '臀桥', en ? 'Pause and squeeze the glutes at the top.' : '顶峰停顿并主动夹臀。', null, hipFocus ? 4 : 3, '12–20', en ? 'Maintains a hip-extension pattern for glutes.' : '保留臀部髋伸训练模式。', en ? 'Glutes' : '臀部', 'gluteBridge'),
+    armFocus ? ex(en ? 'Band curl' : '弹力带弯举', en ? 'Keep elbows fixed and control the lowering.' : '肘部固定，控制离心。', null, 4, '12–15', en ? 'Arm-circumference targets need direct biceps volume.' : '臂围目标需要直接肱二头训练量。', en ? 'Biceps' : '肱二头', 'curl', bandLight) : ex(en ? 'Brisk walking / jump rope' : '快走 / 跳绳', en ? 'Use conversational pace or short controlled intervals.' : '采用可交谈配速或短间歇。', null, 1, en ? '12–18 min' : '12–18 分钟', en ? 'Adds conditioning when weekly strength frequency is low.' : '在力量频率较低时补充心肺刺激。', en ? 'Cardio' : '有氧', 'cardio'),
+    armFocus ? ex(en ? 'Close-grip push-up' : '窄距俯卧撑', en ? 'Keep elbows tracking back and stop before form breaks.' : '肘部向后，在动作变形前停止。', null, 4, '8–12', en ? 'Arm-circumference targets need direct triceps volume.' : '臂围目标需要直接肱三头训练量。', en ? 'Triceps' : '肱三头', 'core', bodyweightLoad) : ex(en ? 'Dead bug' : '死虫', en ? 'Move slowly while keeping the low back controlled.' : '缓慢移动，保持腰背稳定。', null, waistFocus ? 4 : 3, en ? '8/side' : '每侧 8 次', en ? 'Core control supports all other patterns.' : '核心控制支撑其他动作质量。', en ? 'Core' : '核心', 'core')
+  ] : [
+    ex(input.sex === 'female' ? (en ? 'Dumbbell press' : '哑铃卧推') : (en ? 'Barbell bench press' : '杠铃卧推'), en ? 'Control the lowering and press without bouncing.' : '控制下放，主动推起，不借反弹。', 'bench', chestFocus ? 4 : 3, '6–10', en ? 'Keeps the main upper-body push pattern.' : '保留主要上肢推动作。', en ? 'Chest' : '胸部', input.sex === 'female' ? 'inclinePress' : 'bench'),
+    ex(input.sex === 'female' ? (en ? 'Goblet squat' : '高脚杯深蹲') : (en ? 'Barbell squat' : '杠铃深蹲'), en ? 'Brace before descending and stand up under control.' : '下蹲前收紧核心，起身保持控制。', 'squat', thighFocus ? 4 : 3, '6–10', en ? 'Covers knee-dominant lower-body strength.' : '覆盖膝主导下肢力量。', en ? 'Quads' : '股四头', input.sex === 'female' ? 'gobletSquat' : 'squat'),
+    ex(input.sex === 'female' ? (en ? 'Lat pulldown' : '高位下拉') : (en ? 'Barbell row' : '杠铃划船'), en ? 'Lead with the elbows and keep the torso stable.' : '用肘部主导发力，躯干保持稳定。', 'row', 3, '8–12', en ? 'Balances pressing and adds back volume.' : '平衡推动作并补充背部训练量。', en ? 'Back' : '背部', input.sex === 'female' ? 'pulldown' : 'row'),
+    ex(en ? 'Hip thrust / Romanian deadlift' : '臀推 / 罗马尼亚硬拉', en ? 'Hinge from the hips and keep the spine neutral.' : '从髋部发力，保持脊柱中立。', 'hinge', hipFocus ? 4 : 3, '8–12', en ? 'Adds hip-dominant posterior-chain stimulus.' : '增加髋主导后侧链刺激。', en ? 'Glutes / hamstrings' : '臀部 / 腘绳肌', input.sex === 'female' ? 'hipThrust' : 'hinge'),
+    armFocus ? ex(en ? 'Dumbbell curl' : '哑铃弯举', en ? 'Control the lowering and avoid torso swing.' : '控制离心，避免躯干摆动。', null, 4, '10–14', en ? 'Arm-circumference targets need direct biceps volume.' : '臂围目标需要直接肱二头训练量。', en ? 'Biceps' : '肱二头', 'curl') : ex(cardioName, en ? 'Keep this easy enough to recover from.' : '强度控制在可恢复范围。', null, 1, en ? '12–18 min' : '12–18 分钟', en ? 'Adds conditioning without replacing strength work.' : '补充心肺刺激，但不替代力量训练。', en ? 'Cardio' : '有氧', 'cardio'),
+    armFocus ? ex(en ? 'Rope pushdown' : '绳索下压', en ? 'Keep elbows fixed and extend under control.' : '肘部固定，主动伸直。', null, 4, '10–14', en ? 'Arm-circumference targets need direct triceps volume.' : '臂围目标需要直接肱三头训练量。', en ? 'Triceps' : '肱三头', 'triceps') : ex(en ? 'Plank / dead bug' : '平板支撑 / 死虫', en ? 'Keep ribs down and pelvis controlled.' : '肋骨下沉，骨盆稳定。', null, waistFocus ? 4 : 3, en ? '30–45 sec or 8/side' : '30–45 秒或每侧 8 次', en ? 'Core control supports loaded movements.' : '核心控制支撑负重动作质量。', en ? 'Core' : '核心', 'core')
+  ] };
+  const workouts = input.frequencyPerWeek >= 6 ? [day1, day2, day3, day4, day5, day6] : input.frequencyPerWeek === 5 ? [day1, day2, day3, day4, day5] : input.frequencyPerWeek >= 4 ? [day1, day2, day3, day4] : input.frequencyPerWeek === 3 ? [day1, day2, day3] : input.frequencyPerWeek === 2 ? [day1, day2] : [day0];
   const adjustedWorkouts = adjustment?.setDelta ? workouts.map((day) => ({ ...day, blocks: day.blocks.map((block) => ({ ...block, sets: Math.max(2, block.sets + adjustment.setDelta) })) })) : workouts;
   const splitReason = en
     ? input.frequencyPerWeek >= 6
@@ -512,7 +527,9 @@ function buildPlan(input, adjustment = null) {
           ? 'Four weekly sessions separate push, lower, pull, and conditioning/core work so fatigue is easier to manage.'
           : input.frequencyPerWeek === 3
             ? 'Three weekly sessions preserve the main movement patterns with lower weekly volume.'
-            : 'Two weekly sessions prioritize the highest-value full-body patterns and keep the plan realistic.'
+      : input.frequencyPerWeek === 2
+        ? 'Two weekly sessions prioritize the highest-value full-body patterns and keep the plan realistic.'
+        : 'One weekly session compresses the minimum effective full-body pattern into a single realistic day.'
     : input.frequencyPerWeek >= 6
       ? '每周 6 次采用上肢/下肢分布并增加下肢日，让目标肌群获得更高频刺激，同时避免单次训练过长。'
       : input.frequencyPerWeek === 5
@@ -521,7 +538,9 @@ function buildPlan(input, adjustment = null) {
           ? '每周 4 次拆分推、下肢、拉、有氧与核心，便于管理疲劳。'
           : input.frequencyPerWeek === 3
             ? '每周 3 次保留主要动作模式，但周训练量更保守。'
-            : '每周 2 次优先保留收益最高的全身动作模式，让计划保持现实可执行。';
+            : input.frequencyPerWeek === 2
+              ? '每周 2 次优先保留收益最高的全身动作模式，让计划保持现实可执行。'
+              : '每周 1 次会把最低有效的全身动作模式压缩到单个现实可执行训练日。';
 
   const intensity = {
     summary: en ? `Working sets use RPE ${rpe} and keep ${rir} reps in reserve. If a personal record is entered, loads are derived from estimated 1RM values and then constrained by the target.` : `工作组采用主观用力等级 ${rpe}，并保留 ${rir} 次余力。如果填写了个人纪录，系统会先估算个人最大力量，再按目标与日期约束计算训练负荷。`,
