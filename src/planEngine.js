@@ -1,4 +1,5 @@
 import { pickCardio, pickExercises } from "./exerciseLibrary.js";
+import { buildPrAnchors, prescribeExerciseLoad } from "./loadPrescription.js";
 
 const KCAL_PER_KG = 7700;
 const ACTIVITY_FACTORS = {
@@ -123,10 +124,12 @@ function makeWorkout(label, focus, groups, mode, input, focusGroups) {
   const exercises = pickExercises(groups, mode, input).map((exercise) => {
     const emphasized = focusGroups.includes(exercise.muscleGroup);
     const sets = exercise.sets + (emphasized ? 1 : 0);
+    const load = prescribeExerciseLoad(exercise, input);
     return {
       ...exercise,
       sets,
       emphasis: emphasized,
+      load,
       intensity: { rir: profile.rir, rpe: profile.rpe, loadGuidanceZh: `选择可在 ${exercise.reps} 次范围内完成、末组仍保留 ${profile.rir} 次余力的负荷。`, loadGuidance: `Choose a load that fits ${exercise.reps} reps while leaving ${profile.rir} reps in reserve on the final set.` }
     };
   });
@@ -235,6 +238,10 @@ function buildWorkoutSplit(input) {
 
 function buildIntensityPlan(input, workouts, focuses) {
   const profile = intensityProfile(input);
+  const prAnchors = buildPrAnchors(input.pr);
+  const prEntries = Object.entries(prAnchors).filter(([, value]) => value);
+  const anchorLabelsZh = { bench: "卧推", squat: "深蹲", row: "划船/下拉", hinge: "硬拉/臀推" };
+  const anchorLabels = { bench: "bench", squat: "squat", row: "row/pulldown", hinge: "hinge" };
   const totals = new Map();
   workouts.flatMap((workout) => workout.exercises).forEach((exercise) => {
     totals.set(exercise.muscleGroup, (totals.get(exercise.muscleGroup) ?? 0) + exercise.sets);
@@ -245,6 +252,12 @@ function buildIntensityPlan(input, workouts, focuses) {
   const volumeReasonZh = targetVolumes.length
     ? `围度目标肌群安排为每周 ${targetVolumes.map((item) => `${item.groupZh} ${item.sets} 组`).join("、")}；这些为接近力竭前的工作组，目标是提供足够刺激，同时保留恢复空间。`
     : "主要肌群以均衡训练量覆盖；每组都按接近力竭前的工作组执行，避免仅完成动作而缺少刺激。";
+  const loadReasonZh = prEntries.length
+    ? `已录入 ${prEntries.map(([key, value]) => `${anchorLabelsZh[key]}保守安全训练最大值 ${value} kg`).join("、")}。系统不会把多次最大重量直接等同于无保护 1RM，而是按“输入重量 × (1 + min(次数, 5) / 40)”并对 8 次以上记录封顶为输入重量的 112%；主动作再按目标强度百分比，辅助动作按动作系数折算，并四舍五入到 1 kg 或 2.5 kg 常见重量档。`
+    : "未录入最大重量记录时，系统按性别、体重、训练经验、训练场景和动作类型给出保守常用重量，并四舍五入到 1 kg 或 2.5 kg 常见重量档；实际训练仍以 RPE/RIR 校准。";
+  const loadReason = prEntries.length
+    ? `Recorded conservative safe training maxes: ${prEntries.map(([key, value]) => `${anchorLabels[key]} ${value} kg`).join(", ")}. Multi-rep maxes are not treated as unspotted 1RM: the engine uses load × (1 + min(reps, 5) / 40), caps records of 8+ reps at 112% of entered load, applies goal-specific main-lift percentages or accessory movement factors, then rounds to common 1 kg or 2.5 kg increments.`
+    : "Without max records, loads are conservatively estimated from sex, body weight, training experience, setting, and movement type, then rounded to common 1 kg or 2.5 kg increments. RPE/RIR remains the final calibration.";
   return {
     rpe: profile.rpe,
     rir: profile.rir,
@@ -255,6 +268,8 @@ function buildIntensityPlan(input, workouts, focuses) {
       : "Major muscle groups receive balanced weekly training volume; each working set is performed close enough to effort to create a meaningful stimulus without simply going through the motions.",
     progressionZh: profile.progressionZh,
     progression: profile.progression,
+    loadReasonZh,
+    loadReason,
     intensityReasonZh: `当前训练经验为${{ novice: "新手", intermediate: "中级", advanced: "高级" }[input.trainingExperience ?? "novice"]}，工作组采用主观用力等级 ${profile.rpe}，每组结束时保留 ${profile.rir} 次余力。这个强度让动作质量、有效刺激和恢复可兼顾；不要求每组练到失败。`,
     intensityReason: `Training experience is ${{ novice: "novice", intermediate: "intermediate", advanced: "advanced" }[input.trainingExperience ?? "novice"]}. Working sets use RPE ${profile.rpe} (RIR ${profile.rir}) to balance form quality, useful stimulus, and recovery; every set does not need to reach failure.`
   };

@@ -135,7 +135,13 @@ function parseDateValue(value) { if (!value) return null; const date = new Date(
 function weeksUntil(date) { return Math.max(1, Math.ceil((date.getTime() - Date.now()) / 604800000)); }
 function highlight(id) { $(id).classList.add('red'); }
 function recommendationFromPr(estimate, percent) { return fmt((estimate * percent) / 100); }
-function formatLoadKg(kg) { return `${fmt(kg)} kg / ${Math.round(kg * 2.20462)} lb`; }
+function roundToCommonGymLoad(kg, category = '') {
+  if (!Number.isFinite(kg) || kg <= 0) return 0;
+  const small = ['lateralRaise', 'curl', 'triceps', 'pecFly', 'facePull'].includes(category) || kg <= 20;
+  const increment = small ? 1 : 2.5;
+  return fmt(Math.max(increment, Math.round(kg / increment) * increment));
+}
+function formatLoadKg(kg, category = '') { const rounded = roundToCommonGymLoad(kg, category); return `${rounded} kg / ${Math.round(rounded * 2.20462)} lb`; }
 
 function prMeta(sex = $('sex').value) {
   const female = sex === 'female';
@@ -356,8 +362,8 @@ function buildPlan(input, adjustment = null) {
     if (category === 'cardio') return en ? 'No external load (0 kg / 0 lb)' : '无外部负重（0 kg / 0 lb）';
     if (category === 'core' || category === 'gluteBridge') return en ? 'Bodyweight (0 kg / 0 lb)' : '自重（0 kg / 0 lb）';
     const anchor = liftKey || anchorMap[category] || category;
-    if (input.pr[anchor]) return formatLoadKg(input.pr[anchor] * categoryFactor(category, anchor));
-    return formatLoadKg(commonKg(category));
+    if (input.pr[anchor]) return formatLoadKg(input.pr[anchor] * categoryFactor(category, anchor), category);
+    return formatLoadKg(commonKg(category), category);
   };
   const prBasis = (category, liftKey = null) => {
     const anchor = liftKey || anchorMap[category] || category;
@@ -389,7 +395,7 @@ function buildPlan(input, adjustment = null) {
     return [{
       name: prMeta(input.sex)[key].label,
       oneRm: input.pr[key],
-      recommended: recommended(key),
+      recommended: roundToCommonGymLoad(recommendationFromPr(input.pr[key], loadByGoal[key]), key),
       reason: en ? `The working load is set from ${loadByGoal[key]}% of the conservative safe training max, not from an unspotted all-out 1RM.` : `工作负荷按保守安全训练最大值的 ${loadByGoal[key]}% 设定，不按无保护极限 1RM 直接处方。`
     }];
   });

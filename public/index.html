@@ -65,13 +65,13 @@
                 <select name="goalType"><option value="fat_loss" selected>减脂 / 减重</option><option value="muscle_gain">增肌</option><option value="recomposition">体态重组</option><option value="maintain">保持</option></select>
               </label>
               <label>达成日期 *
-                <input name="targetDate" type="date" value="2026-11-30" required />
+                <input name="targetDate" type="date" required />
               </label>
               <label>目标体重 (kg)
                 <input name="targetWeightKg" type="number" min="30" max="300" step="0.1" value="74" />
               </label>
               <label>目标体脂率 (%)
-                <input name="targetBodyFatPct" type="number" min="1" max="60" step="0.1" value="16" />
+                <input name="targetBodyFatPct" type="number" min="1" max="60" step="0.1" placeholder="可选" />
               </label>
               <label>训练场景 *
                 <select name="trainingMode"><option value="gym" selected>健身房</option><option value="bodyweight">自重 / 居家</option></select>
@@ -84,6 +84,25 @@
               </label>
               <label>训练经验
                 <select name="trainingExperience"><option value="novice" selected>新手</option><option value="intermediate">中级</option><option value="advanced">高级</option></select>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="pr-fieldset">
+            <legend id="pr-legend">个人纪录与训练强度</legend>
+            <p id="pr-hint" class="fieldset-hint">填写“重量 + 次数”后，系统会估算保守安全训练最大值，并四舍五入到常见健身房重量；未填写时使用常用重量和 RPE。</p>
+            <div class="field-grid two">
+              <label id="bench-pr-label">卧推纪录（kg × 次）
+                <span class="pr-inputs"><input name="benchWeight" type="number" min="0" step="0.5" placeholder="75" /><input name="benchReps" type="number" min="1" max="30" step="1" placeholder="10" /></span>
+              </label>
+              <label id="squat-pr-label">深蹲纪录（kg × 次）
+                <span class="pr-inputs"><input name="squatWeight" type="number" min="0" step="0.5" placeholder="100" /><input name="squatReps" type="number" min="1" max="30" step="1" placeholder="8" /></span>
+              </label>
+              <label id="row-pr-label">划船/下拉纪录（kg × 次）
+                <span class="pr-inputs"><input name="rowWeight" type="number" min="0" step="0.5" placeholder="60" /><input name="rowReps" type="number" min="1" max="30" step="1" placeholder="10" /></span>
+              </label>
+              <label id="hinge-pr-label">硬拉/臀推纪录（kg × 次）
+                <span class="pr-inputs"><input name="hingeWeight" type="number" min="0" step="0.5" placeholder="110" /><input name="hingeReps" type="number" min="1" max="30" step="1" placeholder="6" /></span>
               </label>
             </div>
           </fieldset>

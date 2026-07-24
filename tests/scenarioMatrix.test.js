@@ -11,6 +11,10 @@ const frequencies = [1, 2, 3, 4, 5, 6];
 const activityLevels = ["sedentary", "light", "moderate", "high"];
 const trainingExperiences = ["novice", "intermediate", "advanced"];
 const sessionLengths = [20, 60, 180];
+const webPrProfiles = [
+  { name: "no-pr" },
+  { name: "with-pr", benchWeight: 75, benchReps: 10, squatWeight: 100, squatReps: 8, rowWeight: 60, rowReps: 10, hingeWeight: 110, hingeReps: 6 }
+];
 const androidPrProfiles = [
   { name: "no-pr" },
   { name: "with-pr", benchWeight: "75", benchReps: "10", squatWeight: "100", squatReps: "8", rowWeight: "60", rowReps: "10", hingeWeight: "110", hingeReps: "6" }
@@ -31,7 +35,7 @@ const targetWeightByGoal = {
   maintain: 82
 };
 
-function webInput({ sex, goal, mode, frequency, focus, activityLevel = "light", trainingExperience = "intermediate", sessionMinutes = 60 }) {
+function webInput({ sex, goal, mode, frequency, focus, activityLevel = "light", trainingExperience = "intermediate", sessionMinutes = 60, pr = {} }) {
   return {
     sex,
     age: 30,
@@ -45,7 +49,8 @@ function webInput({ sex, goal, mode, frequency, focus, activityLevel = "light", 
     sessionMinutes,
     trainingExperience,
     currentCircumference: focus.current,
-    goalCircumference: focus.target
+    goalCircumference: focus.target,
+    pr
   };
 }
 
@@ -59,33 +64,41 @@ test("web plan engine responds across sex, goal, mode, frequency, and circumfere
             for (const activityLevel of activityLevels) {
               for (const trainingExperience of trainingExperiences) {
                 for (const sessionMinutes of sessionLengths) {
-                  const params = { sex, goal, mode, frequency, focus, activityLevel, trainingExperience, sessionMinutes };
-                  const plan = generatePlan(webInput(params));
-                  checked += 1;
+                  for (const pr of webPrProfiles) {
+                    const params = { sex, goal, mode, frequency, focus, activityLevel, trainingExperience, sessionMinutes, pr: pr.name === "with-pr" ? { bench: { weightKg: 75, reps: 10 }, squat: { weightKg: 100, reps: 8 }, row: { weightKg: 60, reps: 10 }, hinge: { weightKg: 110, reps: 6 } } : {} };
+                    const plan = generatePlan(webInput(params));
+                    checked += 1;
 
-                  assert.equal(plan.trainingPlan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name}/${activityLevel}/${trainingExperience}/${sessionMinutes} should return requested days`);
-                  assert.ok(plan.trainingPlan.workouts.every((workout) => workout.exercises.length >= 4 && workout.exercises.length <= 6));
-                  assert.ok(plan.targets.dailyCalories > 1000);
-                  assert.ok(plan.targets.proteinG > 0);
-                  assert.ok(plan.targets.carbG >= 80);
-                  assert.ok(plan.intensityPlan.rpe.length > 0);
-                  assert.ok(plan.rationale.length >= 5);
-                  assert.ok(plan.planningLogic.evidenceBasis.length >= 4);
+                    assert.equal(plan.trainingPlan.workouts.length, frequency, `${sex}/${goal}/${mode}/${frequency}/${focus.name}/${activityLevel}/${trainingExperience}/${sessionMinutes} should return requested days`);
+                    assert.ok(plan.trainingPlan.workouts.every((workout) => workout.exercises.length >= 4 && workout.exercises.length <= 6));
+                    assert.ok(plan.targets.dailyCalories > 1000);
+                    assert.ok(plan.targets.proteinG > 0);
+                    assert.ok(plan.targets.carbG >= 80);
+                    assert.ok(plan.intensityPlan.rpe.length > 0);
+                    assert.ok(plan.rationale.length >= 5);
+                    assert.ok(plan.planningLogic.evidenceBasis.length >= 4);
 
-                  const exercises = plan.trainingPlan.workouts.flatMap((workout) => workout.exercises);
-                  assert.ok(exercises.every((exercise) => exercise.mode === mode || exercise.mode === "both"), `${mode} plan includes an incompatible exercise`);
+                    const exercises = plan.trainingPlan.workouts.flatMap((workout) => workout.exercises);
+                    assert.ok(exercises.every((exercise) => exercise.mode === mode || exercise.mode === "both"), `${mode} plan includes an incompatible exercise`);
 
-                  const maintenanceCalories = generatePlan(webInput({ ...params, goal: "maintain", focus: focus.name === "waist" ? focusCases[0] : focus })).targets.dailyCalories;
-                  if (goal === "fat_loss") assert.ok(plan.targets.dailyCalories < maintenanceCalories);
-                  if (goal === "muscle_gain") assert.ok(plan.targets.dailyCalories > maintenanceCalories);
-                  if (goal === "maintain" && focus.name !== "waist") assert.equal(plan.targets.dailyCalories, maintenanceCalories);
+                    const maintenanceCalories = generatePlan(webInput({ ...params, goal: "maintain", focus: focus.name === "waist" ? focusCases[0] : focus, pr: {} })).targets.dailyCalories;
+                    if (goal === "fat_loss") assert.ok(plan.targets.dailyCalories < maintenanceCalories);
+                    if (goal === "muscle_gain") assert.ok(plan.targets.dailyCalories > maintenanceCalories);
+                    if (goal === "maintain" && focus.name !== "waist") assert.equal(plan.targets.dailyCalories, maintenanceCalories);
 
-                  if (mode === "gym" && sex === "male") assert.ok(exercises.some((exercise) => exercise.id === "bench_press"));
-                  if (mode === "gym" && sex === "female") assert.ok(exercises.some((exercise) => exercise.id === "db_press"));
-                  if (mode === "bodyweight") assert.ok(exercises.some((exercise) => exercise.id === "push_up"));
+                    if (mode === "gym" && sex === "male") assert.ok(exercises.some((exercise) => exercise.id === "bench_press"));
+                    if (mode === "gym" && sex === "female") assert.ok(exercises.some((exercise) => exercise.id === "db_press"));
+                    if (mode === "bodyweight") assert.ok(exercises.some((exercise) => exercise.id === "push_up"));
 
-                  for (const group of focus.groups ?? []) {
-                    assert.ok(exercises.some((exercise) => exercise.muscleGroup === group && exercise.emphasis), `${focus.name} should emphasize ${group}`);
+                    for (const group of focus.groups ?? []) {
+                      assert.ok(exercises.some((exercise) => exercise.muscleGroup === group && exercise.emphasis), `${focus.name} should emphasize ${group}`);
+                    }
+
+                    if (pr.name === "with-pr" && mode === "gym" && sex === "male" && goal === "muscle_gain" && frequency === 4 && focus.name === "none" && activityLevel === "light" && trainingExperience === "intermediate" && sessionMinutes === 60) {
+                      const firstDay = exercises.filter((exercise) => exercise.nameZh).slice(0, 4);
+                      const loads = firstDay.map((exercise) => exercise.load?.labelZh ?? "");
+                      assert.ok(loads.some((load) => load.includes("67.5 kg")), "bench load should round to 67.5 kg");
+                    }
                   }
                 }
               }
@@ -95,7 +108,7 @@ test("web plan engine responds across sex, goal, mode, frequency, and circumfere
       }
     }
   }
-  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length);
+  assert.equal(checked, sexes.length * goals.length * modes.length * frequencies.length * focusCases.length * activityLevels.length * trainingExperiences.length * sessionLengths.length * webPrProfiles.length);
 });
 
 function createElement(id) {
@@ -305,8 +318,8 @@ test("Android PR loads use conservative safe max and movement-specific scaling",
 
   assert.equal(input.pr.bench, 84);
   assert.ok(plan.prSummary[0].reason.includes("保守安全训练最大值") || plan.prSummary[0].reason.includes("safe training max"));
-  assert.ok(loadKg("杠铃卧推") >= 66 && loadKg("杠铃卧推") <= 68);
-  assert.ok(loadKg("坐姿肩推") >= 19 && loadKg("坐姿肩推") <= 21);
-  assert.ok(loadKg("下压") >= 9 && loadKg("下压") <= 11);
-  assert.ok(loadKg("侧平举") >= 4 && loadKg("侧平举") <= 5);
+  assert.equal(loadKg("杠铃卧推"), 67.5);
+  assert.equal(loadKg("坐姿肩推"), 20);
+  assert.equal(loadKg("下压"), 10);
+  assert.equal(loadKg("侧平举"), 5);
 });

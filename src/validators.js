@@ -15,6 +15,7 @@ function hasValue(value) {
 }
 
 const circumferenceFields = ["waistCm", "chestCm", "hipCm", "armCm", "thighCm"];
+const prFields = ["bench", "squat", "row", "hinge"];
 
 function isIsoDate(value) {
   return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(new Date(`${value}T00:00:00`).getTime());
@@ -55,6 +56,26 @@ export function validateGeneratePlanInput(input) {
   }
   if (hasValue(goal.targetWeightKg) && (!isFiniteNumber(goal.targetWeightKg) || goal.targetWeightKg < 30 || goal.targetWeightKg > 300)) addError(errors, "targetWeightKg", "目标体重需在 30 到 300 kg 之间。");
   if (hasValue(goal.targetBodyFatPct) && (!isFiniteNumber(goal.targetBodyFatPct) || goal.targetBodyFatPct < 2 || goal.targetBodyFatPct > 60)) addError(errors, "targetBodyFatPct", "目标体脂率需在 2% 到 60% 之间。");
+
+  if (hasValue(input.pr)) {
+    if (!isObject(input.pr)) {
+      addError(errors, "pr", "最大重量记录必须是对象。");
+    } else {
+      for (const field of prFields) {
+        const entry = input.pr[field];
+        if (!hasValue(entry)) continue;
+        if (!isObject(entry)) {
+          addError(errors, `pr.${field}`, "最大重量记录必须包含重量和次数。");
+          continue;
+        }
+        const hasLoad = hasValue(entry.weightKg);
+        const hasReps = hasValue(entry.reps);
+        if (hasLoad !== hasReps) addError(errors, `pr.${field}`, "最大重量记录需要同时填写重量和次数。");
+        if (hasLoad && (!isFiniteNumber(entry.weightKg) || entry.weightKg <= 0 || entry.weightKg > 500)) addError(errors, `pr.${field}.weightKg`, "最大重量需在 0 到 500 kg 之间。");
+        if (hasReps && (!Number.isInteger(entry.reps) || entry.reps < 1 || entry.reps > 30)) addError(errors, `pr.${field}.reps`, "最大重量次数需在 1 到 30 次之间。");
+      }
+    }
+  }
 
   if (errors.length > 0) return errors;
 

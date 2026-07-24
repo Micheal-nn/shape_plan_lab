@@ -14,6 +14,10 @@ const matrix = {
   experience: ["novice", "intermediate", "advanced"],
   sessionMinutes: [20, 60, 180]
 };
+const webPrProfiles = [
+  { name: "no-pr" },
+  { name: "with-pr", pr: { bench: { weightKg: 75, reps: 10 }, squat: { weightKg: 100, reps: 8 }, row: { weightKg: 60, reps: 10 }, hinge: { weightKg: 110, reps: 6 } } }
+];
 
 function futureDate(days) {
   const date = new Date();
@@ -50,6 +54,7 @@ function baseInput(overrides = {}) {
     frequencyPerWeek: overrides.frequencyPerWeek ?? 4,
     sessionMinutes: overrides.sessionMinutes ?? 60,
     trainingExperience: overrides.trainingExperience ?? "intermediate",
+    pr: overrides.pr ?? {},
     ...focus,
     ...overrides
   };
@@ -85,6 +90,7 @@ const invalidErrors = validateGeneratePlanInput(invalidInput);
 const contradictory = normalizeGoalInput(baseInput({ goal: { type: "muscle_gain", targetWeightKg: 70, targetBodyFatPct: 18 }, focus: "arm" }));
 
 const matrixCount = Object.values(matrix).reduce((product, values) => product * values.length, 1);
+const webMatrixCount = matrixCount * webPrProfiles.length;
 const androidMatrixCount = matrixCount * 2;
 const lines = [
   "# Shape Plan Lab 场景测试报告",
@@ -93,11 +99,11 @@ const lines = [
   "",
   "## 覆盖范围",
   "",
-  `- Web 规则引擎矩阵：${matrixCount} 个组合。`,
+  `- Web 规则引擎矩阵：${webMatrixCount} 个组合，覆盖无 PR 与有 PR 两套负荷输入。`,
   `- Android WebView 计划器矩阵：${androidMatrixCount} 个组合，覆盖无 PR 与有 PR 两套负荷输入。`,
   "- 组合维度：性别 2、目标类型 4、训练场景 2、每周训练频率 1-6、围度侧重 6、日常活动 4、训练经验 3、单次时长 20/60/180 分钟。",
   "- 边缘测试：非法基础指标、非法目标日期、缺失围度当前值、目标方向冲突、每周 1 次、极短/极长训练时长、活动水平单调影响热量。",
-  "- PR 负荷专项回归：75kg × 10 次卧推输入会被转为约 84kg 的保守安全训练最大值，卧推工作重量约 67kg，坐姿推肩、绳索下压、侧平举按辅助动作比例显著低于卧推。",
+  "- PR 负荷专项回归：75kg × 10 次卧推输入会被转为约 84kg 的保守安全训练最大值，卧推工作重量约 67.5kg，坐姿推肩约 20kg，绳索下压约 10kg，侧平举约 5kg。",
   "",
   "## 典型输入输出",
   "",

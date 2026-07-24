@@ -28,6 +28,7 @@ function numberOrUndefined(value) { return value === "" ? undefined : Number(val
 function localized(primary, fallback) { return language === "zh" ? primary : fallback || primary; }
 function localizedSummary(payload) { return language === "zh" ? (payload.summaryZh || payload.summary) : payload.summary; }
 function formatGoal(goalType) { return language === "zh" ? { fat_loss: "减脂", muscle_gain: "增肌", recomposition: "体态重组", maintain: "保持" }[goalType] : { fat_loss: "FAT LOSS", muscle_gain: "MUSCLE GAIN", recomposition: "RECOMPOSITION", maintain: "MAINTENANCE" }[goalType]; }
+function prInput(formData, key) { return { weightKg: numberOrUndefined(formData.get(`${key}Weight`)), reps: numberOrUndefined(formData.get(`${key}Reps`)) }; }
 function exerciseDescription(exercise) {
   const english = {
     push_up: "Keep your trunk rigid and lower under control.", bench_press: "Keep shoulder blades set and press with controlled range.",
@@ -127,7 +128,7 @@ function renderValidationErrors(errors) {
 
 function localizedServerError(message) {
   if (language === "zh" || typeof message !== "string") return message;
-  const translations = { "请求数据必须是对象。": "Request data must be an object.", "请选择性别。": "Select a sex.", "身高需在 120 到 230 cm 之间。": "Height must be between 120 and 230 cm.", "体重需在 30 到 300 kg 之间。": "Weight must be between 30 and 300 kg.", "达成日期必须晚于今天。": "Target date must be after today.", "请至少填写目标体重、目标体脂率或目标围度中的一项。": "Enter at least one target: weight, body fat, or circumference.", "填写目标围度时，也需要填写当前围度以便评估变化幅度。": "Enter the current circumference to evaluate a circumference target." };
+  const translations = { "请求数据必须是对象。": "Request data must be an object.", "请选择性别。": "Select a sex.", "身高需在 120 到 230 cm 之间。": "Height must be between 120 and 230 cm.", "体重需在 30 到 300 kg 之间。": "Weight must be between 30 and 300 kg.", "达成日期必须晚于今天。": "Target date must be after today.", "请至少填写目标体重、目标体脂率或目标围度中的一项。": "Enter at least one target: weight, body fat, or circumference.", "填写目标围度时，也需要填写当前围度以便评估变化幅度。": "Enter the current circumference to evaluate a circumference target.", "最大重量记录必须是对象。": "Max records must be an object.", "最大重量记录必须包含重量和次数。": "Max records must include load and reps.", "最大重量记录需要同时填写重量和次数。": "Enter both load and reps for each max record.", "最大重量需在 0 到 500 kg 之间。": "Max record load must be between 0 and 500 kg.", "最大重量次数需在 1 到 30 次之间。": "Max record reps must be between 1 and 30." };
   return translations[message] || "Please correct the highlighted input.";
 }
 
@@ -140,6 +141,14 @@ function validateClientInput(input) {
   if (goal.targetDate <= new Date().toISOString().slice(0, 10)) add("targetDate", language === "zh" ? "达成日期必须晚于今天。" : "Target date must be after today.");
   const hasCircumferenceTarget = Object.values(input.goalCircumference || {}).some((value) => value !== undefined);
   if (goal.type !== "maintain" && !hasWeight && !hasBodyFat && !hasCircumferenceTarget) add("goal", language === "zh" ? "请至少填写目标体重、目标体脂率或目标围度。" : "Enter at least one target: weight, body fat, or circumference.");
+  ["bench", "squat", "row", "hinge"].forEach((key) => {
+    const pr = input.pr?.[key] ?? {};
+    const hasLoad = pr.weightKg !== undefined;
+    const hasReps = pr.reps !== undefined;
+    if (hasLoad !== hasReps) add(`${key}${hasLoad ? "Reps" : "Weight"}`, language === "zh" ? "最大重量记录需要同时填写重量和次数。" : "Enter both load and reps for a max record.");
+    if (hasLoad && (!(pr.weightKg > 0) || pr.weightKg > 500)) add(`${key}Weight`, language === "zh" ? "最大重量需在 0 到 500 kg 之间。" : "Max record load must be between 0 and 500 kg.");
+    if (hasReps && (!Number.isInteger(pr.reps) || pr.reps < 1 || pr.reps > 30)) add(`${key}Reps`, language === "zh" ? "最大重量次数需在 1 到 30 次之间。" : "Max record reps must be between 1 and 30.");
+  });
   return errors;
 }
 
@@ -157,9 +166,18 @@ function growthChart(points) {
   return `<svg class="chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${text().growth}"><line class="axis" x1="${pad.left}" y1="${height - pad.bottom}" x2="${width - pad.right}" y2="${height - pad.bottom}" /><text x="0" y="${pad.top + 4}">${maximum}kg</text><text x="0" y="${height - pad.bottom}">${minimum}kg</text><path class="area" d="${area}" /><path class="line" d="${line}" />${points.map((point, index) => `<circle class="dot" cx="${x(index)}" cy="${y(point.weightKg)}" r="${index === points.length - 1 ? 4 : 2.2}" />`).join("")}</svg>`;
 }
 
+function renderExercise(exercise) {
+  const load = exercise.load ?? {};
+  const weightLabel = language === "zh" ? "建议重量" : "Suggested weight";
+  const repsLabel = language === "zh" ? "建议次数" : "Suggested reps";
+  const setsLabel = language === "zh" ? "建议组数" : "Suggested sets";
+  const prLabel = language === "zh" ? "PR估算" : "PR estimate";
+  return `<li><strong>${localized(exercise.nameZh, exercise.name)}${exercise.emphasis ? `<em>${language === "zh" ? "目标部位加组" : "Target volume +1"}</em>` : ""}<small>${language === "zh" ? exerciseDescription(exercise) : exercise.name}</small></strong><span>${weightLabel}<b>${localized(load.labelZh, load.label) || "-"}</b><small>${prLabel}：${localized(load.basisZh, load.basis) || (language === "zh" ? "按动作难度控制强度。" : "Intensity controlled by movement difficulty.")}</small></span><span>${repsLabel}<b>${exercise.reps}</b><small>${localized(exercise.muscleGroupZh, exercise.muscleGroup)} · ${language === "zh" ? `用力等级 ${exercise.intensity.rpe}，余力 ${exercise.intensity.rir} 次` : `RPE ${exercise.intensity.rpe} / RIR ${exercise.intensity.rir}`}</small></span><span>${setsLabel}<b>${exercise.sets}</b><small>${language === "zh" ? "休息" : "Rest"} ${exercise.restSeconds}${language === "zh" ? "秒" : "s"} · ${localized(exercise.intensity.loadGuidanceZh, exercise.intensity.loadGuidance)}</small></span></li>`;
+}
+
 function renderPlan(plan) {
   const status = statusMeta(plan);
-  const workoutMarkup = plan.trainingPlan.workouts.map((workout, index) => `<details class="workout" ${index === 0 ? "open" : ""}><summary><span>${localized(`${workout.labelZh} · ${workout.focusZh}`, `${workout.label} · ${workout.focus}`)}</span><small>${workout.exercises.length} ${language === "zh" ? "个动作" : "moves"} +</small></summary><ul class="exercise-list">${workout.exercises.map((exercise) => `<li><strong>${localized(exercise.nameZh, exercise.name)}${exercise.emphasis ? `<em>${language === "zh" ? "目标部位加组" : "Target volume +1"}</em>` : ""}<small>${language === "zh" ? "" : exercise.nameZh}</small></strong><span>${exercise.sets} ${language === "zh" ? "组" : "sets"} × ${exercise.reps}<small>${localized(exercise.muscleGroupZh, exercise.muscleGroup)} · ${language === "zh" ? `用力等级 ${exercise.intensity.rpe}，余力 ${exercise.intensity.rir} 次` : `RPE ${exercise.intensity.rpe} / RIR ${exercise.intensity.rir}`}</small></span><span>${language === "zh" ? "休息" : "Rest"} ${exercise.restSeconds}${language === "zh" ? "秒" : "s"}<small>${language === "zh" ? exercise.intensity.loadGuidanceZh : exercise.intensity.loadGuidance}</small></span><p class="exercise-tip">${exerciseDescription(exercise)}</p></li>`).join("")}</ul></details>`).join("");
+  const workoutMarkup = plan.trainingPlan.workouts.map((workout, index) => `<details class="workout" ${index === 0 ? "open" : ""}><summary><span>${localized(`${workout.labelZh} · ${workout.focusZh}`, `${workout.label} · ${workout.focus}`)}</span><small>${workout.exercises.length} ${language === "zh" ? "个动作" : "moves"} +</small></summary><ul class="exercise-list">${workout.exercises.map(renderExercise).join("")}</ul></details>`).join("");
   const cardioMarkup = plan.cardioPlan.exercises.map((exercise) => `<div class="cardio-item"><div><strong>${localized(exercise.nameZh, exercise.name)}<small>${language === "zh" ? exercise.name : exercise.nameZh}</small></strong><p>${cardioDescription(exercise)}</p></div><span>${exercise.durationMinutes} ${language === "zh" ? "分钟" : "min"}<br /><small>${language === "zh" ? exercise.intensity : ({ "低到中等": "Low to moderate", "中等到较高": "Moderate to high" }[exercise.intensity] || exercise.intensity)}</small></span></div>`).join("");
   const rationaleMarkup = plan.rationale.map((item) => `<article class="rationale-item"><h4>${localized(item.titleZh, item.title)}</h4><p>${localized(item.textZh, item.text)}</p></article>`).join("");
   const logic = plan.planningLogic;
@@ -167,7 +185,7 @@ function renderPlan(plan) {
   const evidenceMarkup = logic.evidenceBasis.map((item) => `<article class="rationale-item"><h4>${localized(item.titleZh, item.title)}</h4><p>${localized(item.textZh, item.text)}</p></article>`).join("");
   const logicMarkup = `<article class="rationale-item"><h4>${localized(logic.inputAssessment.titleZh, logic.inputAssessment.title)}</h4><p>${localized(logic.inputAssessment.textZh, logic.inputAssessment.text)}</p></article>${calculationsMarkup}<article class="rationale-item"><h4>${localized(logic.trainingDecision.titleZh, logic.trainingDecision.title)}</h4><p>${localized(logic.trainingDecision.textZh, logic.trainingDecision.text)}</p></article><article class="rationale-item"><h4>${localized(logic.intensityDecision.titleZh, logic.intensityDecision.title)}</h4><p>${localized(logic.intensityDecision.textZh, logic.intensityDecision.text)}</p></article><article class="rationale-item feasibility-path"><h4>${localized(logic.feasibilityPath.titleZh, logic.feasibilityPath.title)}</h4><p>${localized(logic.feasibilityPath.textZh, logic.feasibilityPath.text)}</p></article>`;
   const intensity = plan.intensityPlan;
-  const intensityMarkup = `<details class="intensity-card"><summary><span><b>${language === "zh" ? "训练强度处方" : "Intensity prescription"}</b><small>${language === "zh" ? `工作组：用力等级 ${intensity.rpe}，余力 ${intensity.rir} 次` : `Working sets: RPE ${intensity.rpe} · RIR ${intensity.rir}`}</small></span><i>+</i></summary><div><p>${localized(intensity.intensityReasonZh, intensity.intensityReason)}</p><div class="volume-pills">${intensity.targetVolumes.map((item) => `<span>${language === "zh" ? item.groupZh : item.groupLabel} ${item.sets} ${language === "zh" ? "有效组/周" : "hard sets/wk"}</span>`).join("") || `<span>${language === "zh" ? "全身均衡有效组" : "Balanced full-body hard sets"}</span>`}</div><p><strong>${language === "zh" ? "进阶条件：" : "Progression: "}</strong>${localized(intensity.progressionZh, intensity.progression)}</p></div></details>`;
+  const intensityMarkup = `<details class="intensity-card"><summary><span><b>${language === "zh" ? "训练强度处方" : "Intensity prescription"}</b><small>${language === "zh" ? `工作组：用力等级 ${intensity.rpe}，余力 ${intensity.rir} 次` : `Working sets: RPE ${intensity.rpe} · RIR ${intensity.rir}`}</small></span><i>+</i></summary><div><p>${localized(intensity.intensityReasonZh, intensity.intensityReason)}</p>${intensity.loadReasonZh ? `<p><strong>${language === "zh" ? "重量估算：" : "Load estimate: "}</strong>${localized(intensity.loadReasonZh, intensity.loadReason)}</p>` : ""}<div class="volume-pills">${intensity.targetVolumes.map((item) => `<span>${language === "zh" ? item.groupZh : item.groupLabel} ${item.sets} ${language === "zh" ? "有效组/周" : "hard sets/wk"}</span>`).join("") || `<span>${language === "zh" ? "全身均衡有效组" : "Balanced full-body hard sets"}</span>`}</div><p><strong>${language === "zh" ? "进阶条件：" : "Progression: "}</strong>${localized(intensity.progressionZh, intensity.progression)}</p></div></details>`;
   const notices = [...plan.warnings, ...plan.llmReview.notes].map((note, index) => `<div class="notice ${index === plan.warnings.length ? "safe" : ""}">${localizedNotice(note)}</div>`).join("");
   const splitTitle = localized(plan.trainingPlan.splitZh, plan.trainingPlan.split.replaceAll("_", " "));
   const labels = resultLabels();
@@ -178,7 +196,7 @@ function renderPlan(plan) {
 function createInput(formData) {
   const currentCircumference = { waistCm: numberOrUndefined(formData.get("currentWaistCm")), chestCm: numberOrUndefined(formData.get("currentChestCm")), hipCm: numberOrUndefined(formData.get("currentHipCm")), armCm: numberOrUndefined(formData.get("currentArmCm")), thighCm: numberOrUndefined(formData.get("currentThighCm")) };
   const goalCircumference = { waistCm: numberOrUndefined(formData.get("goalWaistCm")), chestCm: numberOrUndefined(formData.get("goalChestCm")), hipCm: numberOrUndefined(formData.get("goalHipCm")), armCm: numberOrUndefined(formData.get("goalArmCm")), thighCm: numberOrUndefined(formData.get("goalThighCm")) };
-  return { sex: formData.get("sex"), age: numberOrUndefined(formData.get("age")), heightCm: Number(formData.get("heightCm")), weightKg: Number(formData.get("weightKg")), bodyFatPct: numberOrUndefined(formData.get("bodyFatPct")), goal: { type: formData.get("goalType"), targetDate: formData.get("targetDate"), targetWeightKg: numberOrUndefined(formData.get("targetWeightKg")), targetBodyFatPct: numberOrUndefined(formData.get("targetBodyFatPct")) }, currentCircumference, goalCircumference, trainingMode: formData.get("trainingMode"), frequencyPerWeek: Number(formData.get("frequencyPerWeek")), sessionMinutes: numberOrUndefined(formData.get("sessionMinutes")), activityLevel: formData.get("activityLevel"), trainingExperience: formData.get("trainingExperience") };
+  return { sex: formData.get("sex"), age: numberOrUndefined(formData.get("age")), heightCm: Number(formData.get("heightCm")), weightKg: Number(formData.get("weightKg")), bodyFatPct: numberOrUndefined(formData.get("bodyFatPct")), goal: { type: formData.get("goalType"), targetDate: formData.get("targetDate"), targetWeightKg: numberOrUndefined(formData.get("targetWeightKg")), targetBodyFatPct: numberOrUndefined(formData.get("targetBodyFatPct")) }, currentCircumference, goalCircumference, pr: { bench: prInput(formData, "bench"), squat: prInput(formData, "squat"), row: prInput(formData, "row"), hinge: prInput(formData, "hinge") }, trainingMode: formData.get("trainingMode"), frequencyPerWeek: Number(formData.get("frequencyPerWeek")), sessionMinutes: numberOrUndefined(formData.get("sessionMinutes")), activityLevel: formData.get("activityLevel"), trainingExperience: formData.get("trainingExperience") };
 }
 
 function translateStaticUi() {
@@ -196,6 +214,13 @@ function translateStaticUi() {
   Object.entries(labels).forEach(([name, values]) => { const field = form.elements.namedItem(name); const label = field?.closest("label"); if (label?.firstChild) label.firstChild.textContent = values[english ? 1 : 0]; });
   document.querySelectorAll("fieldset legend")[0].textContent = english ? "Baseline metrics" : "基础指标";
   document.querySelectorAll("fieldset legend")[1].textContent = english ? "Goal and constraints" : "目标与约束";
+  document.querySelector("#pr-legend").textContent = english ? "Personal records and training intensity" : "个人纪录与训练强度";
+  document.querySelector("#pr-hint").textContent = english ? "Enter load plus reps to estimate a conservative safe training max. Loads are rounded to common gym increments; blank records fall back to standard loads and RPE." : "填写“重量 + 次数”后，系统会估算保守安全训练最大值，并四舍五入到常见健身房重量；未填写时使用常用重量和 RPE。";
+  const female = form.elements.sex.value === "female";
+  const prLabels = female
+    ? { bench: ["哑铃卧推纪录（kg × 次）", "Dumbbell press record (kg × reps)"], squat: ["高脚杯深蹲纪录（kg × 次）", "Goblet squat record (kg × reps)"], row: ["坐姿划船/下拉纪录（kg × 次）", "Cable row/pulldown record (kg × reps)"], hinge: ["臀推/罗马尼亚硬拉纪录（kg × 次）", "Hip thrust/RDL record (kg × reps)"] }
+    : { bench: ["卧推纪录（kg × 次）", "Bench press record (kg × reps)"], squat: ["深蹲纪录（kg × 次）", "Squat record (kg × reps)"], row: ["划船/下拉纪录（kg × 次）", "Row/pulldown record (kg × reps)"], hinge: ["硬拉/臀推纪录（kg × 次）", "Deadlift/hip thrust record (kg × reps)"] };
+  Object.entries(prLabels).forEach(([key, values]) => { const label = document.querySelector(`#${key}-pr-label`); if (label?.firstChild) label.firstChild.textContent = values[english ? 1 : 0]; });
   document.querySelector("#circumference-legend").textContent = english ? "Optional circumference targets (cm)" : "可选围度目标（厘米）";
   document.querySelector("#circumference-hint").textContent = english ? "Only enter areas you want to change. Current and target values must be entered as a pair. The waist target must be smaller; chest, hip, arm, and thigh targets must be larger." : "仅填写需要改善的部位：当前值与目标值需成对填写。腰围仅支持缩小；胸、臀、臂、大腿围仅支持增大。";
   ["measurement-part", "measurement-current", "measurement-target"].forEach((id, index) => { document.querySelector(`#${id}`).textContent = (english ? ["Area", "Current", "Target"] : ["部位", "当前值", "目标值"])[index]; });
@@ -230,11 +255,11 @@ function translateStaticUi() {
 function downloadPlanImage() {
   if (!currentPlan) return;
   const items = [
-    `${formatGoal(currentInput.goal.type)} PLAN`,
+    `${formatGoal(currentInput.goal.type)} ${language === "zh" ? "计划" : "PLAN"}`,
     `${text().calories}: ${currentPlan.targets.dailyCalories} kcal`,
     `${text().protein}: ${currentPlan.targets.proteinG}g · ${text().fat}: ${currentPlan.targets.fatG}g · ${text().carbs}: ${currentPlan.targets.carbG}g`,
     ...currentPlan.rationale.map((item) => `${localized(item.titleZh, item.title)}: ${localized(item.textZh, item.text)}`),
-    ...currentPlan.trainingPlan.workouts.flatMap((workout) => [localized(`${workout.labelZh} · ${workout.focusZh}`, `${workout.label} · ${workout.focus}`), ...workout.exercises.map((exercise) => `  ${localized(exercise.nameZh, exercise.name)} · ${exercise.sets}×${exercise.reps}`)]),
+    ...currentPlan.trainingPlan.workouts.flatMap((workout) => [localized(`${workout.labelZh} · ${workout.focusZh}`, `${workout.label} · ${workout.focus}`), ...workout.exercises.map((exercise) => `  ${localized(exercise.nameZh, exercise.name)} · ${localized(exercise.load?.labelZh, exercise.load?.label) || "-"} · ${exercise.sets}×${exercise.reps}`)]),
     `${localized(currentPlan.cardioPlan.titleZh, currentPlan.cardioPlan.title)}: ${currentPlan.cardioPlan.exercises.map((exercise) => `${localized(exercise.nameZh, exercise.name)} ${exercise.durationMinutes}${language === "zh" ? "分钟" : "min"}`).join(" / ")}`
   ];
   const wrap = (value, maxLength) => value.match(new RegExp(`.{1,${maxLength}}`, "g")) || [value];
@@ -308,4 +333,10 @@ reviewButton.addEventListener("click", async () => {
 
 languageButton.addEventListener("click", () => { language = language === "zh" ? "en" : "zh"; translateStaticUi(); });
 exportButton.addEventListener("click", downloadPlanImage);
+form.elements.sex.addEventListener("change", translateStaticUi);
+if (!form.elements.targetDate.value) {
+  const date = new Date();
+  date.setDate(date.getDate() + 90);
+  form.elements.targetDate.value = date.toISOString().slice(0, 10);
+}
 translateStaticUi();
