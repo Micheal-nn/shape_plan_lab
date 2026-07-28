@@ -35,10 +35,11 @@ function readJson(request) {
   });
 }
 
-async function sendStaticAsset(response, asset) {
+async function sendStaticAsset(request, response, asset) {
   try {
     const content = await readFile(path.join(publicDirectory, asset.file));
     response.writeHead(200, { "Content-Type": asset.type, "Cache-Control": "no-store" });
+    if (request.method === "HEAD") return response.end();
     response.end(content);
   } catch {
     sendJson(response, 500, { error: "Web client asset could not be loaded." });
@@ -52,8 +53,8 @@ const server = http.createServer(async (request, response) => {
     return sendJson(response, 200, { ok: true });
   }
 
-  if (request.method === "GET" && staticAssets[url.pathname]) {
-    return sendStaticAsset(response, staticAssets[url.pathname]);
+  if (["GET", "HEAD"].includes(request.method) && staticAssets[url.pathname]) {
+    return sendStaticAsset(request, response, staticAssets[url.pathname]);
   }
 
   if (request.method === "POST" && url.pathname === "/api/plan/generate") {

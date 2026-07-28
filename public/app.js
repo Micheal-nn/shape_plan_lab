@@ -7,6 +7,8 @@ const reviewResult = document.querySelector("#review-result");
 const languageButton = document.querySelector("#language-toggle");
 const exportControls = document.querySelector("#export-controls");
 const exportButton = document.querySelector("#export-button");
+const reviewTrend = document.querySelector("#review-trend");
+const REVIEW_RECORD_KEY = "shape-plan-review-records-v1";
 
 let currentInput;
 let currentPlan;
@@ -15,20 +17,67 @@ let language = "zh";
 const copy = {
   zh: {
     generate: "生成科学计划", calculating: "正在计算…", planTitle: "一条可走通的路径", reviseTitle: "先收紧目标约束", statusGood: "目标可达成", statusCaution: "可执行，需注意", statusStop: "需要调整目标",
-    calories: "每日 kcal", protein: "蛋白质", fat: "脂肪", carbs: "碳水", growth: "成长预测轨迹", growthCopy: "按当前饮食、活动与训练频率假设，展示预计体重趋势。", why: "为什么生成这份计划", rules: "规则解读", sessions: "次 / 周", days: "天 / 周", cardioReason: "有氧安排依据", reviewTitle: "根据真实数据复评", reviewCopy: "这部分模拟每周指标、训练频率和每日饮食记录。点击后，系统会重新计算并立即应用新计划。", reviewButton: "基于历史记录调整计划", reviewing: "正在复评…", export: "导出计划长图", updated: "已应用新计划", noChange: "当前参数无需修改", reviewFail: "复评失败", fieldNames: { dailyCalories: "每日热量", frequencyPerWeek: "每周训练次数", timeline: "目标日期", goalType: "目标类型" }, reviewLabels: { keep_plan: "保持当前计划", adjust_targets: "已调整摄入或训练目标", adjust_timeline: "已延长目标周期", adjust_goal: "已调整目标类型", stop_and_reassess: "暂停并重新评估" }
+    calories: "每日 kcal", protein: "蛋白质", fat: "脂肪", carbs: "碳水", growth: "成长预测轨迹", growthCopy: "按当前饮食、活动与训练频率假设，展示预计体重趋势。", why: "为什么生成这份计划", rules: "规则解读", sessions: "次 / 周", days: "天 / 周", cardioReason: "有氧安排依据", reviewTitle: "根据真实数据复评", reviewCopy: "记录最近两周的真实执行数据。应用会保存记录、绘制趋势，并在至少每两周一次的复评中判断后续计划是否需要调整。", reviewButton: "基于历史记录调整计划", reviewing: "正在复评…", export: "导出计划长图", updated: "已应用新计划", noChange: "当前参数无需修改", reviewFail: "复评失败", rpeHelp: "RPE 是主观用力等级，10 代表本组已经练到力竭、无法再完成 1 次标准动作；RIR 是剩余次数，RIR 2 表示本组结束时大约还能再做 2 次。", fieldNames: { dailyCalories: "每日热量", frequencyPerWeek: "每周训练次数", timeline: "目标日期", goalType: "目标类型" }, reviewLabels: { keep_plan: "保持当前计划", adjust_targets: "已调整摄入或训练目标", adjust_timeline: "已延长目标周期", adjust_goal: "已调整目标类型", stop_and_reassess: "暂停并重新评估" }
   },
   en: {
     generate: "Generate plan", calculating: "Calculating…", planTitle: "A path you can follow", reviseTitle: "Tighten the constraints first", statusGood: "Target feasible", statusCaution: "Feasible with notes", statusStop: "Target needs revision",
-    calories: "Daily kcal", protein: "Protein", fat: "Fat", carbs: "Carbs", growth: "Growth projection", growthCopy: "Estimated body-weight trend based on current nutrition, activity, and training assumptions.", why: "Why this plan", rules: "Rule explanation", sessions: "sessions / week", days: "days / week", cardioReason: "Cardio rationale", reviewTitle: "Review with real data", reviewCopy: "Use weekly metrics, completed sessions, and nutrition records. A review recalculates and immediately applies the new plan.", reviewButton: "Adjust plan from history", reviewing: "Reviewing…", export: "Export plan image", updated: "Updated plan applied", noChange: "No parameter change required", reviewFail: "Review failed", fieldNames: { dailyCalories: "Daily calories", frequencyPerWeek: "Weekly sessions", timeline: "Target date", goalType: "Goal type" }, reviewLabels: { keep_plan: "Keep current plan", adjust_targets: "Nutrition or training targets updated", adjust_timeline: "Target timeline extended", adjust_goal: "Goal type updated", stop_and_reassess: "Stop and reassess" }
+    calories: "Daily kcal", protein: "Protein", fat: "Fat", carbs: "Carbs", growth: "Growth projection", growthCopy: "Estimated body-weight trend based on current nutrition, activity, and training assumptions.", why: "Why this plan", rules: "Rule explanation", sessions: "sessions / week", days: "days / week", cardioReason: "Cardio rationale", reviewTitle: "Review with real data", reviewCopy: "Record the last two weeks of execution data. The app saves records, draws a trend chart, and reviews whether the next plan should change at least every two weeks.", reviewButton: "Adjust plan from history", reviewing: "Reviewing…", export: "Export plan image", updated: "Updated plan applied", noChange: "No parameter change required", reviewFail: "Review failed", rpeHelp: "RPE is rating of perceived exertion. RPE 10 means the set reached failure and no additional clean rep is possible. RIR means reps in reserve; RIR 2 means about two clean reps remain at the end of the set.", fieldNames: { dailyCalories: "Daily calories", frequencyPerWeek: "Weekly sessions", timeline: "Target date", goalType: "Goal type" }, reviewLabels: { keep_plan: "Keep current plan", adjust_targets: "Nutrition or training targets updated", adjust_timeline: "Target timeline extended", adjust_goal: "Goal type updated", stop_and_reassess: "Stop and reassess" }
   }
 };
 
 function text() { return copy[language]; }
 function numberOrUndefined(value) { return value === "" ? undefined : Number(value); }
+function todayIso() { return new Date().toISOString().slice(0, 10); }
+function daysAgoIso(days) { const date = new Date(); date.setDate(date.getDate() - days); return date.toISOString().slice(0, 10); }
 function localized(primary, fallback) { return language === "zh" ? primary : fallback || primary; }
 function localizedSummary(payload) { return language === "zh" ? (payload.summaryZh || payload.summary) : payload.summary; }
 function formatGoal(goalType) { return language === "zh" ? { fat_loss: "减脂", muscle_gain: "增肌", recomposition: "体态重组", maintain: "保持" }[goalType] : { fat_loss: "FAT LOSS", muscle_gain: "MUSCLE GAIN", recomposition: "RECOMPOSITION", maintain: "MAINTENANCE" }[goalType]; }
 function prInput(formData, key) { return { weightKg: numberOrUndefined(formData.get(`${key}Weight`)), reps: numberOrUndefined(formData.get(`${key}Reps`)) }; }
+function readReviewRecords() {
+  try {
+    const records = JSON.parse(localStorage.getItem(REVIEW_RECORD_KEY) || "[]");
+    return Array.isArray(records) ? records : [];
+  } catch {
+    return [];
+  }
+}
+function saveReviewRecord(record) {
+  const records = [...readReviewRecords(), record].slice(-24);
+  localStorage.setItem(REVIEW_RECORD_KEY, JSON.stringify(records));
+  return records;
+}
+function reviewNumber(id) { return numberOrUndefined(document.querySelector(`#${id}`).value); }
+function reviewPrAdjustments() {
+  return Object.fromEntries(["bench", "squat", "row", "hinge"].flatMap((key) => {
+    const weightKg = reviewNumber(`review-${key}-weight`);
+    const reps = reviewNumber(`review-${key}-reps`);
+    return weightKg > 0 && reps > 0 ? [[key, { weightKg, reps }]] : [];
+  }));
+}
+function reviewCircumference() {
+  const fields = { waistCm: "review-waist", chestCm: "review-chest", hipCm: "review-hip", armCm: "review-arm", thighCm: "review-thigh" };
+  return Object.fromEntries(Object.entries(fields).flatMap(([key, id]) => {
+    const value = reviewNumber(id);
+    return value === undefined ? [] : [[key, value]];
+  }));
+}
+function metricFromRecord(record) {
+  return { date: record.date, weightKg: record.weightKg, bodyFatPct: record.bodyFatPct, ...(record.circumference ?? {}) };
+}
+function renderReviewTrend() {
+  const records = readReviewRecords().filter((record) => record.weightKg > 0);
+  if (!records.length) { reviewTrend.hidden = true; reviewTrend.innerHTML = ""; return; }
+  const weights = records.map((record) => record.weightKg);
+  const min = Math.floor(Math.min(...weights) - 0.5);
+  const max = Math.ceil(Math.max(...weights) + 0.5);
+  const width = 520;
+  const height = 120;
+  const x = (index) => 32 + index * ((width - 50) / Math.max(1, records.length - 1));
+  const y = (weight) => 14 + (max - weight) * ((height - 36) / Math.max(0.1, max - min));
+  const line = records.map((record, index) => `${index ? "L" : "M"}${x(index).toFixed(1)},${y(record.weightKg).toFixed(1)}`).join(" ");
+  reviewTrend.hidden = false;
+  reviewTrend.innerHTML = `<h3>${language === "zh" ? "已保存的身体趋势" : "Saved body trend"}</h3><p>${language === "zh" ? `已保存 ${records.length} 条记录。建议至少每两周复评一次，避免根据单日波动调整计划。` : `${records.length} records saved. Review at least every two weeks and avoid changing the plan from one-day noise.`}</p><svg viewBox="0 0 ${width} ${height}" role="img"><line x1="30" y1="${height - 20}" x2="${width - 14}" y2="${height - 20}" class="axis"/><text x="0" y="18">${max}kg</text><text x="0" y="${height - 20}">${min}kg</text><path class="line" d="${line}"/>${records.map((record, index) => `<circle class="dot" cx="${x(index)}" cy="${y(record.weightKg)}" r="3"><title>${record.date}: ${record.weightKg}kg</title></circle>`).join("")}</svg>`;
+}
 function exerciseDescription(exercise) {
   const english = {
     push_up: "Keep your trunk rigid and lower under control.", bench_press: "Keep shoulder blades set and press with controlled range.",
@@ -185,7 +234,8 @@ function renderPlan(plan) {
   const evidenceMarkup = logic.evidenceBasis.map((item) => `<article class="rationale-item"><h4>${localized(item.titleZh, item.title)}</h4><p>${localized(item.textZh, item.text)}</p></article>`).join("");
   const logicMarkup = `<article class="rationale-item"><h4>${localized(logic.inputAssessment.titleZh, logic.inputAssessment.title)}</h4><p>${localized(logic.inputAssessment.textZh, logic.inputAssessment.text)}</p></article>${calculationsMarkup}<article class="rationale-item"><h4>${localized(logic.trainingDecision.titleZh, logic.trainingDecision.title)}</h4><p>${localized(logic.trainingDecision.textZh, logic.trainingDecision.text)}</p></article><article class="rationale-item"><h4>${localized(logic.intensityDecision.titleZh, logic.intensityDecision.title)}</h4><p>${localized(logic.intensityDecision.textZh, logic.intensityDecision.text)}</p></article><article class="rationale-item feasibility-path"><h4>${localized(logic.feasibilityPath.titleZh, logic.feasibilityPath.title)}</h4><p>${localized(logic.feasibilityPath.textZh, logic.feasibilityPath.text)}</p></article>`;
   const intensity = plan.intensityPlan;
-  const intensityMarkup = `<details class="intensity-card"><summary><span><b>${language === "zh" ? "训练强度处方" : "Intensity prescription"}</b><small>${language === "zh" ? `工作组：用力等级 ${intensity.rpe}，余力 ${intensity.rir} 次` : `Working sets: RPE ${intensity.rpe} · RIR ${intensity.rir}`}</small></span><i>+</i></summary><div><p>${localized(intensity.intensityReasonZh, intensity.intensityReason)}</p>${intensity.loadReasonZh ? `<p><strong>${language === "zh" ? "重量估算：" : "Load estimate: "}</strong>${localized(intensity.loadReasonZh, intensity.loadReason)}</p>` : ""}<div class="volume-pills">${intensity.targetVolumes.map((item) => `<span>${language === "zh" ? item.groupZh : item.groupLabel} ${item.sets} ${language === "zh" ? "有效组/周" : "hard sets/wk"}</span>`).join("") || `<span>${language === "zh" ? "全身均衡有效组" : "Balanced full-body hard sets"}</span>`}</div><p><strong>${language === "zh" ? "进阶条件：" : "Progression: "}</strong>${localized(intensity.progressionZh, intensity.progression)}</p></div></details>`;
+  const help = `<details class="inline-help"><summary aria-label="${language === "zh" ? "查看用力等级说明" : "Show RPE explanation"}">?</summary><p>${text().rpeHelp}</p></details>`;
+  const intensityMarkup = `<details class="intensity-card"><summary><span><b>${language === "zh" ? "训练强度处方" : "Intensity prescription"}</b><small>${language === "zh" ? `工作组：用力等级 ${intensity.rpe}，余力 ${intensity.rir} 次` : `Working sets: RPE ${intensity.rpe} · RIR ${intensity.rir}`} ${help}</small></span><i>+</i></summary><div><p>${localized(intensity.intensityReasonZh, intensity.intensityReason)}</p>${intensity.loadReasonZh ? `<p><strong>${language === "zh" ? "重量估算：" : "Load estimate: "}</strong>${localized(intensity.loadReasonZh, intensity.loadReason)}</p>` : ""}<div class="volume-pills">${intensity.targetVolumes.map((item) => `<span>${language === "zh" ? item.groupZh : item.groupLabel} ${item.sets} ${language === "zh" ? "有效组/周" : "hard sets/wk"}</span>`).join("") || `<span>${language === "zh" ? "全身均衡有效组" : "Balanced full-body hard sets"}</span>`}</div><p><strong>${language === "zh" ? "进阶条件：" : "Progression: "}</strong>${localized(intensity.progressionZh, intensity.progression)}</p></div></details>`;
   const notices = [...plan.warnings, ...plan.llmReview.notes].map((note, index) => `<div class="notice ${index === plan.warnings.length ? "safe" : ""}">${localizedNotice(note)}</div>`).join("");
   const splitTitle = localized(plan.trainingPlan.splitZh, plan.trainingPlan.split.replaceAll("_", " "));
   const labels = resultLabels();
@@ -237,8 +287,8 @@ function translateStaticUi() {
   document.querySelector(".review-header h2").textContent = text().reviewTitle;
   document.querySelector(".review-header p:last-child").textContent = text().reviewCopy;
   const staticText = english ? {
-    "hero-eyebrow": "MVP 1.0 · WEB VALIDATION", "profile-kicker": "01 / PROFILE", "review-kicker": "02 / PLAN REVIEW", "empty-index": "READY", "hero-title": "Turn a target into<br /><em>a path you can execute.</em>", "hero-copy": "Enter body metrics, goals, and the time you can train. The rule engine checks safety and feasibility before producing training, nutrition, and growth projections.", "pill-one": "Rule engine", "pill-two": "Secondary review", "pill-three": "History review", "profile-title": "Build your plan", "profile-copy": "Fields marked <strong>*</strong> are used for calculation. Optional data improves projection reliability.", "empty-title": "Ready for input", "empty-copy": "Enter your data to generate calories, macros, training structure, and a target trajectory.", "label-weight-start": "Week 1 weight (kg)", "label-weight-current": "Current weight (kg)", "label-body-fat-current": "Current body fat (%)", "label-completed-frequency": "Actual weekly sessions", "label-average-calories": "Recent average calories (kcal)", "label-average-protein": "Recent protein (g)", "footer-copy": "A rule-engine product validation demo, not medical advice. Consult a qualified medical professional for medical conditions, pregnancy, minors, or eating-disorder risk." } : {
-    "hero-eyebrow": "1.0 版 · 网页验证", "profile-kicker": "01 / 个人资料", "review-kicker": "02 / 计划复评", "empty-index": "准备就绪", "hero-title": "把目标变成<br /><em>可执行的路径。</em>", "hero-copy": "输入身体指标、目标和可投入的训练时间。规则引擎先校验安全与可达成性，再输出训练、营养和成长预测。", "pill-one": "规则引擎", "pill-two": "二次校验", "pill-three": "历史复评", "profile-title": "创建你的计划", "profile-copy": "带 <strong>*</strong> 的字段用于计算。可选数据会提高预测可靠度。", "empty-title": "等待输入", "empty-copy": "填写左侧数据后，系统会生成热量、宏量、训练结构和目标轨迹。", "label-weight-start": "第 1 周体重（千克）", "label-weight-current": "当前体重（千克）", "label-body-fat-current": "当前体脂率（百分比）", "label-completed-frequency": "实际每周训练次数", "label-average-calories": "近期平均热量（千卡）", "label-average-protein": "近期蛋白质（克）", "footer-copy": "用于产品验证的规则引擎演示，不构成医疗建议。存在疾病、妊娠、未成年或饮食失调风险时，应先咨询医疗专业人士。" };
+    "hero-eyebrow": "MVP 1.0 · WEB VALIDATION", "profile-kicker": "01 / PROFILE", "review-kicker": "02 / PLAN REVIEW", "empty-index": "READY", "hero-title": "Turn a target into<br /><em>a path you can execute.</em>", "hero-copy": "Enter body metrics, goals, and the time you can train. The rule engine checks safety and feasibility before producing training, nutrition, and growth projections.", "pill-one": "Rule engine", "pill-two": "Secondary review", "pill-three": "History review", "profile-title": "Build your plan", "profile-copy": "Fields marked <strong>*</strong> are used for calculation. Optional data improves projection reliability.", "empty-title": "Ready for input", "empty-copy": "Enter your data to generate calories, macros, training structure, and a target trajectory.", "label-weight-current": "Current weight (kg)", "label-body-fat-current": "Current body fat (%)", "label-completed-frequency": "Last two weeks' average weekly sessions", "label-average-calories": "Recent average daily calories (optional)", "footer-copy": "A rule-engine product validation demo, not medical advice. Consult a qualified medical professional for medical conditions, pregnancy, minors, or eating-disorder risk." } : {
+    "hero-eyebrow": "1.0 版 · 网页验证", "profile-kicker": "01 / 个人资料", "review-kicker": "02 / 计划复评", "empty-index": "准备就绪", "hero-title": "把目标变成<br /><em>可执行的路径。</em>", "hero-copy": "输入身体指标、目标和可投入的训练时间。规则引擎先校验安全与可达成性，再输出训练、营养和成长预测。", "pill-one": "规则引擎", "pill-two": "二次校验", "pill-three": "历史复评", "profile-title": "创建你的计划", "profile-copy": "带 <strong>*</strong> 的字段用于计算。可选数据会提高预测可靠度。", "empty-title": "等待输入", "empty-copy": "填写左侧数据后，系统会生成热量、宏量、训练结构和目标轨迹。", "label-weight-current": "当前体重（千克）", "label-body-fat-current": "当前体脂率（百分比）", "label-completed-frequency": "最近两周平均每周训练次数", "label-average-calories": "近期平均日摄入热量（选填）", "footer-copy": "用于产品验证的规则引擎演示，不构成医疗建议。存在疾病、妊娠、未成年或饮食失调风险时，应先咨询医疗专业人士。" };
   Object.entries(staticText).forEach(([id, value]) => { const element = document.querySelector(`#${id}`); if (element && !id.startsWith("label-")) element.innerHTML = value; });
   const options = {
     sex: [["male", "男性", "Male"], ["female", "女性", "Female"]],
@@ -248,7 +298,14 @@ function translateStaticUi() {
     trainingExperience: [["novice", "新手", "Novice"], ["intermediate", "中级", "Intermediate"], ["advanced", "高级", "Advanced"]]
   };
   Object.entries(options).forEach(([name, entries]) => entries.forEach(([value, zh, en]) => { const option = form.elements.namedItem(name)?.querySelector(`option[value="${value}"]`); if (option) option.textContent = english ? en : zh; }));
-  ["label-weight-start", "label-weight-current", "label-body-fat-current", "label-completed-frequency", "label-average-calories", "label-average-protein"].forEach((id) => { const label = document.querySelector(`#${id}`); if (label?.firstChild) label.firstChild.textContent = staticText[id]; });
+  ["label-weight-current", "label-body-fat-current", "label-completed-frequency", "label-average-calories"].forEach((id) => { const label = document.querySelector(`#${id}`); if (label?.firstChild) label.firstChild.textContent = staticText[id]; });
+  const reviewLabels = english
+    ? { "review-pr-summary": "Typical movement max adjustment (optional)", "review-circ-summary": "Current body measurements (optional)", bench: "Bench (kg × reps)", squat: "Squat (kg × reps)", row: "Row / pulldown (kg × reps)", hinge: "Deadlift / hip thrust (kg × reps)", waist: "Waist (cm)", chest: "Chest (cm)", hip: "Hip (cm)", arm: "Arm (cm)", thigh: "Thigh (cm)" }
+    : { "review-pr-summary": "典型动作最大重量调整（选填）", "review-circ-summary": "当前身体各维度（选填）", bench: "卧推（kg × 次）", squat: "深蹲（kg × 次）", row: "划船/下拉（kg × 次）", hinge: "硬拉/臀推（kg × 次）", waist: "腰围 (cm)", chest: "胸围 (cm)", hip: "臀围 (cm)", arm: "臂围 (cm)", thigh: "大腿围 (cm)" };
+  ["review-pr-summary", "review-circ-summary"].forEach((id) => { document.querySelector(`#${id}`).textContent = reviewLabels[id]; });
+  ["bench", "squat", "row", "hinge"].forEach((key) => { const label = document.querySelector(`#review-${key}-label`); if (label?.firstChild) label.firstChild.textContent = reviewLabels[key]; });
+  ["waist", "chest", "hip", "arm", "thigh"].forEach((key) => { const label = document.querySelector(`#review-${key}-label`); if (label?.firstChild) label.firstChild.textContent = reviewLabels[key]; });
+  renderReviewTrend();
   if (currentPlan) renderPlan(currentPlan);
 }
 
@@ -296,11 +353,11 @@ form.addEventListener("submit", async (event) => {
     renderPlan(data);
     exportControls.hidden = false;
     reviewSection.hidden = false;
-    document.querySelector("#weight-start").value = currentInput.weightKg;
-    document.querySelector("#weight-current").value = (currentInput.weightKg - .3).toFixed(1);
-    document.querySelector("#body-fat-current").value = currentInput.bodyFatPct ? Math.max(1, currentInput.bodyFatPct - .2).toFixed(1) : "";
-    document.querySelector("#average-calories").value = currentPlan.targets.dailyCalories;
-    document.querySelector("#average-protein").value = currentPlan.targets.proteinG;
+    document.querySelector("#weight-current").value = currentInput.weightKg;
+    document.querySelector("#body-fat-current").value = currentInput.bodyFatPct ?? "";
+    document.querySelector("#completed-frequency").value = currentInput.frequencyPerWeek;
+    document.querySelector("#average-calories").value = "";
+    renderReviewTrend();
     reviewSection.scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (error) { if (!errorBox.innerHTML) errorBox.textContent = error.message; } finally { button.disabled = false; button.querySelector("span").textContent = text().generate; }
 });
@@ -312,11 +369,24 @@ reviewButton.addEventListener("click", async () => {
   const currentWeight = Number(document.querySelector("#weight-current").value);
   const currentBodyFat = numberOrUndefined(document.querySelector("#body-fat-current").value);
   const completedFrequency = Number(document.querySelector("#completed-frequency").value);
-  const calories = Number(document.querySelector("#average-calories").value);
-  const protein = Number(document.querySelector("#average-protein").value);
-  const startWeight = Number(document.querySelector("#weight-start").value);
-  const today = new Date().toISOString().slice(0, 10);
-  const payload = { originalInput: currentInput, currentPlan, reviewDate: today, bodyMetricsHistory: [{ date: "2026-08-01", weightKg: startWeight, bodyFatPct: currentInput.bodyFatPct }, { date: "2026-08-08", weightKg: (startWeight + currentWeight) / 2, bodyFatPct: currentBodyFat }, { date: today, weightKg: currentWeight, bodyFatPct: currentBodyFat }], trainingHistory: [{ weekStartDate: "2026-08-03", plannedFrequency: currentInput.frequencyPerWeek, completedFrequency }, { weekStartDate: "2026-08-10", plannedFrequency: currentInput.frequencyPerWeek, completedFrequency }], nutritionHistory: [{ date: "2026-08-13", calories, proteinGrams: protein, fatGrams: currentPlan.targets.fatG, carbGrams: currentPlan.targets.carbG }, { date: "2026-08-14", calories, proteinGrams: protein, fatGrams: currentPlan.targets.fatG, carbGrams: currentPlan.targets.carbG }] };
+  if (!Number.isFinite(currentWeight) || currentWeight <= 0 || !Number.isFinite(completedFrequency)) {
+    reviewResult.hidden = false;
+    reviewResult.innerHTML = `<h3>${text().reviewFail}</h3><p>${language === "zh" ? "请至少填写当前体重和最近两周平均每周训练次数。" : "Enter at least current weight and last two weeks' average weekly sessions."}</p>`;
+    reviewButton.disabled = false;
+    reviewButton.childNodes[0].textContent = `${text().reviewButton} `;
+    return;
+  }
+  const calories = numberOrUndefined(document.querySelector("#average-calories").value);
+  const circumference = reviewCircumference();
+  const prAdjustments = reviewPrAdjustments();
+  const record = { date: todayIso(), weightKg: currentWeight, bodyFatPct: currentBodyFat, completedFrequency, calories, pr: prAdjustments, circumference };
+  const savedRecords = saveReviewRecord(record);
+  const metrics = savedRecords.filter((item) => item.weightKg > 0).map(metricFromRecord);
+  const baselineMetric = { date: daysAgoIso(14), weightKg: currentInput.weightKg, bodyFatPct: currentInput.bodyFatPct, ...(currentInput.currentCircumference ?? {}) };
+  const bodyMetricsHistory = metrics.length >= 2 ? metrics.slice(-6) : [baselineMetric, metricFromRecord(record)];
+  const trainingHistory = [{ weekStartDate: daysAgoIso(14), plannedFrequency: currentInput.frequencyPerWeek, completedFrequency }, { weekStartDate: daysAgoIso(7), plannedFrequency: currentInput.frequencyPerWeek, completedFrequency }];
+  const nutritionHistory = calories === undefined ? [] : [{ date: daysAgoIso(1), calories, proteinGrams: currentPlan.targets.proteinG, fatGrams: currentPlan.targets.fatG, carbGrams: currentPlan.targets.carbG }];
+  const payload = { originalInput: currentInput, currentPlan, reviewDate: todayIso(), bodyMetricsHistory, trainingHistory, nutritionHistory, prAdjustments };
   try {
     const response = await fetch("/api/plan/review", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
     const data = await response.json();
@@ -324,6 +394,7 @@ reviewButton.addEventListener("click", async () => {
     currentInput = data.updatedInput;
     currentPlan = data.updatedPlan;
     renderPlan(currentPlan);
+    renderReviewTrend();
     const displayValue = (key, value) => key === "goalType" && language === "zh" ? ({ fat_loss: "减脂", muscle_gain: "增肌", recomposition: "体态重组", maintain: "保持" }[value] || value) : value;
     const adjustmentText = Object.entries(data.adjustments).map(([key, value]) => `<span>${text().fieldNames[key] || key}: ${displayValue(key, value.old)} → ${displayValue(key, value.new)}</span>`).join("");
     reviewResult.hidden = false;

@@ -149,6 +149,8 @@ function measurementFocus(input) {
   return rules.filter((rule) => current[rule.field] !== undefined && target[rule.field] !== undefined && (rule.type === "reduce" ? target[rule.field] < current[rule.field] : target[rule.field] > current[rule.field]));
 }
 
+const reviewCircumferenceFields = ["waistCm", "chestCm", "hipCm", "armCm", "thighCm"];
+
 function translateFocus(focus) {
   const labels = {
     "Full Body A": "全身训练 A", "Full Body B": "全身训练 B", "Full Body C": "全身训练 C",
@@ -270,7 +272,7 @@ function buildIntensityPlan(input, workouts, focuses) {
     progression: profile.progression,
     loadReasonZh,
     loadReason,
-    intensityReasonZh: `当前训练经验为${{ novice: "新手", intermediate: "中级", advanced: "高级" }[input.trainingExperience ?? "novice"]}，工作组采用主观用力等级 ${profile.rpe}，每组结束时保留 ${profile.rir} 次余力。这个强度让动作质量、有效刺激和恢复可兼顾；不要求每组练到失败。`,
+    intensityReasonZh: `当前训练经验为${{ novice: "新手", intermediate: "中级", advanced: "高级" }[input.trainingExperience ?? "novice"]}，工作组采用主观用力等级 ${profile.rpe}，每组结束时保留 ${profile.rir} 次余力。这个强度让动作质量、有效刺激和恢复可兼顾；不要求每组练到力竭。`,
     intensityReason: `Training experience is ${{ novice: "novice", intermediate: "intermediate", advanced: "advanced" }[input.trainingExperience ?? "novice"]}. Working sets use RPE ${profile.rpe} (RIR ${profile.rir}) to balance form quality, useful stimulus, and recovery; every set does not need to reach failure.`
   };
 }
@@ -346,7 +348,7 @@ function buildPlanningLogic(input, targets, split, focusedMeasurements, intensit
     intensityDecision: { titleZh: "训练强度与进阶规则", title: "Intensity and progression", textZh: `${intensityPlan.intensityReasonZh} ${intensityPlan.progressionZh}`, text: `${intensityPlan.intensityReason} ${intensityPlan.progression}` },
     feasibilityPath: { titleZh: "为什么当前目标处于可达范围", title: "Why this target is within range", textZh: `目标周期约 ${weeks} 周，对应 ${targetRate || "温和"} kg/周的体重变化估算，且每日热量相对维持为 ${calorieDelta >= 0 ? "+" : ""}${calorieDelta} kcal。系统已将过快的目标收敛到安全范围；若能保持每周训练完成率不低于 ${(input.frequencyPerWeek ?? 3)} 次、热量周平均接近目标、睡眠与恢复基本稳定，则预期趋势有机会在周期内接近目标。这里的“可达”是基于模型与执行前提的概率判断，不是结果保证。`, text: `The target spans about ${weeks} weeks, implies ${targetRate || "a modest"} kg/week of weight change, and uses ${calorieDelta >= 0 ? "+" : ""}${calorieDelta} kcal/day relative to estimated expenditure. Overly aggressive goals are narrowed into a safer range. If weekly session completion stays at or above ${input.frequencyPerWeek ?? 3}, average intake stays near target, and sleep and recovery remain stable, the trend may move toward the target within the period. This is a model-based probability assessment, not a guaranteed outcome.` },
     evidenceBasis: [
-      { titleZh: "能量平衡与变化速度", title: "Energy balance and rate of change", textZh: "体重变化的方向由长期摄入与消耗差决定，7700 kcal/kg 仅用于粗略估算，不等同于人体每周严格线性变化。计划将热量差限制在温和范围，并用周平均与连续趋势而非某一天的体重判断进展。", text: "The direction of body-weight change is driven by the long-term difference between intake and expenditure. The 7,700 kcal/kg figure is only a rough estimate, not a precise weekly linear prediction. The plan keeps the energy gap moderate and evaluates weekly averages and trends rather than one day's weight." },
+      { titleZh: "能量平衡与变化速度", title: "Energy balance and rate of change", textZh: "体重变化的方向由长期摄入与消耗差决定，但体重并不能用一个固定的 kcal/kg 系数精确换算；水分、糖原、消化道内容物、代谢适应和训练恢复都会影响短期变化。计划只用热量差做方向性估算，并用 2 周以上的周平均与连续趋势判断进展。", text: "The direction of body-weight change is driven by the long-term difference between intake and expenditure, but body weight cannot be precisely converted with one fixed kcal/kg coefficient. Water, glycogen, gut content, metabolic adaptation, and training recovery all affect short-term changes. The plan uses the calorie gap directionally and reviews progress with at least two weeks of weekly averages and trend data." },
       { titleZh: "蛋白质与力量训练", title: "Protein and resistance training", textZh: "蛋白质按体重设置，并与规律力量训练配合，以支持训练后的肌肉蛋白合成、恢复及减脂期瘦体重保留。总蛋白、总热量和训练刺激同时缺失时，单独提高蛋白质不能替代计划本身。", text: "Protein is set relative to body weight and paired with regular resistance training to support recovery, muscle protein synthesis, and lean-mass retention during fat loss. Protein alone cannot replace adequate energy intake and progressive training stimulus." },
       { titleZh: "渐进超负荷与训练剂量", title: "Progressive overload and training dose", textZh: "肌肉和力量适应需要足够的重复训练刺激，并随着能力提高逐步提高重量、次数或总组数。围度增大目标会提高对应肌群的直接训练比重；腰围变化则主要依赖整体能量平衡，核心训练用于力量与稳定性，不承诺局部减脂。", text: "Muscle and strength adaptation require repeated, sufficient training stimulus and gradual increases in load, repetitions, or total sets. Circumference-growth targets increase direct work for the relevant muscles; waist change relies mainly on overall energy balance, while core work supports strength and stability rather than spot reduction." },
       { titleZh: "个体差异与安全边界", title: "Individual variation and safety limits", textZh: "睡眠、压力、既往训练史、药物、月经周期和测量误差都会影响短期数据。出现持续疲劳、疼痛、异常体重波动或疾病相关风险时，应停止自动加码并寻求医生或注册营养师/教练的个体化建议。", text: "Sleep, stress, training history, medication, menstrual-cycle changes, and measurement error can all affect short-term data. Stop automatically increasing workload and seek individualized advice from a clinician, registered dietitian, or qualified coach if persistent fatigue, pain, unusual weight change, or medical risk occurs." }
@@ -471,6 +473,17 @@ export function reviewAndAdjustPlan(input) {
   if (latestMetric) {
     updated.weightKg = latestMetric.weightKg;
     if (latestMetric.bodyFatPct !== undefined) updated.bodyFatPct = latestMetric.bodyFatPct;
+    updated.currentCircumference = { ...(updated.currentCircumference ?? {}) };
+    for (const field of reviewCircumferenceFields) {
+      if (latestMetric[field] !== undefined) updated.currentCircumference[field] = latestMetric[field];
+    }
+  }
+
+  if (input.prAdjustments && typeof input.prAdjustments === "object") {
+    updated.pr = { ...(updated.pr ?? {}) };
+    for (const [key, value] of Object.entries(input.prAdjustments)) {
+      if (value && value.weightKg > 0 && value.reps > 0) updated.pr[key] = value;
+    }
   }
 
   if (firstMetric && latestMetric && updated.goal.type === "fat_loss") {

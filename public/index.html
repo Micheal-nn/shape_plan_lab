@@ -143,18 +143,36 @@
         <div>
           <p id="review-kicker" class="kicker">02 / 计划复评</p>
           <h2>根据真实数据复评</h2>
-          <p>这部分模拟 1.0 的每周指标、训练频率和每日饮食记录。点击后，系统会重新判断计划是否还能达成。</p>
+          <p>记录最近两周的真实执行数据。应用会保存记录、绘制趋势，并在至少每两周一次的复评中判断后续计划是否需要调整。</p>
         </div>
         <button id="review-button" class="secondary-button" type="button">基于历史记录调整计划 <b>→</b></button>
       </div>
       <div class="review-grid">
-        <label id="label-weight-start">第 1 周体重 (kg)<input id="weight-start" type="number" step="0.1" value="82" /></label>
         <label id="label-weight-current">当前体重 (kg)<input id="weight-current" type="number" step="0.1" value="81.7" /></label>
         <label id="label-body-fat-current">当前体脂率 (%)<input id="body-fat-current" type="number" step="0.1" value="23.8" /></label>
-        <label id="label-completed-frequency">实际每周训练次数<input id="completed-frequency" type="number" min="0" max="7" value="2" /></label>
-        <label id="label-average-calories">近期平均热量 (kcal)<input id="average-calories" type="number" value="1880" /></label>
-        <label id="label-average-protein">近期蛋白质 (g)<input id="average-protein" type="number" value="150" /></label>
+        <label id="label-completed-frequency">最近两周平均每周训练次数<input id="completed-frequency" type="number" min="0" max="7" step="0.5" value="2" /></label>
+        <label id="label-average-calories">近期平均日摄入热量（选填）<input id="average-calories" type="number" placeholder="例如 1880" /></label>
       </div>
+      <details class="review-extra">
+        <summary id="review-pr-summary">典型动作最大重量调整（选填）</summary>
+        <div class="review-grid compact">
+          <label id="review-bench-label">卧推（kg × 次）<span class="pr-inputs"><input id="review-bench-weight" type="number" min="0" step="0.5" /><input id="review-bench-reps" type="number" min="1" max="30" step="1" /></span></label>
+          <label id="review-squat-label">深蹲（kg × 次）<span class="pr-inputs"><input id="review-squat-weight" type="number" min="0" step="0.5" /><input id="review-squat-reps" type="number" min="1" max="30" step="1" /></span></label>
+          <label id="review-row-label">划船/下拉（kg × 次）<span class="pr-inputs"><input id="review-row-weight" type="number" min="0" step="0.5" /><input id="review-row-reps" type="number" min="1" max="30" step="1" /></span></label>
+          <label id="review-hinge-label">硬拉/臀推（kg × 次）<span class="pr-inputs"><input id="review-hinge-weight" type="number" min="0" step="0.5" /><input id="review-hinge-reps" type="number" min="1" max="30" step="1" /></span></label>
+        </div>
+      </details>
+      <details class="review-extra">
+        <summary id="review-circ-summary">当前身体各维度（选填）</summary>
+        <div class="review-grid compact">
+          <label id="review-waist-label">腰围 (cm)<input id="review-waist" type="number" min="15" max="200" step="0.1" /></label>
+          <label id="review-chest-label">胸围 (cm)<input id="review-chest" type="number" min="15" max="200" step="0.1" /></label>
+          <label id="review-hip-label">臀围 (cm)<input id="review-hip" type="number" min="15" max="200" step="0.1" /></label>
+          <label id="review-arm-label">臂围 (cm)<input id="review-arm" type="number" min="15" max="200" step="0.1" /></label>
+          <label id="review-thigh-label">大腿围 (cm)<input id="review-thigh" type="number" min="15" max="200" step="0.1" /></label>
+        </div>
+      </details>
+      <div id="review-trend" class="review-trend" hidden></div>
       <div id="review-result" class="review-result" hidden></div>
     </section>
 

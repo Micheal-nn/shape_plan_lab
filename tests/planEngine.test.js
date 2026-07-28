@@ -196,3 +196,39 @@ test("validateGeneratePlanInput accepts circumference-only fat-loss target", () 
 
   assert.equal(errors, null);
 });
+
+test("reviewAndAdjustPlan applies current measurements and optional PR updates", () => {
+  const originalInput = {
+    sex: "male",
+    age: 30,
+    heightCm: 175,
+    weightKg: 82,
+    bodyFatPct: 24,
+    goal: { type: "fat_loss", targetDate: "2026-12-31", targetWeightKg: 74 },
+    currentCircumference: { waistCm: 91 },
+    goalCircumference: { waistCm: 86 },
+    trainingMode: "gym",
+    frequencyPerWeek: 4,
+    sessionMinutes: 60,
+    trainingExperience: "intermediate"
+  };
+  const currentPlan = generatePlan(originalInput);
+  const review = reviewAndAdjustPlan({
+    originalInput,
+    currentPlan,
+    reviewDate: "2026-08-15",
+    bodyMetricsHistory: [
+      { date: "2026-08-01", weightKg: 82, bodyFatPct: 24, waistCm: 91 },
+      { date: "2026-08-15", weightKg: 81.5, bodyFatPct: 23.5, waistCm: 90 }
+    ],
+    trainingHistory: [{ weekStartDate: "2026-08-04", plannedFrequency: 4, completedFrequency: 4 }],
+    nutritionHistory: [],
+    prAdjustments: { bench: { weightKg: 75, reps: 10 } }
+  });
+
+  assert.equal(review.updatedInput.weightKg, 81.5);
+  assert.equal(review.updatedInput.bodyFatPct, 23.5);
+  assert.equal(review.updatedInput.currentCircumference.waistCm, 90);
+  assert.deepEqual(review.updatedInput.pr.bench, { weightKg: 75, reps: 10 });
+  assert.ok(review.updatedPlan.intensityPlan.loadReasonZh.includes("卧推保守安全训练最大值 84 kg"));
+});
