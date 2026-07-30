@@ -323,3 +323,34 @@ test("Android PR loads use conservative safe max and movement-specific scaling",
   assert.equal(loadKg("下压"), 10);
   assert.equal(loadKg("侧平举"), 5);
 });
+
+test("Android long-image export keeps only goal, workouts, and plan logic with dynamic height", () => {
+  const { context, elements } = loadAndroidContext();
+  setAndroidInput(elements, { sex: "male", goal: "fat_loss", mode: "gym", frequency: 6, focus: focusCases[1], prProfile: androidPrProfiles[1] });
+  const input = context.normalizeInput();
+  const plan = context.buildPlan(input);
+  const data = context.buildLongImageData(plan, input);
+  const text = data.rows.map((row) => row.text).join("\n");
+
+  assert.match(text, /目标/);
+  assert.match(text, /训练/);
+  assert.match(text, /计划生成逻辑/);
+  assert.match(text, /腰围: 91 cm -> 86 cm/);
+  assert.match(text, /杠铃卧推|坐姿肩推|深蹲|高位下拉/);
+  assert.doesNotMatch(text, /科学依据|为什么这样安排|训练强度处方|蛋白|碳水|脂肪/);
+  assert.ok(data.height > 760);
+
+  const expandedPlan = { ...plan, workouts: Array.from({ length: 24 }, (_, index) => ({ ...plan.workouts[index % plan.workouts.length], title: `第${index + 1}天` })) };
+  const expandedData = context.buildLongImageData(expandedPlan, input);
+  assert.ok(expandedData.height > data.height * 2, "export image height should grow with content instead of clipping to a fixed cap");
+});
+
+test("Android native bridge saves the exported image into the gallery image store", () => {
+  const source = fs.readFileSync("android/shape-plan-android/app/src/main/java/com/shapeplanlab/app/MainActivity.java", "utf8");
+  assert.match(source, /void saveImage\(String dataUrl, String fileName\)/);
+  assert.match(source, /MediaStore\.Images\.Media\.EXTERNAL_CONTENT_URI/);
+  assert.match(source, /Environment\.DIRECTORY_PICTURES \+ "\/ShapePlanLab"/);
+  assert.match(source, /image\/png/);
+  assert.doesNotMatch(source, /saveSvg/);
+  assert.doesNotMatch(source, /MediaStore\.Downloads/);
+});

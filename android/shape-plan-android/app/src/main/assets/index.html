@@ -680,43 +680,105 @@ function applyFeedback() {
   renderPlan(currentPlan);
 }
 
-function exportLongImage(plan) {
-  const lines = [
-    en ? 'Shape Plan Lab' : '塑形计划实验室',
-    `${tx().cal} ${plan.calories}`,
-    `${tx().protein} ${plan.protein}g`,
-    `${tx().fatText} ${plan.fat}g`,
-    `${tx().carb} ${plan.carb}g`,
-    en ? 'Intensity prescription' : '训练强度处方',
-    plan.intensity.summary,
-    ...plan.intensity.tags.map((value) => `• ${value}`),
-    ...plan.logicSections.flatMap((section) => [section.title, section.body]),
+function wrapExportText(text, maxChars) {
+  const normalized = String(text ?? '').replace(/\s+/g, ' ').trim();
+  if (!normalized) return [''];
+  const lines = [];
+  let current = '';
+  for (const char of Array.from(normalized)) {
+    current += char;
+    if (current.length >= maxChars) {
+      lines.push(current);
+      current = '';
+    }
+  }
+  if (current) lines.push(current);
+  return lines;
+}
+
+function buildLongImageData(plan, input = currentInput) {
+  const x = tx();
+  const goalNames = en
+    ? { fat_loss: 'Fat loss', muscle_gain: 'Muscle gain', recomposition: 'Recomposition', maintain: 'Maintain' }
+    : { fat_loss: '减脂', muscle_gain: '增肌', recomposition: '减脂增肌', maintain: '维持' };
+  const modeName = input.trainingMode === 'gym' ? (en ? 'Gym' : '健身房') : (en ? 'Bodyweight' : '居家自重');
+  const circNames = [['waistCm', x.waist], ['chestCm', x.chest], ['hipCm', x.hip], ['armCm', x.arm], ['thighCm', x.thigh]];
+  const circLines = circNames
+    .filter(([key]) => input.currentCircumference[key] || input.goalCircumference[key])
+    .map(([key, label]) => `${label}: ${input.currentCircumference[key] ?? '-'} cm -> ${input.goalCircumference[key] ?? '-'} cm`);
+  const items = [
+    { kind: 'h1', text: en ? 'Shape Plan Lab' : '塑形计划实验室' },
+    { kind: 'h2', text: en ? 'Goal' : '目标' },
+    { kind: 'body', text: `${en ? 'Goal type' : '目标类型'}: ${goalNames[input.goal.type]}` },
+    { kind: 'body', text: `${en ? 'Current' : '当前'}: ${input.weightKg} kg, ${input.bodyFatPct ?? '-'}% ${en ? 'body fat' : '体脂'}` },
+    { kind: 'body', text: `${en ? 'Target' : '目标'}: ${input.goal.targetWeightKg} kg, ${input.goal.targetDate}` },
+    { kind: 'body', text: `${en ? 'Execution' : '执行约束'}: ${input.frequencyPerWeek}${en ? ' sessions/week' : '次/周'}, ${input.sessionMinutes}${en ? ' min/session' : '分钟/次'}, ${modeName}` },
+    ...circLines.map((text) => ({ kind: 'body', text })),
+    { kind: 'h2', text: x.workouts },
     ...plan.workouts.flatMap((day) => [
-      day.title,
-      day.note,
-      day.reason,
-      ...day.blocks.map((block) => en
+      { kind: 'h2', text: day.title },
+      { kind: 'body', text: day.reason },
+      ...day.blocks.map((block) => ({ kind: 'body', text: en
         ? `${block.name} (${block.guide}) -- ${block.load} -- ${block.reps} -- ${block.sets} sets (${block.prBasis})`
-        : `${block.name}（${block.guide}）-- ${block.load} -- ${block.reps} -- ${block.sets}组（${block.prBasis}）`)
+        : `${block.name}（${block.guide}）-- ${block.load} -- ${block.reps} -- ${block.sets}组（${block.prBasis}）` }))
     ]),
-    en ? 'Why this plan' : '为什么这样安排',
-    ...plan.reasonSections.flatMap((section) => [section.title, section.body])
+    { kind: 'h2', text: x.logic },
+    ...plan.logicSections.flatMap((section) => [
+      { kind: 'h2', text: section.title },
+      { kind: 'body', text: section.body }
+    ])
   ];
   const width = 1080;
-  const lineHeight = 28;
-  const height = Math.max(760, 110 + lines.length * lineHeight);
-  const esc = (s) => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-  const text = lines.map((line, i) => `<text x="64" y="${96 + i * lineHeight}" font-size="${i === 0 ? 34 : 18}" font-weight="${i === 0 ? 700 : 400}" fill="${i === 0 ? '#163022' : '#2f4b3a'}">${esc(line)}</text>`).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#f4f1e8"/><rect x="34" y="32" width="${width - 68}" height="${height - 64}" rx="8" fill="#fbfaf5" stroke="#d8ddd4"/>${text}<text x="64" y="${height - 44}" font-size="14" fill="#637269">${esc(new Date().toISOString().slice(0, 10))}</text></svg>`;
-  if (window.ShapePlanAndroid && window.ShapePlanAndroid.saveSvg) {
-    window.ShapePlanAndroid.saveSvg(svg, `shape-plan-${en ? 'en' : 'zh'}-${Date.now()}.svg`);
-  } else {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
-    a.download = `shape-plan-${Date.now()}.svg`;
-    a.click();
-    URL.revokeObjectURL(a.href);
+  const rows = items.flatMap((item) => wrapExportText(item.text, item.kind === 'h1' ? 24 : item.kind === 'h2' ? 34 : 46).map((text, index) => ({ kind: index === 0 ? item.kind : 'body', text })));
+  const entries = [];
+  let y = 96;
+  for (const row of rows) {
+    entries.push({ ...row, y });
+    y += row.kind === 'h1' ? 48 : row.kind === 'h2' ? 40 : 30;
   }
+  const height = Math.max(760, y + 72);
+  const esc = (s) => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  const text = entries.map((row) => `<text x="64" y="${row.y}" font-size="${row.kind === 'h1' ? 34 : row.kind === 'h2' ? 22 : 18}" font-weight="${row.kind === 'body' ? 400 : 700}" fill="${row.kind === 'h1' ? '#163022' : '#2f4b3a'}">${esc(row.text)}</text>`).join('');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#f4f1e8"/><rect x="34" y="32" width="${width - 68}" height="${height - 64}" rx="8" fill="#fbfaf5" stroke="#d8ddd4"/>${text}<text x="64" y="${height - 44}" font-size="14" fill="#637269">${esc(new Date().toISOString().slice(0, 10))}</text></svg>`;
+  return { width, height, rows, svg };
+}
+
+function downloadDataUrl(dataUrl, fileName) {
+  const a = document.createElement('a');
+  a.href = dataUrl;
+  a.download = fileName;
+  a.click();
+}
+
+function exportLongImage(plan) {
+  const data = buildLongImageData(plan);
+  const fileName = `shape-plan-${en ? 'en' : 'zh'}-${Date.now()}.png`;
+  const image = new Image();
+  const url = URL.createObjectURL(new Blob([data.svg], { type: 'image/svg+xml;charset=utf-8' }));
+  image.onload = () => {
+    try {
+      const canvas = document.createElement('canvas');
+      canvas.width = data.width;
+      canvas.height = data.height;
+      const context = canvas.getContext('2d');
+      context.drawImage(image, 0, 0);
+      const png = canvas.toDataURL('image/png');
+      if (window.ShapePlanAndroid && window.ShapePlanAndroid.saveImage) {
+        window.ShapePlanAndroid.saveImage(png, fileName);
+      } else {
+        downloadDataUrl(png, fileName);
+      }
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  };
+  image.onerror = () => {
+    URL.revokeObjectURL(url);
+    const svgUrl = URL.createObjectURL(new Blob([data.svg], { type: 'image/svg+xml;charset=utf-8' }));
+    downloadDataUrl(svgUrl, fileName.replace(/\.png$/, '.svg'));
+    URL.revokeObjectURL(svgUrl);
+  };
+  image.src = url;
 }
 
 function generate(e) {

@@ -6,13 +6,13 @@ import android.content.ContentValues;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.webkit.JavascriptInterface;
 import android.widget.Toast;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 
 public class MainActivity extends Activity {
     @SuppressLint("SetJavaScriptEnabled")
@@ -32,20 +32,27 @@ public class MainActivity extends Activity {
 
     public class SaveBridge {
         @JavascriptInterface
-        public void saveSvg(String svg, String fileName) {
+        public void saveImage(String dataUrl, String fileName) {
             runOnUiThread(() -> {
                 try {
+                    int comma = dataUrl.indexOf(',');
+                    String payload = comma >= 0 ? dataUrl.substring(comma + 1) : dataUrl;
+                    byte[] png = Base64.decode(payload, Base64.DEFAULT);
                     ContentValues values = new ContentValues();
-                    values.put(MediaStore.Downloads.DISPLAY_NAME, fileName);
-                    values.put(MediaStore.Downloads.MIME_TYPE, "image/svg+xml");
-                    values.put(MediaStore.Downloads.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
-                    android.net.Uri uri = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values);
-                    if (uri == null) throw new IllegalStateException("Downloads provider unavailable");
+                    values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+                    values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                    values.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/ShapePlanLab");
+                    values.put(MediaStore.Images.Media.IS_PENDING, 1);
+                    android.net.Uri uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                    if (uri == null) throw new IllegalStateException("Images provider unavailable");
                     try (OutputStream stream = getContentResolver().openOutputStream(uri)) {
                         if (stream == null) throw new IllegalStateException("Output stream unavailable");
-                        stream.write(svg.getBytes(StandardCharsets.UTF_8));
+                        stream.write(png);
                     }
-                    Toast.makeText(MainActivity.this, "长图已保存到下载目录", Toast.LENGTH_LONG).show();
+                    ContentValues done = new ContentValues();
+                    done.put(MediaStore.Images.Media.IS_PENDING, 0);
+                    getContentResolver().update(uri, done, null, null);
+                    Toast.makeText(MainActivity.this, "长图已保存到图库", Toast.LENGTH_LONG).show();
                 } catch (Exception error) {
                     Toast.makeText(MainActivity.this, "保存失败，请稍后重试", Toast.LENGTH_LONG).show();
                 }
