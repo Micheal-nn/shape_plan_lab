@@ -11,7 +11,7 @@ test("normalizeGoalInput corrects target direction conflicts instead of rejectin
     heightCm: 175,
     weightKg: 80,
     bodyFatPct: 22,
-    goal: { type: "muscle_gain", targetDate: "2026-11-30", targetWeightKg: 70, targetBodyFatPct: 18 },
+    goal: { type: "muscle_gain", targetDate: "2027-11-30", targetWeightKg: 70, targetBodyFatPct: 18 },
     trainingMode: "gym",
     frequencyPerWeek: 4,
     sessionMinutes: 60

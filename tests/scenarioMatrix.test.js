@@ -338,6 +338,8 @@ test("Android long-image export keeps only goal, workouts, and plan logic with d
   assert.match(text, /腰围: 91 cm -> 86 cm/);
   assert.match(text, /杠铃卧推|坐姿肩推|深蹲|高位下拉/);
   assert.doesNotMatch(text, /科学依据|为什么这样安排|训练强度处方|蛋白|碳水|脂肪/);
+  assert.match(data.svg, /fill="#173224"/);
+  assert.match(data.svg, /rx="26"/);
   assert.ok(data.height > 760);
 
   const expandedPlan = { ...plan, workouts: Array.from({ length: 24 }, (_, index) => ({ ...plan.workouts[index % plan.workouts.length], title: `第${index + 1}天` })) };

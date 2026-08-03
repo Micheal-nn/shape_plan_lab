@@ -706,40 +706,85 @@ function buildLongImageData(plan, input = currentInput) {
   const circLines = circNames
     .filter(([key]) => input.currentCircumference[key] || input.goalCircumference[key])
     .map(([key, label]) => `${label}: ${input.currentCircumference[key] ?? '-'} cm -> ${input.goalCircumference[key] ?? '-'} cm`);
-  const items = [
-    { kind: 'h1', text: en ? 'Shape Plan Lab' : '塑形计划实验室' },
-    { kind: 'h2', text: en ? 'Goal' : '目标' },
-    { kind: 'body', text: `${en ? 'Goal type' : '目标类型'}: ${goalNames[input.goal.type]}` },
-    { kind: 'body', text: `${en ? 'Current' : '当前'}: ${input.weightKg} kg, ${input.bodyFatPct ?? '-'}% ${en ? 'body fat' : '体脂'}` },
-    { kind: 'body', text: `${en ? 'Target' : '目标'}: ${input.goal.targetWeightKg} kg, ${input.goal.targetDate}` },
-    { kind: 'body', text: `${en ? 'Execution' : '执行约束'}: ${input.frequencyPerWeek}${en ? ' sessions/week' : '次/周'}, ${input.sessionMinutes}${en ? ' min/session' : '分钟/次'}, ${modeName}` },
-    ...circLines.map((text) => ({ kind: 'body', text })),
-    { kind: 'h2', text: x.workouts },
-    ...plan.workouts.flatMap((day) => [
-      { kind: 'h2', text: day.title },
-      { kind: 'body', text: day.reason },
-      ...day.blocks.map((block) => ({ kind: 'body', text: en
-        ? `${block.name} (${block.guide}) -- ${block.load} -- ${block.reps} -- ${block.sets} sets (${block.prBasis})`
-        : `${block.name}（${block.guide}）-- ${block.load} -- ${block.reps} -- ${block.sets}组（${block.prBasis}）` }))
-    ]),
-    { kind: 'h2', text: x.logic },
-    ...plan.logicSections.flatMap((section) => [
-      { kind: 'h2', text: section.title },
-      { kind: 'body', text: section.body }
-    ])
-  ];
   const width = 1080;
-  const rows = items.flatMap((item) => wrapExportText(item.text, item.kind === 'h1' ? 24 : item.kind === 'h2' ? 34 : 46).map((text, index) => ({ kind: index === 0 ? item.kind : 'body', text })));
-  const entries = [];
-  let y = 96;
-  for (const row of rows) {
-    entries.push({ ...row, y });
-    y += row.kind === 'h1' ? 48 : row.kind === 'h2' ? 40 : 30;
-  }
-  const height = Math.max(760, y + 72);
+  const rows = [];
+  const parts = [];
   const esc = (s) => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
-  const text = entries.map((row) => `<text x="64" y="${row.y}" font-size="${row.kind === 'h1' ? 34 : row.kind === 'h2' ? 22 : 18}" font-weight="${row.kind === 'body' ? 400 : 700}" fill="${row.kind === 'h1' ? '#163022' : '#2f4b3a'}">${esc(row.text)}</text>`).join('');
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><rect width="100%" height="100%" fill="#f4f1e8"/><rect x="34" y="32" width="${width - 68}" height="${height - 64}" rx="8" fill="#fbfaf5" stroke="#d8ddd4"/>${text}<text x="64" y="${height - 44}" font-size="14" fill="#637269">${esc(new Date().toISOString().slice(0, 10))}</text></svg>`;
+  const text = (value, xPos, yPos, size = 18, weight = 400, fill = '#24382d', kind = 'body') => {
+    rows.push({ kind, text: String(value), y: yPos });
+    parts.push(`<text x="${xPos}" y="${yPos}" font-size="${size}" font-weight="${weight}" fill="${fill}">${esc(value)}</text>`);
+  };
+  const wrapped = (value, xPos, yPos, maxChars, size = 18, lineHeight = 30, fill = '#34483d', kind = 'body') => {
+    let nextY = yPos;
+    for (const line of wrapExportText(value, maxChars)) {
+      text(line, xPos, nextY, size, 400, fill, kind);
+      nextY += lineHeight;
+    }
+    return nextY;
+  };
+  const rect = (xPos, yPos, w, h, fill, stroke = 'none', rx = 24) => parts.push(`<rect x="${xPos}" y="${yPos}" width="${w}" height="${h}" rx="${rx}" fill="${fill}" stroke="${stroke}"/>`);
+  const section = (title, yPos) => {
+    rect(56, yPos, 10, 34, '#d4823c', 'none', 5);
+    text(title, 82, yPos + 26, 28, 700, '#173224', 'h2');
+    return yPos + 58;
+  };
+  const pill = (label, value, xPos, yPos, w) => {
+    rect(xPos, yPos, w, 72, '#f7f1e5', '#eadbc6', 20);
+    text(label, xPos + 22, yPos + 26, 15, 700, '#7a6756', 'body');
+    wrapped(value, xPos + 22, yPos + 54, Math.max(10, Math.floor(w / 12)), 18, 22, '#1f372b');
+  };
+
+  text(en ? 'Shape Plan Lab' : '塑形计划实验室', 64, 88, 42, 800, '#fff7e8', 'h1');
+  text(en ? 'Goal driven training plan' : '目标驱动训练计划', 64, 126, 20, 500, '#d7eadb', 'body');
+  const goalSummary = `${goalNames[input.goal.type]} · ${input.weightKg}kg -> ${input.goal.targetWeightKg}kg · ${input.frequencyPerWeek}${en ? ' sessions/week' : '次/周'}`;
+  text(goalSummary, 64, 166, 24, 700, '#ffffff', 'body');
+  let y = 220;
+
+  y = section(en ? 'Goal' : '目标', y);
+  pill(en ? 'Current' : '当前', `${input.weightKg} kg / ${input.bodyFatPct ?? '-'}%`, 64, y, 290);
+  pill(en ? 'Target' : '目标', `${input.goal.targetWeightKg} kg / ${input.goal.targetDate}`, 386, y, 330);
+  pill(en ? 'Execution' : '执行', `${input.frequencyPerWeek}${en ? ' sessions' : '次'} · ${input.sessionMinutes}${en ? ' min' : '分钟'} · ${modeName}`, 748, y, 268);
+  y += 96;
+  for (const line of circLines) {
+    rect(64, y, 952, 42, '#eef5ec', '#d7e4d6', 18);
+    text(line, 88, y + 27, 18, 600, '#31513f', 'body');
+    y += 52;
+  }
+
+  y = section(x.workouts, y + 14);
+  for (const day of plan.workouts) {
+    const cardY = y;
+    const reasonLines = wrapExportText(day.reason, 54);
+    const cardHeight = 94 + reasonLines.length * 24 + day.blocks.length * 72;
+    rect(56, cardY, 968, cardHeight, '#ffffff', '#dfe6dc', 26);
+    text(day.title, 88, y + 38, 24, 800, '#173224', 'h2');
+    y = wrapped(day.reason, 88, y + 70, 54, 17, 24, '#5b6c61');
+    y += 12;
+    for (const block of day.blocks) {
+      rect(84, y, 912, 58, '#f8faf4', '#edf1e8', 16);
+      wrapped(block.name, 108, y + 24, 18, 18, 22, '#20372a');
+      text(block.load, 430, y + 24, 17, 700, '#20372a', 'body');
+      text(block.reps, 610, y + 24, 17, 700, '#20372a', 'body');
+      text(`${block.sets}${en ? ' sets' : '组'}`, 748, y + 24, 17, 700, '#20372a', 'body');
+      wrapped(block.prBasis, 430, y + 48, 46, 14, 18, '#718075');
+      y += 72;
+    }
+    y = cardY + cardHeight + 26;
+  }
+
+  y = section(x.logic, y + 10);
+  for (const item of plan.logicSections) {
+    const bodyLines = wrapExportText(item.body, 58);
+    const cardHeight = 64 + bodyLines.length * 26;
+    rect(56, y, 968, cardHeight, '#fffaf0', '#eadbc6', 24);
+    text(item.title, 88, y + 34, 21, 800, '#4b321d', 'h2');
+    wrapped(item.body, 88, y + 64, 58, 17, 26, '#5d5144');
+    y += cardHeight + 18;
+  }
+  const height = Math.max(760, y + 70);
+  const background = `<rect width="100%" height="100%" fill="#f0eadf"/><rect x="34" y="32" width="${width - 68}" height="${height - 64}" rx="34" fill="#fbfaf5" stroke="#d8ddd4"/><rect x="34" y="32" width="${width - 68}" height="168" rx="34" fill="#173224"/><circle cx="934" cy="90" r="92" fill="#2f6b4a" opacity="0.38"/><circle cx="1000" cy="176" r="64" fill="#d4823c" opacity="0.35"/>`;
+  parts.push(`<text x="64" y="${height - 44}" font-size="14" fill="#637269">${esc(new Date().toISOString().slice(0, 10))}</text>`);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${background}${parts.join('')}</svg>`;
   return { width, height, rows, svg };
 }
 
